@@ -41,4 +41,24 @@ router.get('/me', requireLogin, (req, res) => {
   res.json({ user: req.session.user });
 });
 
+// POST /auth/change-password
+router.post('/change-password', requireLogin, (req, res) => {
+  const { current_password, new_password } = req.body;
+
+  if (!current_password || !new_password)
+    return res.status(400).json({ error: 'All fields are required' });
+  if (new_password.length < 6)
+    return res.status(400).json({ error: 'New password: min 6 characters' });
+  if (new_password.length > 200)
+    return res.status(400).json({ error: 'New password: max 200 characters' });
+
+  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.user.id);
+  if (!user || !bcrypt.compareSync(current_password, user.password))
+    return res.status(401).json({ error: 'Current password is incorrect' });
+
+  const hash = bcrypt.hashSync(new_password, 10);
+  db.prepare('UPDATE users SET password = ? WHERE id = ?').run(hash, req.session.user.id);
+  res.json({ ok: true });
+});
+
 module.exports = router;

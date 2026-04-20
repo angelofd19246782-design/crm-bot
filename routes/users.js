@@ -44,6 +44,31 @@ router.post('/', requireAdmin, (req, res) => {
   });
 });
 
+// PATCH /api/users/:id  — change role and/or reset password (admin only)
+router.patch('/:id', requireAdmin, (req, res) => {
+  const targetId = Number(req.params.id);
+  const { role, password } = req.body;
+
+  const user = db.prepare('SELECT id FROM users WHERE id = ?').get(targetId);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+
+  if (role !== undefined) {
+    if (!['admin', 'employee'].includes(role))
+      return res.status(400).json({ error: 'Invalid role' });
+    db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, targetId);
+  }
+
+  if (password) {
+    if (password.length < 6)   return res.status(400).json({ error: 'Password: min 6 chars' });
+    if (password.length > 200) return res.status(400).json({ error: 'Password: max 200 chars' });
+    const hash = bcrypt.hashSync(password, 10);
+    db.prepare('UPDATE users SET password = ? WHERE id = ?').run(hash, targetId);
+  }
+
+  const updated = db.prepare('SELECT id, username, role, created_at FROM users WHERE id = ?').get(targetId);
+  res.json(updated);
+});
+
 // DELETE /api/users/:id
 router.delete('/:id', requireAdmin, (req, res) => {
   const targetId = Number(req.params.id);

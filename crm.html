@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nexus CRM — Dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%236366f1'/><text x='16' y='23' font-size='20' font-weight='900' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'>N</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1879,6 +1880,118 @@
     .hm-cell:hover  { opacity: 0.7 !important; }
     .hm-cell.hm-today { outline: 2px solid var(--primary); outline-offset: 1px; }
 
+    /* ─── Pagination ─── */
+    .pagination-wrap {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 14px 0 4px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .pg-btn {
+      height: 32px;
+      min-width: 32px;
+      border-radius: 8px;
+      border: 1.5px solid #e8e8f4;
+      background: #fff;
+      color: var(--text2);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0 10px;
+      font-family: inherit;
+      transition: all 0.12s;
+    }
+    .pg-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+    .pg-btn.pg-active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .pg-btn:disabled  { opacity: 0.35; cursor: default; }
+    .pg-info { font-size: 11.5px; color: var(--text3); padding: 0 8px; }
+    .pg-ellipsis { font-size: 13px; color: var(--text3); padding: 0 4px; line-height: 32px; }
+
+    /* ─── Settings view ─── */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      max-width: 800px;
+    }
+    @media (max-width: 700px) { .settings-grid { grid-template-columns: 1fr; } }
+    .settings-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--card-shadow);
+    }
+    .settings-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text1);
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f4f4fa;
+    }
+    .profile-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f4f4fa;
+    }
+    .profile-row:last-child { border-bottom: none; }
+    .profile-label { font-size: 12px; font-weight: 600; color: var(--text3); letter-spacing: 0.2px; }
+    .profile-val   { font-size: 13.5px; font-weight: 600; color: var(--text1); }
+    .pw-success {
+      font-size: 12.5px;
+      color: var(--green);
+      font-weight: 600;
+      display: none;
+      margin-top: 8px;
+    }
+    .pw-success.visible { display: block; }
+
+    /* ─── Edit user modal ─── */
+    #editUserModal .modal-card { max-width: 420px; }
+
+    /* ─── Notification badge (new-apps bell) ─── */
+    .notif-dot {
+      position: absolute;
+      top: -2px; right: -2px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--sb);
+      display: none;
+    }
+    .notif-dot.visible { display: block; }
+
+    /* ─── Print styles ─── */
+    @media print {
+      .sidebar, .topbar, .bulk-bar, .toast,
+      .modal-bd, .confirm-overlay, .drawer-overlay,
+      .view-section, .mobile-sidebar-overlay { display: none !important; }
+      .layout { display: block !important; }
+      .main    { margin: 0 !important; padding: 0 !important; }
+      .content { padding: 0 !important; }
+      .drawer {
+        position: static !important;
+        width: 100% !important;
+        height: auto !important;
+        transform: none !important;
+        box-shadow: none !important;
+        border: none !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+      .drawer-header { display: none !important; }
+      .drawer-section:last-of-type { display: none !important; }
+      #drawerStatusWrap, #drawerAssignWrap,
+      #noteInput, .btn-primary, .btn-ghost,
+      input[type="file"], .att-del,
+      button[onclick^="softDelete"] { display: none !important; }
+      body { background: white !important; }
+    }
+
     /* ─── Charts right column ─── */
     .charts-right-col {
       display: flex;
@@ -2121,6 +2234,15 @@
           <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
         </svg>
         <span data-en="Users" data-ru="Пользователи" data-ko="사용자">Users</span>
+      </a>
+
+      <div class="nav-section" data-en="Account" data-ru="Аккаунт" data-ko="계정">Account</div>
+
+      <a class="nav-item" data-view="settings" href="#">
+        <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+        </svg>
+        <span data-en="Settings" data-ru="Настройки" data-ko="설정">Settings</span>
       </a>
     </nav>
 
@@ -2488,6 +2610,10 @@
         <div class="view-toolbar">
           <input class="search-input" id="reqSearch" placeholder="Search by name, phone…" data-en="Search by name, phone…" data-ru="Поиск по имени, телефону…" data-ko="이름, 전화번호로 검색…">
           <div id="reqStatusFilterWrap" style="width:158px"></div>
+          <button class="btn-ghost" style="height:36px;white-space:nowrap;display:flex;align-items:center;gap:6px" onclick="exportCSV()">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            <span data-en="Export CSV" data-ru="Экспорт CSV" data-ko="CSV 내보내기">Export CSV</span>
+          </button>
         </div>
         <div class="table-card">
           <div class="table-hdr">
@@ -2511,6 +2637,7 @@
             </thead>
             <tbody id="reqTableBody"></tbody>
           </table>
+          <div id="reqPagination" class="pagination-wrap"></div>
         </div>
       </div><!-- /viewRequests -->
 
@@ -2602,6 +2729,60 @@
         </div>
       </div><!-- /viewUsers -->
 
+      <!-- ─── Settings view ─── -->
+      <div class="view-section" id="viewSettings" style="display:none">
+        <div class="page-hdr">
+          <div>
+            <h1 data-en="Settings" data-ru="Настройки" data-ko="설정">Settings</h1>
+            <div class="page-hdr-sub" data-en="Account and preferences" data-ru="Аккаунт и настройки" data-ko="계정 및 환경설정">Account and preferences</div>
+          </div>
+        </div>
+        <div class="settings-grid">
+
+          <!-- Profile card -->
+          <div class="settings-card">
+            <div class="settings-card-title" data-en="My Profile" data-ru="Мой профиль" data-ko="내 프로필">My Profile</div>
+            <div class="profile-row">
+              <span class="profile-label" data-en="USERNAME" data-ru="ЛОГИН" data-ko="사용자명">USERNAME</span>
+              <span class="profile-val" id="settingsUsername">—</span>
+            </div>
+            <div class="profile-row">
+              <span class="profile-label" data-en="ROLE" data-ru="РОЛЬ" data-ko="권한">ROLE</span>
+              <span class="profile-val" id="settingsRole">—</span>
+            </div>
+            <div class="profile-row">
+              <span class="profile-label" data-en="MEMBER SINCE" data-ru="В СИСТЕМЕ С" data-ko="가입일">MEMBER SINCE</span>
+              <span class="profile-val" id="settingsMember">—</span>
+            </div>
+          </div>
+
+          <!-- Change password card -->
+          <div class="settings-card">
+            <div class="settings-card-title" data-en="Change Password" data-ru="Изменить пароль" data-ko="비밀번호 변경">Change Password</div>
+            <form id="changePasswordForm">
+              <div class="form-row">
+                <label class="form-label" data-en="Current Password" data-ru="Текущий пароль" data-ko="현재 비밀번호">Current Password</label>
+                <input class="form-input" name="current_password" type="password" autocomplete="current-password">
+              </div>
+              <div class="form-row">
+                <label class="form-label" data-en="New Password" data-ru="Новый пароль" data-ko="새 비밀번호">New Password</label>
+                <input class="form-input" name="new_password" type="password" autocomplete="new-password" placeholder="Min. 6 characters">
+              </div>
+              <div class="form-row">
+                <label class="form-label" data-en="Confirm New Password" data-ru="Подтвердите пароль" data-ko="새 비밀번호 확인">Confirm New Password</label>
+                <input class="form-input" name="confirm_password" type="password" autocomplete="new-password">
+              </div>
+              <div class="add-user-err" id="pwError"></div>
+              <button type="submit" class="btn-submit" style="width:auto;padding:0 22px;font-size:13px;margin-top:4px">
+                <span data-en="Update Password" data-ru="Изменить пароль" data-ko="비밀번호 변경">Update Password</span>
+              </button>
+              <div class="pw-success" id="pwSuccess" data-en="Password updated!" data-ru="Пароль изменён!" data-ko="비밀번호 변경 완료!">Password updated!</div>
+            </form>
+          </div>
+
+        </div>
+      </div><!-- /viewSettings -->
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /layout -->
@@ -2614,7 +2795,13 @@
 <div class="drawer" id="drawer">
   <div class="drawer-header">
     <span class="drawer-title" data-en="Request Detail" data-ru="Детали заявки" data-ko="신청서 상세">Request Detail</span>
-    <button class="drawer-close" id="drawerClose">✕</button>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button onclick="window.print()" style="height:30px;padding:0 12px;font-size:12px;font-weight:600;font-family:inherit;background:none;border:1.5px solid #e8e8f4;border-radius:8px;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.12s" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='#e8e8f4';this.style.color='var(--text2)'" title="Print">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a1 1 0 001 1h8a1 1 0 001-1v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a1 1 0 00-1-1H6a1 1 0 00-1 1zm2 0h6v3H7V4zm-1 9v-1h8v1a1 1 0 01-1 1H7a1 1 0 01-1-1zm8-5a1 1 0 110 2 1 1 0 010-2z" clip-rule="evenodd"/></svg>
+        <span data-en="Print" data-ru="Печать" data-ko="인쇄">Print</span>
+      </button>
+      <button class="drawer-close" id="drawerClose">✕</button>
+    </div>
   </div>
   <div class="drawer-body" id="drawerContent">
     <div style="padding:40px;text-align:center;color:var(--text3)">Loading…</div>
@@ -2673,6 +2860,37 @@
       <button class="confirm-cancel" id="confirmCancel" data-en="Cancel" data-ru="Отмена" data-ko="취소">Cancel</button>
       <button class="confirm-ok danger" id="confirmOk">Delete</button>
     </div>
+  </div>
+</div>
+
+<!-- ─── Edit User Modal ─── -->
+<div class="modal-bd" id="editUserModal">
+  <div class="modal-card" style="max-width:420px">
+    <div class="modal-hdr">
+      <span class="modal-title" data-en="Edit User" data-ru="Редактировать пользователя" data-ko="사용자 편집">Edit User</span>
+      <button class="modal-close" id="closeEditUserModal">✕</button>
+    </div>
+    <div class="form-error" id="editUserError"></div>
+    <form id="editUserForm">
+      <input type="hidden" id="editUserId">
+      <div class="form-row">
+        <label class="form-label" data-en="Username" data-ru="Логин" data-ko="사용자명">Username</label>
+        <input class="form-input" id="editUserUsername" disabled style="background:#f9f9ff;color:var(--text3);cursor:default">
+      </div>
+      <div class="form-row">
+        <label class="form-label" data-en="Role" data-ru="Роль" data-ko="권한">Role</label>
+        <div id="editUserRoleWrap"></div>
+        <input type="hidden" id="editUserRoleHidden">
+      </div>
+      <div class="form-row">
+        <label class="form-label" data-en="New Password (leave blank to keep current)" data-ru="Новый пароль (оставьте пустым чтобы не менять)" data-ko="새 비밀번호 (변경하지 않으려면 비워두세요)">New Password (leave blank to keep current)</label>
+        <input class="form-input" id="editUserPassword" type="password" autocomplete="new-password" placeholder="Min. 6 characters">
+      </div>
+      <div class="form-footer">
+        <button type="button" class="btn-cancel" id="cancelEditUser" data-en="Cancel" data-ru="Отмена" data-ko="취소">Cancel</button>
+        <button type="submit" class="btn-submit" data-en="Save Changes" data-ru="Сохранить" data-ko="저장">Save Changes</button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -2948,6 +3166,11 @@
       role_admin: 'Administrator', role_employee: 'Employee',
       loading: 'Loading…', note_placeholder: 'Add a note…',
       cancel: 'Cancel',
+      edit_btn: 'Edit', user_updated: 'User updated',
+      pw_mismatch: 'Passwords do not match', pw_changed: 'Password updated!',
+      pw_wrong: 'Current password is incorrect',
+      s_new_apps: n => `${n} new request${n > 1 ? 's' : ''} received`,
+      pg_settings: 'Settings', pg_sub_settings: 'Account and preferences',
     },
     ru: {
       s_new: 'Новая', s_in_progress: 'В работе', s_completed: 'Завершена', s_incomplete: 'Не завершена',
@@ -2991,6 +3214,11 @@
       role_admin: 'Администратор', role_employee: 'Сотрудник',
       loading: 'Загрузка…', note_placeholder: 'Добавить заметку…',
       cancel: 'Отмена',
+      edit_btn: 'Изменить', user_updated: 'Пользователь обновлён',
+      pw_mismatch: 'Пароли не совпадают', pw_changed: 'Пароль изменён!',
+      pw_wrong: 'Текущий пароль неверен',
+      s_new_apps: n => `${n} ${n === 1 ? 'новая заявка' : n < 5 ? 'новые заявки' : 'новых заявок'}`,
+      pg_settings: 'Настройки', pg_sub_settings: 'Аккаунт и настройки',
     },
     ko: {
       s_new: '신규', s_in_progress: '처리 중', s_completed: '완료', s_incomplete: '미완료',
@@ -3034,6 +3262,11 @@
       role_admin: '관리자', role_employee: '직원',
       loading: '불러오는 중…', note_placeholder: '메모를 입력하세요…',
       cancel: '취소',
+      edit_btn: '편집', user_updated: '사용자 정보가 업데이트되었습니다',
+      pw_mismatch: '비밀번호가 일치하지 않습니다', pw_changed: '비밀번호가 변경되었습니다!',
+      pw_wrong: '현재 비밀번호가 올바르지 않습니다',
+      s_new_apps: n => `새 신청서 ${n}건 접수`,
+      pg_settings: '설정', pg_sub_settings: '계정 및 환경설정',
     },
   };
 
@@ -3178,12 +3411,12 @@
     currentView = view;
     clearSelection();
 
-    const pgKey = { dashboard: 'pg_dashboard', requests: 'pg_requests', trash: 'pg_trash', users: 'pg_users' }[view];
+    const pgKey = { dashboard: 'pg_dashboard', requests: 'pg_requests', trash: 'pg_trash', users: 'pg_users', settings: 'pg_settings' }[view];
     const titleEl = document.getElementById('topbarTitle');
     if (pgKey) {
-      titleEl.dataset.en = TR.en[pgKey];
-      titleEl.dataset.ru = TR.ru[pgKey];
-      titleEl.dataset.ko = TR.ko[pgKey];
+      titleEl.dataset.en = TR.en[pgKey] || pgKey;
+      titleEl.dataset.ru = TR.ru[pgKey] || pgKey;
+      titleEl.dataset.ko = TR.ko[pgKey] || pgKey;
       titleEl.textContent = T(pgKey);
     }
 
@@ -3192,7 +3425,7 @@
       reqStatusDropdown.setValue(opts.filterStatus);
     }
 
-    const viewIds = { dashboard: 'viewDashboard', requests: 'viewRequests', trash: 'viewTrash', users: 'viewUsers' };
+    const viewIds = { dashboard: 'viewDashboard', requests: 'viewRequests', trash: 'viewTrash', users: 'viewUsers', settings: 'viewSettings' };
     const section = document.getElementById(viewIds[view]);
     if (section) {
       section.style.display = '';
@@ -3205,6 +3438,7 @@
     else if (view === 'requests') loadRequests();
     else if (view === 'trash') loadTrash();
     else if (view === 'users') loadUsers();
+    else if (view === 'settings') loadSettings();
   };
 
   document.querySelectorAll('.nav-item[data-view]').forEach(item => {
@@ -4173,18 +4407,28 @@
       (a.phone || '').toLowerCase().includes(q) ||
       (a.email || '').toLowerCase().includes(q)
     ) : allRequests;
+    _filteredForExport = filtered;
+    _currentPage = 1;
     document.getElementById('reqTableCount').textContent = filtered.length;
+    renderRequestsPage(filtered);
+  }
+
+  function renderRequestsPage(filtered) {
+    if (!filtered) filtered = _filteredForExport;
     const tbody = document.getElementById('reqTableBody');
     if (!filtered.length) {
-      const isSearch = q.length > 0 || reqStatusValue !== '';
+      const isSearch = document.getElementById('reqSearch').value.trim().length > 0 || reqStatusValue !== '';
       tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
         <div class="empty-state-icon">${isSearch ? EMPTY_SEARCH_ICON : EMPTY_DOC_ICON}</div>
         <div class="empty-state-title">${isSearch ? (L.lang==='ru'?'Ничего не найдено':L.lang==='ko'?'검색 결과 없음':T('no_results')) : (L.lang==='ru'?'Заявок пока нет':L.lang==='ko'?'신청서가 없습니다':T('no_requests'))}</div>
         <div class="empty-state-sub">${isSearch ? (L.lang==='ru'?'Попробуйте изменить поисковый запрос или фильтр':L.lang==='ko'?'검색어나 필터를 변경해보세요':'Try adjusting your search or filter') : (L.lang==='ru'?'Создайте первую заявку нажав кнопку «Новая заявка»':L.lang==='ko'?'상단의 새 신청 버튼을 눌러 첫 번째 신청서를 등록하세요':'Create your first request using the New Request button above')}</div>
       </div></td></tr>`;
+      renderPagination(0);
       return;
     }
-    tbody.innerHTML = filtered.map(a => `
+    const start = (_currentPage - 1) * PAGE_SIZE;
+    const page  = filtered.slice(start, start + PAGE_SIZE);
+    tbody.innerHTML = page.map(a => `
       <tr data-id="${a.id}" class="${_selectedIds.has(a.id) ? 'row-selected' : ''}">
         <td class="td-check"><input type="checkbox" class="row-check" ${_selectedIds.has(a.id) ? 'checked' : ''} onchange="toggleRowSelect(${a.id}, this)"></td>
         <td class="cell-id">#${a.id}</td>
@@ -4196,11 +4440,12 @@
         <td><button class="view-btn" onclick="openDrawer(${a.id})">${T('view')}</button></td>
       </tr>
     `).join('');
+    renderPagination(filtered.length);
     const hc = document.getElementById('reqHeaderCheck');
     if (hc) { hc.checked = false; hc.indeterminate = _selectedIds.size > 0; }
   }
 
-  document.getElementById('reqSearch').addEventListener('input', filterRequests);
+  document.getElementById('reqSearch').addEventListener('input', () => { _currentPage = 1; filterRequests(); });
 
   /* ── Trash ── */
   async function loadTrash() {
@@ -4260,9 +4505,11 @@
         <td class="cell-name">${esc(u.username)}</td>
         <td><span class="badge ${u.role === 'admin' ? 'processing' : 'pending'}">${T(u.role === 'admin' ? 'role_admin' : 'role_employee')}</span></td>
         <td style="color:var(--text3);font-size:12.5px">${fmtDate(u.created_at)}</td>
-        <td>${u.id !== currentUser.id
-          ? `<button class="view-btn" style="color:var(--red)" onclick="deleteUser(${u.id},'${esc(u.username)}')">${T('del_btn')}</button>`
-          : `<span style="font-size:12px;color:var(--text3)">${T('you')}</span>`}
+        <td style="display:flex;gap:6px;align-items:center">
+          <button class="view-btn" onclick="openEditUser(${u.id},'${esc(u.username)}','${u.role}')">${T('edit_btn')}</button>
+          ${u.id !== currentUser.id
+            ? `<button class="view-btn" style="color:var(--red)" onclick="deleteUser(${u.id},'${esc(u.username)}')">${T('del_btn')}</button>`
+            : `<span style="font-size:12px;color:var(--text3)">${T('you')}</span>`}
         </td>
       </tr>
     `).join('');
@@ -4292,6 +4539,173 @@
     toast(T('user_created'));
     loadUsers();
   });
+
+  /* ── Edit User Modal ── */
+  let editUserRoleDropdown = null;
+
+  window.openEditUser = function(id, username, role) {
+    document.getElementById('editUserId').value        = id;
+    document.getElementById('editUserUsername').value  = username;
+    document.getElementById('editUserRoleHidden').value = role;
+    document.getElementById('editUserPassword').value  = '';
+    document.getElementById('editUserError').textContent = '';
+
+    const wrap = document.getElementById('editUserRoleWrap');
+    wrap.innerHTML = '';
+    editUserRoleDropdown = createDropdown({
+      el: wrap,
+      items: [
+        { value: 'employee', label: T('role_employee') },
+        { value: 'admin',    label: T('role_admin') },
+      ],
+      value: role,
+      onChange: v => { document.getElementById('editUserRoleHidden').value = v; },
+    });
+
+    document.getElementById('editUserModal').classList.add('open');
+  };
+
+  document.getElementById('closeEditUserModal').addEventListener('click', () =>
+    document.getElementById('editUserModal').classList.remove('open'));
+  document.getElementById('cancelEditUser').addEventListener('click', () =>
+    document.getElementById('editUserModal').classList.remove('open'));
+
+  document.getElementById('editUserForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const errEl = document.getElementById('editUserError');
+    errEl.textContent = '';
+    const id       = document.getElementById('editUserId').value;
+    const role     = document.getElementById('editUserRoleHidden').value;
+    const password = document.getElementById('editUserPassword').value.trim();
+    const body     = { role };
+    if (password) body.password = password;
+    const r = await api('PATCH', `/api/users/${id}`, body);
+    if (!r.ok) { errEl.textContent = r.data.error || T('failed'); return; }
+    document.getElementById('editUserModal').classList.remove('open');
+    toast(T('user_updated'));
+    loadUsers();
+  });
+
+  /* ── Settings View ── */
+  function loadSettings() {
+    const locale = L.lang === 'ru' ? 'ru-RU' : L.lang === 'ko' ? 'ko-KR' : 'en-US';
+    document.getElementById('settingsUsername').textContent = currentUser.username || '—';
+    document.getElementById('settingsRole').textContent =
+      currentUser.role === 'admin' ? T('role_admin') : T('role_employee');
+    const memberEl = document.getElementById('settingsMember');
+    if (memberEl && currentUser.created_at) {
+      const d = new Date(currentUser.created_at);
+      memberEl.textContent = isNaN(d) ? '—' : d.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+  }
+
+  document.getElementById('changePasswordForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const errEl  = document.getElementById('pwError');
+    const okEl   = document.getElementById('pwSuccess');
+    errEl.textContent = '';
+    okEl.classList.remove('visible');
+
+    const fd  = new FormData(e.target);
+    const cur = fd.get('current_password');
+    const np  = fd.get('new_password');
+    const cp  = fd.get('confirm_password');
+
+    if (np !== cp) { errEl.textContent = T('pw_mismatch'); return; }
+    if (np.length < 6) { errEl.textContent = 'New password: min 6 characters'; return; }
+
+    const r = await api('POST', '/auth/change-password', { current_password: cur, new_password: np });
+    if (!r.ok) { errEl.textContent = r.data.error || T('failed'); return; }
+    e.target.reset();
+    okEl.textContent = T('pw_changed');
+    okEl.classList.add('visible');
+    setTimeout(() => okEl.classList.remove('visible'), 4000);
+  });
+
+  /* ── CSV Export ── */
+  let _filteredForExport = [];
+
+  window.exportCSV = function() {
+    if (!_filteredForExport.length) { toast('No data to export'); return; }
+    const header = ['ID', 'Name', 'Phone', 'Email', 'Status', 'Source', 'Assigned To', 'Queue #', 'Created'];
+    const rows = _filteredForExport.map(a => [
+      a.id, a.name, a.phone || '', a.email || '',
+      a.status, a.source, a.assigned_username || '',
+      a.queue_number, a.created_at,
+    ]);
+    const csv = [header, ...rows]
+      .map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','))
+      .join('\r\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'requests_' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast(L.lang === 'ru' ? 'Экспорт завершён' : L.lang === 'ko' ? '내보내기 완료' : 'Exported successfully');
+  };
+
+  /* ── Pagination ── */
+  const PAGE_SIZE = 25;
+  let _currentPage = 1;
+
+  function renderPagination(total) {
+    const wrap = document.getElementById('reqPagination');
+    if (!wrap) return;
+    const pages = Math.ceil(total / PAGE_SIZE);
+    if (pages <= 1) { wrap.innerHTML = ''; return; }
+
+    const makePg = (label, page, active, disabled) =>
+      `<button class="pg-btn${active ? ' pg-active' : ''}" ${disabled ? 'disabled' : ''} onclick="_goPage(${page})">${label}</button>`;
+
+    const items = [];
+    items.push(makePg('‹', _currentPage - 1, false, _currentPage === 1));
+
+    const delta = 2;
+    const left  = Math.max(1, _currentPage - delta);
+    const right = Math.min(pages, _currentPage + delta);
+
+    if (left > 1) {
+      items.push(makePg(1, 1, false, false));
+      if (left > 2) items.push(`<span class="pg-ellipsis">…</span>`);
+    }
+    for (let p = left; p <= right; p++) items.push(makePg(p, p, p === _currentPage, false));
+    if (right < pages) {
+      if (right < pages - 1) items.push(`<span class="pg-ellipsis">…</span>`);
+      items.push(makePg(pages, pages, false, false));
+    }
+    items.push(makePg('›', _currentPage + 1, false, _currentPage === pages));
+
+    const from = (_currentPage - 1) * PAGE_SIZE + 1;
+    const to   = Math.min(_currentPage * PAGE_SIZE, total);
+    items.push(`<span class="pg-info">${from}–${to} / ${total}</span>`);
+
+    wrap.innerHTML = items.join('');
+  }
+
+  window._goPage = function(page) {
+    _currentPage = page;
+    renderRequestsPage();
+  };
+
+  /* ── Polling for new applications ── */
+  let _lastKnownNewCount = -1;
+
+  async function pollNewApps() {
+    const r = await api('GET', '/api/stats');
+    if (!r.ok) return;
+    const newCount = r.data.active?.new ?? 0;
+    if (_lastKnownNewCount >= 0 && newCount > _lastKnownNewCount) {
+      const diff = newCount - _lastKnownNewCount;
+      toast(T('s_new_apps', diff));
+      document.getElementById('navBadgeNew').textContent = newCount;
+    }
+    if (_lastKnownNewCount !== newCount) _lastKnownNewCount = newCount;
+  }
+  setInterval(pollNewApps, 30000);
 
   /* ── Drawer ── */
   let drawerAppId = null;

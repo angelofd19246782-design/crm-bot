@@ -115,8 +115,9 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
 });
 
-app.get('/crm', (req, res) => res.redirect('/crm.html'));
-app.get('/bot', (req, res) => res.redirect('/index.html'));
+app.get('/crm',    (req, res) => res.redirect('/crm.html'));
+app.get('/bot',    (req, res) => res.redirect('/index.html'));
+app.get('/intake', (req, res) => res.sendFile(path.join(__dirname, 'intake.html')));
 
 // ─── API routes ───────────────────────────────────────────────────────────────
 
