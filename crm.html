@@ -1092,6 +1092,110 @@
       font-weight: 500;
     }
 
+    /* ─── Custom dropdown ─── */
+    .cd-wrap { position: relative; display: inline-block; width: 100%; }
+
+    .cd-trigger {
+      width: 100%; display: flex; align-items: center; gap: 8px;
+      background: #f4f4f9; border: 1.5px solid transparent; border-radius: 10px;
+      padding: 0 14px; height: 42px; font-family: inherit; font-size: 13.5px;
+      font-weight: 500; color: var(--text1); cursor: pointer; text-align: left;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+      user-select: none; white-space: nowrap;
+    }
+    .cd-trigger:hover { background: #efeff5; }
+    .cd-trigger.open {
+      background: #fff; border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+    .cd-trigger-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .cd-trigger-label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+    .cd-chevron { flex-shrink: 0; color: var(--text3); transition: transform 0.2s; margin-left: 2px; display: flex; }
+    .cd-trigger.open .cd-chevron { transform: rotate(180deg); }
+
+    /* toolbar/filter variant */
+    .cd-wrap.cd-toolbar .cd-trigger {
+      height: 36px; font-size: 13px; background: #fff;
+      border-color: var(--border); border-radius: 9px; padding: 0 12px;
+    }
+    .cd-wrap.cd-toolbar .cd-trigger:hover { background: #f5f5fc; border-color: #d0d0e8; }
+    .cd-wrap.cd-toolbar .cd-trigger.open {
+      border-color: var(--primary); background: #fff;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+
+    /* compact variant for inside drawer fields */
+    .cd-wrap.cd-compact .cd-trigger {
+      height: 32px; font-size: 12.5px; background: #fff;
+      border-color: var(--border); border-radius: 8px; padding: 0 10px;
+    }
+    .cd-wrap.cd-compact .cd-trigger:hover { background: #f5f5fc; border-color: #d0d0e8; }
+    .cd-wrap.cd-compact .cd-trigger.open {
+      border-color: var(--primary); background: #fff;
+      box-shadow: 0 0 0 2px rgba(99,102,241,0.12);
+    }
+
+    .cd-menu {
+      position: absolute; top: calc(100% + 5px); left: 0; min-width: 100%;
+      background: #fff; border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 12px; z-index: 500; overflow: hidden; padding: 4px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+      opacity: 0; transform: translateY(-4px) scale(0.98); pointer-events: none;
+      transition: opacity 0.14s cubic-bezier(0.4,0,0.2,1), transform 0.14s cubic-bezier(0.4,0,0.2,1);
+      transform-origin: top left;
+    }
+    .cd-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
+    .cd-menu.flip { top: auto; bottom: calc(100% + 5px); transform-origin: bottom left; transform: translateY(4px) scale(0.98); }
+    .cd-menu.flip.open { transform: translateY(0) scale(1); }
+
+    .cd-item {
+      display: flex; align-items: center; gap: 9px; padding: 8px 10px;
+      border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--text1);
+      font-weight: 500; transition: background 0.1s; user-select: none;
+    }
+    .cd-item:hover { background: #f0f0fa; }
+    .cd-item.active { background: rgba(99,102,241,0.08); color: var(--primary); }
+    .cd-item-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .cd-item-label { flex: 1; }
+    .cd-item-check { flex-shrink: 0; color: var(--primary); opacity: 0; display: flex; }
+    .cd-item.active .cd-item-check { opacity: 1; }
+
+    /* ─── Custom confirm dialog ─── */
+    .confirm-overlay {
+      display: none; position: fixed; inset: 0; z-index: 600;
+      align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.38); backdrop-filter: blur(3px);
+    }
+    .confirm-overlay.open { display: flex; }
+    .confirm-card {
+      background: #fff; border-radius: 16px; padding: 26px 26px 22px;
+      width: 320px; max-width: 90vw;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.1);
+    }
+    .confirm-icon {
+      width: 42px; height: 42px; border-radius: 12px; margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .confirm-icon.danger { background: rgba(239,68,68,0.1); color: var(--red); }
+    .confirm-title { font-size: 15px; font-weight: 700; color: var(--text1); margin-bottom: 6px; letter-spacing: -0.2px; }
+    .confirm-body { font-size: 13px; color: var(--text3); line-height: 1.5; margin-bottom: 20px; }
+    .confirm-btns { display: flex; gap: 8px; }
+    .confirm-cancel {
+      flex: 1; height: 38px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: transparent;
+      font-family: inherit; font-size: 13px; font-weight: 500;
+      color: var(--text2); cursor: pointer; transition: background 0.15s;
+    }
+    .confirm-cancel:hover { background: #f5f5fc; }
+    .confirm-ok {
+      flex: 1.4; height: 38px; border-radius: 9px; border: none;
+      font-family: inherit; font-size: 13px; font-weight: 600;
+      color: #fff; cursor: pointer; transition: opacity 0.15s;
+    }
+    .confirm-ok:hover { opacity: 0.9; }
+    .confirm-ok.danger { background: var(--red); box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
+    .confirm-ok.primary { background: var(--primary); box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
+
     /* ─── Loading skeleton ─── */
     @keyframes shimmer {
       0% { background-position: -600px 0; }
@@ -1392,13 +1496,7 @@
         </div>
         <div class="view-toolbar">
           <input class="search-input" id="reqSearch" placeholder="Search by name, phone…" data-en="Search by name, phone…" data-ru="Поиск по имени, телефону…">
-          <select class="form-select" id="reqStatusFilter" style="width:150px;height:36px;padding:0 12px;font-size:13px">
-            <option value="">All statuses</option>
-            <option value="new">New</option>
-            <option value="in_progress">In Progress</option>
-            <option value="completed">Completed</option>
-            <option value="incomplete">Incomplete</option>
-          </select>
+          <div id="reqStatusFilterWrap" style="width:158px"></div>
         </div>
         <div class="table-card">
           <div class="table-hdr">
@@ -1498,10 +1596,8 @@
               </div>
               <div>
                 <label class="form-label" data-en="Role" data-ru="Роль">Role</label>
-                <select class="form-select" name="role" required>
-                  <option value="employee">Employee</option>
-                  <option value="admin">Admin</option>
-                </select>
+                <div id="addUserRoleWrap"></div>
+                <input type="hidden" name="role" id="addUserRoleHidden" value="employee">
               </div>
               <div style="display:flex;align-items:flex-end">
                 <button type="submit" class="btn-submit" style="flex:1;font-size:13px">
@@ -1557,18 +1653,31 @@
       </div>
       <div class="form-row">
         <label class="form-label" data-en="Status" data-ru="Статус">Status</label>
-        <select class="form-select" name="status">
-          <option value="new">New</option>
-          <option value="in_progress">In Progress</option>
-          <option value="completed">Completed</option>
-          <option value="incomplete">Incomplete</option>
-        </select>
+        <div id="newReqStatusWrap"></div>
+        <input type="hidden" name="status" id="newReqStatusHidden" value="new">
       </div>
       <div class="form-footer">
         <button type="button" class="btn-cancel" id="cancelNewReq" data-en="Cancel" data-ru="Отмена">Cancel</button>
         <button type="submit" class="btn-submit" data-en="Create Request" data-ru="Создать заявку">Create Request</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- ─── Custom confirm ─── -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-card">
+    <div class="confirm-icon danger" id="confirmIcon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+      </svg>
+    </div>
+    <div class="confirm-title" id="confirmTitle">Are you sure?</div>
+    <div class="confirm-body" id="confirmBody">This action cannot be undone.</div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" id="confirmCancel">Cancel</button>
+      <button class="confirm-ok danger" id="confirmOk">Delete</button>
+    </div>
   </div>
 </div>
 
@@ -1580,6 +1689,135 @@
   'use strict';
 
   Chart.defaults.font.family = "'Inter', -apple-system, sans-serif";
+
+  /* ─── Custom dropdown ─── */
+  const CHEVRON_SVG = `<svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>`;
+  const CHECK_SVG   = `<svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
+
+  function createDropdown({ el, items, value, onChange, variant = 'form' }) {
+    // variant: 'form' | 'toolbar' | 'compact'
+    let current = value;
+
+    const wrap    = document.createElement('div');
+    const trigger = document.createElement('button');
+    const dotEl   = document.createElement('span');
+    const labelEl = document.createElement('span');
+    const chevron = document.createElement('span');
+    const menu    = document.createElement('div');
+
+    wrap.className = 'cd-wrap' + (variant === 'toolbar' ? ' cd-toolbar' : variant === 'compact' ? ' cd-compact' : '');
+    trigger.type   = 'button';
+    trigger.className = 'cd-trigger';
+    dotEl.className   = 'cd-trigger-dot';
+    labelEl.className = 'cd-trigger-label';
+    chevron.className = 'cd-chevron';
+    chevron.innerHTML = CHEVRON_SVG;
+    menu.className    = 'cd-menu';
+
+    trigger.append(dotEl, labelEl, chevron);
+    wrap.append(trigger, menu);
+    if (el) el.appendChild(wrap);
+
+    function getItem(v) { return items.find(i => i.value === v); }
+
+    function syncTrigger() {
+      const it = getItem(current);
+      if (it?.dot) { dotEl.style.cssText = `background:${it.dot};display:inline-block`; }
+      else { dotEl.style.display = 'none'; }
+      labelEl.textContent = it?.label || items[0]?.label || '';
+    }
+
+    function syncMenu() {
+      menu.innerHTML = '';
+      items.forEach(it => {
+        const row = document.createElement('div');
+        row.className = 'cd-item' + (it.value === current ? ' active' : '');
+        row.innerHTML = (it.dot ? `<span class="cd-item-dot" style="background:${it.dot}"></span>` : '') +
+          `<span class="cd-item-label">${it.label}</span><span class="cd-item-check">${CHECK_SVG}</span>`;
+        row.addEventListener('click', () => {
+          current = it.value;
+          syncTrigger(); syncMenu(); close();
+          onChange(it.value, it);
+        });
+        menu.appendChild(row);
+      });
+    }
+
+    function open() {
+      document.querySelectorAll('.cd-menu.open').forEach(m => m.classList.remove('open'));
+      document.querySelectorAll('.cd-trigger.open').forEach(t => t.classList.remove('open'));
+      const rect = wrap.getBoundingClientRect();
+      const flip = window.innerHeight - rect.bottom < 220;
+      menu.classList.toggle('flip', flip);
+      trigger.classList.add('open');
+      menu.classList.add('open');
+    }
+
+    function close() {
+      trigger.classList.remove('open');
+      menu.classList.remove('open');
+    }
+
+    trigger.addEventListener('click', e => { e.stopPropagation(); trigger.classList.contains('open') ? close() : open(); });
+
+    syncTrigger(); syncMenu();
+    return { el: wrap, getValue: () => current, setValue(v) { current = v; syncTrigger(); syncMenu(); } };
+  }
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.cd-menu.open').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.cd-trigger.open').forEach(t => t.classList.remove('open'));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.cd-menu.open').forEach(m => m.classList.remove('open'));
+      document.querySelectorAll('.cd-trigger.open').forEach(t => t.classList.remove('open'));
+    }
+  });
+
+  /* ─── Item definitions ─── */
+  const STATUS_ITEMS = [
+    { value: 'new',         label: 'New',         dot: '#f59e0b' },
+    { value: 'in_progress', label: 'In Progress', dot: '#8b5cf6' },
+    { value: 'completed',   label: 'Completed',   dot: '#22c55e' },
+    { value: 'incomplete',  label: 'Incomplete',  dot: '#ef4444' },
+  ];
+  const STATUS_FILTER_ITEMS = [
+    { value: '', label: 'All statuses' },
+    ...STATUS_ITEMS,
+  ];
+  const ROLE_ITEMS = [
+    { value: 'employee', label: 'Employee', dot: '#f59e0b' },
+    { value: 'admin',    label: 'Admin',    dot: '#8b5cf6' },
+  ];
+
+  /* ─── Custom confirm dialog ─── */
+  let _confirmCb = null;
+  document.getElementById('confirmCancel').addEventListener('click', () => {
+    document.getElementById('confirmOverlay').classList.remove('open');
+    _confirmCb = null;
+  });
+  document.getElementById('confirmOk').addEventListener('click', () => {
+    document.getElementById('confirmOverlay').classList.remove('open');
+    const cb = _confirmCb; _confirmCb = null;
+    if (cb) cb();
+  });
+  document.getElementById('confirmOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('confirmOverlay')) {
+      document.getElementById('confirmOverlay').classList.remove('open');
+      _confirmCb = null;
+    }
+  });
+
+  function customConfirm({ title, body, okLabel = 'Delete', okClass = 'danger', onOk }) {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmBody').textContent  = body || '';
+    const okBtn = document.getElementById('confirmOk');
+    okBtn.textContent = okLabel;
+    okBtn.className = 'confirm-ok ' + okClass;
+    _confirmCb = onOk;
+    document.getElementById('confirmOverlay').classList.add('open');
+  }
 
   /* ── API helper ── */
   async function api(method, url, body) {
@@ -1636,6 +1874,38 @@
   document.getElementById('lsEn').addEventListener('click', () => applyLang('en'));
   document.getElementById('lsRu').addEventListener('click', () => applyLang('ru'));
   applyLang('en');
+
+  /* ─── Static custom dropdowns ─── */
+  let reqStatusValue = '';
+  createDropdown({
+    el: document.getElementById('reqStatusFilterWrap'),
+    items: STATUS_FILTER_ITEMS,
+    value: '',
+    variant: 'toolbar',
+    onChange: v => { reqStatusValue = v; loadRequests(); },
+  });
+
+  let newReqStatusValue = 'new';
+  createDropdown({
+    el: document.getElementById('newReqStatusWrap'),
+    items: STATUS_ITEMS,
+    value: 'new',
+    onChange: v => {
+      newReqStatusValue = v;
+      document.getElementById('newReqStatusHidden').value = v;
+    },
+  });
+
+  let addUserRoleValue = 'employee';
+  createDropdown({
+    el: document.getElementById('addUserRoleWrap'),
+    items: ROLE_ITEMS,
+    value: 'employee',
+    onChange: v => {
+      addUserRoleValue = v;
+      document.getElementById('addUserRoleHidden').value = v;
+    },
+  });
 
   /* ── Toast ── */
   function toast(msg, type) {
@@ -1856,7 +2126,7 @@
   let allRequests = [];
 
   async function loadRequests() {
-    const url = '/api/applications' + (document.getElementById('reqStatusFilter').value ? `?status=${document.getElementById('reqStatusFilter').value}` : '');
+    const url = '/api/applications' + (reqStatusValue ? `?status=${reqStatusValue}` : '');
     const r = await api('GET', url);
     if (!r.ok) return;
     allRequests = r.data;
@@ -1890,7 +2160,6 @@
   }
 
   document.getElementById('reqSearch').addEventListener('input', filterRequests);
-  document.getElementById('reqStatusFilter').addEventListener('change', loadRequests);
 
   /* ── Trash ── */
   async function loadTrash() {
@@ -1925,10 +2194,16 @@
   };
 
   window.permDeleteApp = async function(id) {
-    if (!confirm('Permanently delete this request? This cannot be undone.')) return;
-    const r = await api('DELETE', `/api/applications/${id}/permanent`);
-    if (r.ok) { toast('Permanently deleted'); loadTrash(); }
-    else toast(r.data.error || 'Failed', 'error');
+    customConfirm({
+      title: 'Delete permanently?',
+      body: 'This request will be removed forever. This cannot be undone.',
+      okLabel: 'Delete forever',
+      onOk: async () => {
+        const r = await api('DELETE', `/api/applications/${id}/permanent`);
+        if (r.ok) { toast('Permanently deleted'); loadTrash(); }
+        else toast(r.data.error || 'Failed', 'error');
+      },
+    });
   };
 
   /* ── Users ── */
@@ -1953,10 +2228,16 @@
   }
 
   window.deleteUser = async function(id, username) {
-    if (!confirm(`Delete user "${username}"?`)) return;
-    const r = await api('DELETE', `/api/users/${id}`);
-    if (r.ok) { toast('User deleted'); loadUsers(); }
-    else toast(r.data.error || 'Failed', 'error');
+    customConfirm({
+      title: `Delete "${username}"?`,
+      body: 'This user will be removed. Their applications will be unassigned.',
+      okLabel: 'Delete user',
+      onOk: async () => {
+        const r = await api('DELETE', `/api/users/${id}`);
+        if (r.ok) { toast('User deleted'); loadUsers(); }
+        else toast(r.data.error || 'Failed', 'error');
+      },
+    });
   };
 
   document.getElementById('addUserForm').addEventListener('submit', async e => {
@@ -1980,14 +2261,20 @@
     document.getElementById('drawerOverlay').classList.add('visible');
     document.getElementById('drawerContent').innerHTML = '<div style="padding:40px;text-align:center;color:var(--text3)">Loading…</div>';
 
-    const [appR, notesR, attR] = await Promise.all([
+    const [appR, notesR, attR, usersR] = await Promise.all([
       api('GET', `/api/applications/${appId}`),
       api('GET', `/api/applications/${appId}/notes`),
       api('GET', `/api/applications/${appId}/attachments`),
+      currentUser.role === 'admin' ? api('GET', '/api/users') : Promise.resolve({ ok: true, data: [] }),
     ]);
 
     if (!appR.ok) { toast('Failed to load', 'error'); return; }
-    renderDrawer(appR.data, notesR.ok ? notesR.data : [], attR.ok ? attR.data : []);
+    const app     = appR.data;
+    const notes   = notesR.ok ? notesR.data : [];
+    const atts    = attR.ok  ? attR.data  : [];
+    const users   = usersR.ok ? usersR.data : [];
+    renderDrawer(app, notes, atts, users);
+    if (currentUser.role === 'admin') injectDrawerDropdowns(app, users);
   };
 
   function closeDrawer() {
@@ -1999,7 +2286,7 @@
   document.getElementById('drawerClose').addEventListener('click', closeDrawer);
   document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
 
-  function renderDrawer(app, notes, atts) {
+  function renderDrawer(app, notes, atts, users) {
     const isAdmin = currentUser.role === 'admin';
     document.getElementById('drawerContent').innerHTML = `
       <div class="drawer-app-hdr">
@@ -2026,7 +2313,9 @@
         </div>
         <div class="drawer-field">
           <span class="drawer-field-label">Assigned to</span>
-          <span class="drawer-val">${esc(app.assigned_username) || '—'}</span>
+          ${isAdmin
+            ? `<div id="drawerAssignWrap" style="width:172px"></div>`
+            : `<span class="drawer-val">${esc(app.assigned_username) || '—'}</span>`}
         </div>
         <div class="drawer-field">
           <span class="drawer-field-label">Created</span>
@@ -2042,13 +2331,8 @@
 
       ${isAdmin ? `
       <div class="drawer-section">
-        <div class="drawer-label" style="margin-bottom:8px">Change Status</div>
-        <select class="drawer-select" onchange="changeStatus(this.value)">
-          <option value="new" ${app.status==='new'?'selected':''}>New</option>
-          <option value="in_progress" ${app.status==='in_progress'?'selected':''}>In Progress</option>
-          <option value="completed" ${app.status==='completed'?'selected':''}>Completed</option>
-          <option value="incomplete" ${app.status==='incomplete'?'selected':''}>Incomplete</option>
-        </select>
+        <div class="drawer-label" style="margin-bottom:8px">Status</div>
+        <div id="drawerStatusWrap"></div>
       </div>` : ''}
 
       <div class="drawer-section">
@@ -2091,10 +2375,48 @@
     `;
   }
 
+  function injectDrawerDropdowns(app, users) {
+    const statusWrap = document.getElementById('drawerStatusWrap');
+    if (statusWrap) {
+      createDropdown({
+        el: statusWrap,
+        items: STATUS_ITEMS,
+        value: app.status,
+        onChange: v => changeStatus(v),
+      });
+    }
+
+    const assignWrap = document.getElementById('drawerAssignWrap');
+    if (assignWrap) {
+      const assignItems = [
+        { value: '', label: '— Unassigned —' },
+        ...users.map(u => ({ value: String(u.id), label: u.username, dot: u.role === 'admin' ? '#8b5cf6' : '#f59e0b' })),
+      ];
+      createDropdown({
+        el: assignWrap,
+        items: assignItems,
+        value: String(app.assigned_employee_id || ''),
+        variant: 'compact',
+        onChange: v => assignEmployee(v ? Number(v) : null),
+      });
+    }
+  }
+
   window.changeStatus = async function(status) {
     if (!drawerAppId) return;
     const r = await api('PUT', `/api/applications/${drawerAppId}`, { status });
-    if (r.ok) toast('Status updated');
+    if (r.ok) {
+      toast('Status updated');
+      // Refresh the badge in drawer header
+      const badge = document.querySelector('.drawer-app-hdr .badge');
+      if (badge) { const tmp = document.createElement('div'); tmp.innerHTML = statusBadge(status); badge.replaceWith(tmp.firstChild); }
+    } else toast(r.data.error || 'Failed', 'error');
+  };
+
+  window.assignEmployee = async function(empId) {
+    if (!drawerAppId) return;
+    const r = await api('PUT', `/api/applications/${drawerAppId}`, { assigned_employee_id: empId });
+    if (r.ok) toast('Assignment updated');
     else toast(r.data.error || 'Failed', 'error');
   };
 
@@ -2134,21 +2456,34 @@
   };
 
   window.deleteAtt = async function(attId) {
-    if (!confirm('Delete this attachment?')) return;
-    const r = await api('DELETE', `/api/attachments/${attId}`);
-    if (r.ok) { toast('Deleted'); openDrawer(drawerAppId); }
-    else toast(r.data.error || 'Failed', 'error');
+    customConfirm({
+      title: 'Delete attachment?',
+      body: 'The file will be permanently removed.',
+      okLabel: 'Delete',
+      onOk: async () => {
+        const r = await api('DELETE', `/api/attachments/${attId}`);
+        if (r.ok) { toast('Deleted'); openDrawer(drawerAppId); }
+        else toast(r.data.error || 'Failed', 'error');
+      },
+    });
   };
 
   window.softDeleteApp = async function(appId) {
-    if (!confirm('Move this request to trash?')) return;
-    const r = await api('DELETE', `/api/applications/${appId}`);
-    if (r.ok) {
-      toast('Moved to trash');
-      closeDrawer();
-      if (currentView === 'dashboard') loadDashboard();
-      else if (currentView === 'requests') loadRequests();
-    } else toast(r.data.error || 'Failed', 'error');
+    customConfirm({
+      title: 'Move to trash?',
+      body: 'The request will be moved to trash. You can restore it later.',
+      okLabel: 'Move to trash',
+      okClass: 'danger',
+      onOk: async () => {
+        const r = await api('DELETE', `/api/applications/${appId}`);
+        if (r.ok) {
+          toast('Moved to trash');
+          closeDrawer();
+          if (currentView === 'dashboard') loadDashboard();
+          else if (currentView === 'requests') loadRequests();
+        } else toast(r.data.error || 'Failed', 'error');
+      },
+    });
   };
 
   /* ── New request modal ── */

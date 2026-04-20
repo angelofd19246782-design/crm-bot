@@ -183,47 +183,47 @@
 
     .msg.user .msg-time { text-align: right; }
 
-    /* Quick replies */
-    .quick-replies {
+    /* ─── Quick reply panel (bottom keyboard) ─── */
+    .qr-panel {
+      background: #fafafd;
+      border-top: 1px solid #eeeef6;
+      padding: 0 14px;
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
+      flex-wrap: wrap;
       gap: 7px;
-      padding-top: 2px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.24s ease, padding 0.24s ease;
     }
 
-    .qr-btn {
-      padding: 10px 17px;
+    .qr-panel.open {
+      padding: 10px 14px 12px;
+      max-height: 180px;
+    }
+
+    .qr-chip {
+      padding: 7px 14px;
       background: #fff;
-      border: 1.5px solid #e2e2ed;
-      border-radius: 18px 5px 18px 18px;
+      border: 1.5px solid #e0e0ef;
+      border-radius: 16px;
       font-family: inherit;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 500;
-      color: #1a1a2e;
+      color: #2a2a3e;
       cursor: pointer;
-      transition: all 0.17s ease;
-      text-align: right;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.055);
+      transition: background 0.14s, border-color 0.14s, color 0.14s, transform 0.1s;
       white-space: nowrap;
+      line-height: 1.3;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
-    .qr-btn:hover {
-      background: #6366f1;
-      border-color: #6366f1;
-      color: #fff;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+    .qr-chip:hover {
+      background: #ededfa;
+      border-color: #9898d8;
+      color: #4040b0;
     }
 
-    .qr-btn.used {
-      background: #6366f1;
-      border-color: #6366f1;
-      color: #fff;
-      opacity: 0.65;
-      pointer-events: none;
-      transform: none;
-    }
+    .qr-chip:active { transform: scale(0.95); }
 
     /* Typing indicator */
     .typing-wrap {
@@ -360,21 +360,18 @@
 
       <div class="msg bot">
         <div class="bubble"
-          data-en="Hello! I'm here to help you submit and track service requests. What would you like to do today?"
-          data-ru="Привет! Я помогу вам подать и отследить заявки на услуги. Что хотите сделать?">
-          Hello! I'm here to help you submit and track service requests. What would you like to do today?
+          data-en="Hi! I can help you submit or track service requests. Choose an option or type a number:&lt;br&gt;&lt;br&gt;1 — New request&lt;br&gt;2 — Track my request&lt;br&gt;3 — Request callback&lt;br&gt;4 — FAQ"
+          data-ru="Привет! Помогу подать или отследить заявку. Выберите пункт или введите цифру:&lt;br&gt;&lt;br&gt;1 — Подать заявку&lt;br&gt;2 — Отследить заявку&lt;br&gt;3 — Обратный звонок&lt;br&gt;4 — Частые вопросы">
+          Hi! I can help you submit or track service requests. Choose an option or type a number:<br><br>1 — New request<br>2 — Track my request<br>3 — Request callback<br>4 — FAQ
         </div>
         <span class="msg-time">now</span>
       </div>
 
-      <div class="quick-replies" id="mainMenu">
-        <button class="qr-btn" data-action="new"     data-en="📋 Submit a new request"   data-ru="📋 Подать новую заявку">📋 Submit a new request</button>
-        <button class="qr-btn" data-action="status"  data-en="🔍 Track my request"        data-ru="🔍 Отследить заявку">🔍 Track my request</button>
-        <button class="qr-btn" data-action="manager" data-en="💬 Talk to a manager"       data-ru="💬 Поговорить с менеджером">💬 Talk to a manager</button>
-        <button class="qr-btn" data-action="faq"     data-en="❓ FAQ &amp; Help"          data-ru="❓ Вопросы и помощь">❓ FAQ &amp; Help</button>
-      </div>
 
     </div>
+
+    <!-- Quick reply panel — sits between messages and input like a real chatbot keyboard -->
+    <div class="qr-panel" id="qrPanel"></div>
 
     <!-- Input -->
     <div class="input-area">
@@ -393,11 +390,19 @@
 
 <script>
 (function () {
-  const state = { lang: 'en', step: 'menu', data: {} };
-  const langBtn = document.getElementById('langBtn');
-  const msgArea = document.getElementById('msgArea');
+  const state   = { lang: 'en', step: 'menu', data: {} };
+  const langBtn  = document.getElementById('langBtn');
+  const msgArea  = document.getElementById('msgArea');
+  const qrPanel  = document.getElementById('qrPanel');
   const msgInput = document.getElementById('msgInput');
-  const sendBtn = document.getElementById('sendBtn');
+  const sendBtn  = document.getElementById('sendBtn');
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     TRANSPORT-AGNOSTIC CORE
+     Flow logic is fully decoupled from presentation.
+     Web buttons are an enhancement — every step also works via typed text.
+     To add SMS/messenger: wire an incoming-message event to routeText().
+  ───────────────────────────────────────────────────────────────────────── */
 
   /* ── Language ── */
   function applyLang(l) {
@@ -406,20 +411,74 @@
     document.querySelectorAll('[data-en]').forEach(el => {
       const val = el.dataset[l] || el.dataset.en;
       if (el.tagName === 'INPUT') el.placeholder = val;
+      else if (el.classList.contains('bubble')) el.innerHTML = val;
       else el.textContent = val;
     });
+    renderPanel(); // re-label panel chips in new language
   }
   langBtn.addEventListener('click', () => applyLang(state.lang === 'en' ? 'ru' : 'en'));
 
-  /* ── Helpers ── */
+  const L  = () => state.lang;
+  const t  = (en, ru) => L() === 'ru' ? ru : en;
+  const nl = '<br>';
+
+  /* ── Intent parser ── */
+  function parseIntent(raw, step) {
+    const s = raw.trim().toLowerCase();
+    if (step === 'menu') {
+      if (/^(1|new|submit|new request|новую|подать|заявк)/.test(s))        return 'new';
+      if (/^(2|track|status|find|check|отследить|найти|номер|queue)/.test(s)) return 'track';
+      if (/^(3|callback|call|manager|менеджер|звонок|перезвон)/.test(s))    return 'callback';
+      if (/^(4|faq|help|помощь|вопрос)/.test(s))                            return 'faq';
+      return null;
+    }
+    if (step === 'new_confirm') {
+      if (/^(yes|y|ok|confirm|submit|да|подтвер|отправ)/.test(s))          return 'confirm';
+      if (/^(no|n|restart|again|start over|нет|заново|начать|сначала)/.test(s)) return 'restart';
+      return null;
+    }
+    if (['new_email','new_desc','cb_msg'].includes(step)) {
+      if (/^(skip|no|нет|пропустить|-)$/.test(s)) return 'skip';
+      return null;
+    }
+    if (step === 'faq') {
+      if (/^(1|time|long|process|days|срок|сколько|дней|времен)/.test(s))  return 'faq_time';
+      if (/^(2|doc|document|какие|документ)/.test(s))                       return 'faq_docs';
+      if (/^(3|pay|payment|price|cost|оплат|цен|стоим)/.test(s))           return 'faq_pay';
+      if (/^(0|back|menu|главн|назад|меню)/.test(s))                        return 'faq_back';
+      return null;
+    }
+    return null;
+  }
+
+  /* ── API ── */
+  async function apiPost(url, body) {
+    try {
+      const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      return { ok: r.ok, data: await r.json().catch(() => ({})) };
+    } catch { return { ok: false, data: { error: 'Network error' } }; }
+  }
+  async function apiGet(url) {
+    try {
+      const r = await fetch(url);
+      return { ok: r.ok, data: await r.json().catch(() => ({})) };
+    } catch { return { ok: false, data: { error: 'Network error' } }; }
+  }
+
+  function statusLabel(s) {
+    return { new: t('New','Новая'), in_progress: t('In Progress','В обработке'), completed: t('Completed','Завершено'), incomplete: t('Incomplete','Не завершено') }[s] || s;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     WEB UI — MESSAGES
+  ───────────────────────────────────────────────────────────────────────── */
   function nowTime() {
     return new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', hour12: false });
   }
-
-  function addMsg(who, text) {
+  function addMsg(who, html) {
     const d = document.createElement('div');
     d.className = `msg ${who}`;
-    d.innerHTML = `<div class="bubble">${text}</div><span class="msg-time">${nowTime()}</span>`;
+    d.innerHTML = `<div class="bubble">${html}</div><span class="msg-time">${nowTime()}</span>`;
     msgArea.appendChild(d);
     msgArea.scrollTop = msgArea.scrollHeight;
     return d;
@@ -435,102 +494,128 @@
   }
   function removeTyping() { typingEl?.remove(); typingEl = null; }
 
-  function addQuickReplies(options, onSelect) {
-    const wrap = document.createElement('div');
-    wrap.className = 'quick-replies';
-    options.forEach(opt => {
+  function botReply(fn, delay = 700) {
+    showTyping();
+    setTimeout(() => { removeTyping(); fn(); }, delay + Math.random() * 300);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     WEB UI — QUICK REPLY PANEL
+     A persistent bottom panel that updates per conversational step.
+     Buttons appear here, NOT inside the message bubbles.
+     Tapping a chip posts it as a user message and advances the flow.
+  ───────────────────────────────────────────────────────────────────────── */
+  let _panelOptions  = [];
+  let _panelOnPick   = null;
+
+  function setPanel(options, onPick) {
+    _panelOptions = options || [];
+    _panelOnPick  = onPick  || null;
+    renderPanel();
+  }
+
+  function renderPanel() {
+    qrPanel.innerHTML = '';
+    if (!_panelOptions.length) {
+      qrPanel.classList.remove('open');
+      return;
+    }
+    _panelOptions.forEach(opt => {
       const b = document.createElement('button');
-      b.className = 'qr-btn';
-      b.dataset.en = opt.en;
-      b.dataset.ru = opt.ru;
-      b.textContent = opt[state.lang] || opt.en;
+      b.className    = 'qr-chip';
+      b.dataset.en   = opt.label_en;
+      b.dataset.ru   = opt.label_ru || opt.label_en;
+      b.textContent  = opt['label_' + L()] || opt.label_en;
       b.addEventListener('click', () => {
-        wrap.querySelectorAll('.qr-btn').forEach(x => x.classList.add('used'));
-        addMsg('user', b.textContent);
-        showTyping();
-        setTimeout(() => { removeTyping(); onSelect(opt); }, 700 + Math.random() * 300);
+        const label = b.textContent;
+        setPanel([], null);                  // clear panel immediately
+        addMsg('user', label);               // bubble appears as sent message
+        botReply(() => _panelOnPick && _panelOnPick(opt.value));
       });
-      wrap.appendChild(b);
+      qrPanel.appendChild(b);
     });
-    msgArea.appendChild(wrap);
-    msgArea.scrollTop = msgArea.scrollHeight;
-    return wrap;
+    qrPanel.classList.add('open');
   }
 
-  const L = () => state.lang;
-  const t = (en, ru) => L() === 'ru' ? ru : en;
+  /* ─────────────────────────────────────────────────────────────────────────
+     FLOW OPTION SETS
+  ───────────────────────────────────────────────────────────────────────── */
+  const MENU_QR = [
+    { label_en: '📋 New request',      label_ru: '📋 Новая заявка',      value: 'new'      },
+    { label_en: '🔍 Track my request', label_ru: '🔍 Отследить заявку',  value: 'track'    },
+    { label_en: '💬 Request callback', label_ru: '💬 Обратный звонок',   value: 'callback' },
+    { label_en: '❓ FAQ',              label_ru: '❓ Частые вопросы',     value: 'faq'      },
+  ];
 
-  /* ── API ── */
-  async function apiPost(url, body) {
-    try {
-      const r = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      return { ok: r.ok, data: await r.json().catch(() => ({})) };
-    } catch { return { ok: false, data: { error: 'Network error' } }; }
-  }
+  const SKIP_QR = [
+    { label_en: 'Skip', label_ru: 'Пропустить', value: 'skip' },
+  ];
 
-  async function apiGet(url) {
-    try {
-      const r = await fetch(url);
-      return { ok: r.ok, data: await r.json().catch(() => ({})) };
-    } catch { return { ok: false, data: { error: 'Network error' } }; }
-  }
+  const CONFIRM_QR = [
+    { label_en: '✅ Yes, submit',  label_ru: '✅ Да, отправить', value: 'confirm' },
+    { label_en: '✏️ Start over',  label_ru: '✏️ Начать заново', value: 'restart' },
+  ];
 
-  /* ── Status labels ── */
-  function statusLabel(s) {
-    const map = { new: t('New','Новая'), in_progress: t('In Progress','В обработке'), completed: t('Completed','Завершено'), incomplete: t('Incomplete','Не завершено') };
-    return map[s] || s;
-  }
+  const FAQ_QR = [
+    { label_en: '⏱ Processing time',    label_ru: '⏱ Сроки обработки',   value: 'faq_time' },
+    { label_en: '📂 Required documents', label_ru: '📂 Нужные документы', value: 'faq_docs' },
+    { label_en: '💳 Payment & pricing',  label_ru: '💳 Оплата и цены',    value: 'faq_pay'  },
+    { label_en: '← Back',               label_ru: '← Назад',             value: 'faq_back' },
+  ];
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     FLOWS
+  ───────────────────────────────────────────────────────────────────────── */
 
   /* ── Main menu ── */
   function showMainMenu() {
     state.step = 'menu';
     state.data = {};
-    addMsg('bot', t('How else can I help you?', 'Чем ещё могу помочь?'));
-    addQuickReplies([
-      { en: '📋 Submit a new request', ru: '📋 Подать новую заявку', action: 'new' },
-      { en: '🔍 Track my request',     ru: '🔍 Отследить заявку',    action: 'track' },
-      { en: '💬 Request a callback',   ru: '💬 Заказать обратный звонок', action: 'callback' },
-      { en: '❓ FAQ',                  ru: '❓ Частые вопросы',       action: 'faq' },
-    ], opt => handleMenuAction(opt.action));
+    addMsg('bot',
+      t('How can I help? Tap a button or type 1 / 2 / 3 / 4.',
+        'Чем могу помочь? Нажмите кнопку или введите 1 / 2 / 3 / 4.')
+    );
+    setPanel(MENU_QR, handleMenuAction);
   }
 
-  function handleMenuAction(action) {
-    if (action === 'new')      startNewRequest();
-    else if (action === 'track')    startTrack();
-    else if (action === 'callback') startCallback();
-    else if (action === 'faq')      showFaq();
+  function handleMenuAction(value) {
+    if (value === 'new')           startNewRequest();
+    else if (value === 'track')    startTrack();
+    else if (value === 'callback') startCallback();
+    else if (value === 'faq')      showFaq();
   }
 
-  /* ── New request flow ── */
+  /* ── New request ── */
   function startNewRequest() {
     state.step = 'new_name';
     state.data = {};
+    setPanel([], null);
     addMsg('bot', t(
-      "Let's submit your request. First, what's your full name?",
-      'Давайте оформим заявку. Сначала скажите ваше полное имя.'
+      "Let's submit a request. What is your full name?",
+      'Оформим заявку. Как вас зовут?'
     ));
   }
 
   function handleNewRequest(text) {
     if (state.step === 'new_name') {
       state.data.name = text;
-      state.step = 'new_phone';
-      addMsg('bot', t('Thanks! What phone number can we reach you at?', 'Спасибо! По какому номеру телефона с вами можно связаться?'));
+      state.step      = 'new_phone';
+      setPanel([], null);
+      addMsg('bot', t('Your phone number?', 'Ваш номер телефона?'));
+
     } else if (state.step === 'new_phone') {
       state.data.phone = text;
-      state.step = 'new_email';
-      addMsg('bot', t("Got it. What's your email? (or tap Skip)", 'Хорошо. Ваш email? (или нажмите «Пропустить»)'));
-      addQuickReplies([{ en: 'Skip', ru: 'Пропустить' }], () => {
-        state.data.email = '';
-        goToDesc();
-      });
+      state.step       = 'new_email';
+      addMsg('bot', t(
+        'Your email? (type it or tap Skip)',
+        'Ваш email? (напишите или нажмите «Пропустить»)'
+      ));
+      setPanel(SKIP_QR, () => { state.data.email = ''; goToDesc(); });
+
     } else if (state.step === 'new_email') {
       state.data.email = text;
       goToDesc();
+
     } else if (state.step === 'new_desc') {
       state.data.comment = text;
       showConfirm();
@@ -540,67 +625,58 @@
   function goToDesc() {
     state.step = 'new_desc';
     addMsg('bot', t(
-      'Please briefly describe your request. (or tap Skip)',
-      'Кратко опишите вашу заявку. (или нажмите «Пропустить»)'
+      'Briefly describe your request. (or tap Skip)',
+      'Кратко опишите заявку. (или «Пропустить»)'
     ));
-    addQuickReplies([{ en: 'Skip', ru: 'Пропустить' }], () => {
-      state.data.comment = '';
-      showConfirm();
-    });
+    setPanel(SKIP_QR, () => { state.data.comment = ''; showConfirm(); });
   }
 
   function showConfirm() {
     state.step = 'new_confirm';
     const d = state.data;
-    const summary = [
-      `📛 ${t('Name','Имя')}: <b>${d.name}</b>`,
-      `📞 ${t('Phone','Телефон')}: <b>${d.phone}</b>`,
-      d.email ? `✉️ Email: <b>${d.email}</b>` : '',
-      d.comment ? `📝 ${t('Description','Описание')}: <b>${d.comment.slice(0, 80)}${d.comment.length > 80 ? '…' : ''}</b>` : '',
-    ].filter(Boolean).join('<br>');
-    addMsg('bot', t('Please confirm your details:', 'Пожалуйста, подтвердите данные:') + '<br><br>' + summary);
-    addQuickReplies([
-      { en: '✅ Confirm and submit', ru: '✅ Подтвердить и отправить' },
-      { en: '✏️ Start over', ru: '✏️ Начать заново' },
-    ], opt => {
-      if (opt.en.includes('Start') || opt.ru.includes('заново')) {
-        startNewRequest();
-      } else {
-        submitNewRequest();
-      }
-    });
+    const lines = [
+      `${t('Name','Имя')}: <b>${d.name}</b>`,
+      `${t('Phone','Телефон')}: <b>${d.phone}</b>`,
+      d.email   ? `Email: <b>${d.email}</b>` : '',
+      d.comment ? `${t('Note','Примечание')}: <b>${d.comment.slice(0,80)}${d.comment.length > 80 ? '…' : ''}</b>` : '',
+    ].filter(Boolean).join(nl);
+    addMsg('bot',
+      t('Please confirm:', 'Подтвердите данные:') + nl + nl + lines + nl + nl +
+      t('Reply "yes" to submit or "no" to start over.',
+        'Ответьте «да» для отправки или «нет» для повтора.')
+    );
+    setPanel(CONFIRM_QR, v => v === 'confirm' ? submitNewRequest() : startNewRequest());
   }
 
   async function submitNewRequest() {
+    setPanel([], null);
     showTyping();
     const body = { name: state.data.name, phone: state.data.phone, source: 'bot' };
     if (state.data.email)   body.email   = state.data.email;
     if (state.data.comment) body.comment = state.data.comment;
-
     const r = await apiPost('/api/intake', body);
     removeTyping();
-
     if (r.ok) {
-      const qn = r.data.queue_number;
       addMsg('bot', t(
-        `✅ Your request has been submitted! Your queue number is <b>#${qn}</b>. A manager will contact you soon.`,
-        `✅ Ваша заявка принята! Номер в очереди: <b>#${qn}</b>. Менеджер свяжется с вами в ближайшее время.`
+        `✅ Request submitted. Your number: <b>#${r.data.queue_number}</b>. A manager will contact you soon.`,
+        `✅ Заявка принята. Ваш номер: <b>#${r.data.queue_number}</b>. Менеджер свяжется с вами.`
       ));
     } else {
       addMsg('bot', t(
-        `❌ Failed to submit: ${r.data.error || 'Unknown error'}. Please try again.`,
-        `❌ Ошибка: ${r.data.error || 'Неизвестная ошибка'}. Попробуйте ещё раз.`
+        `❌ Could not submit: ${r.data.error || 'error'}. Please try again.`,
+        `❌ Ошибка: ${r.data.error || 'ошибка'}. Попробуйте снова.`
       ));
     }
     state.step = 'done';
-    setTimeout(showMainMenu, 1200);
+    setTimeout(showMainMenu, 1400);
   }
 
-  /* ── Track flow ── */
+  /* ── Track ── */
   function startTrack() {
     state.step = 'track_query';
+    setPanel([], null);
     addMsg('bot', t(
-      'Enter your queue number (e.g. 5) or the phone number you registered with.',
+      'Enter your queue number (e.g. 5) or the phone you registered with.',
       'Введите номер в очереди (например, 5) или телефон, с которым подавали заявку.'
     ));
   }
@@ -609,41 +685,37 @@
     showTyping();
     const r = await apiGet(`/api/intake/track?q=${encodeURIComponent(text.replace(/^#/, ''))}`);
     removeTyping();
-
     if (!r.ok) {
-      if (r.data.error === 'Not found') {
-        addMsg('bot', t(
-          'No request found for that number or phone. Please double-check and try again.',
-          'Заявка не найдена. Проверьте номер или телефон и попробуйте снова.'
-        ));
-      } else {
-        addMsg('bot', t('Something went wrong. Please try again.', 'Что-то пошло не так. Попробуйте снова.'));
-      }
+      addMsg('bot', r.data.error === 'Not found'
+        ? t('No request found. Check the number or phone and try again.', 'Заявка не найдена. Проверьте номер или телефон.')
+        : t('Something went wrong. Please try again.', 'Что-то пошло не так. Попробуйте снова.')
+      );
       state.step = 'done';
-      setTimeout(showMainMenu, 1200);
+      setTimeout(showMainMenu, 1400);
       return;
     }
-
-    const a = r.data;
-    const statusText = statusLabel(a.status);
-    const created = new Date(a.created_at).toLocaleDateString(L() === 'ru' ? 'ru-RU' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const a       = r.data;
+    const created = new Date(a.created_at).toLocaleDateString(
+      L() === 'ru' ? 'ru-RU' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' }
+    );
     addMsg('bot',
-      `🔍 ${t('Request found:','Заявка найдена:')}<br><br>` +
-      `📋 ${t('Queue #','Очередь #')}<b>${a.queue_number}</b><br>` +
-      `👤 ${t('Name','Имя')}: <b>${a.name}</b><br>` +
-      `📌 ${t('Status','Статус')}: <b>${statusText}</b><br>` +
-      `📅 ${t('Submitted','Подана')}: <b>${created}</b>`
+      t('Request found:', 'Заявка найдена:') + nl + nl +
+      `${t('Queue #','Номер')}: <b>${a.queue_number}</b>` + nl +
+      `${t('Name','Имя')}: <b>${a.name}</b>` + nl +
+      `${t('Status','Статус')}: <b>${statusLabel(a.status)}</b>` + nl +
+      `${t('Submitted','Подана')}: <b>${created}</b>`
     );
     state.step = 'done';
-    setTimeout(showMainMenu, 1500);
+    setTimeout(showMainMenu, 1600);
   }
 
-  /* ── Callback flow ── */
+  /* ── Callback ── */
   function startCallback() {
     state.step = 'cb_name';
     state.data = {};
+    setPanel([], null);
     addMsg('bot', t(
-      "I'll arrange a callback. What's your name?",
+      "I'll arrange a callback. Your name?",
       'Организую обратный звонок. Как вас зовут?'
     ));
   }
@@ -651,19 +723,19 @@
   function handleCallback(text) {
     if (state.step === 'cb_name') {
       state.data.name = text;
-      state.step = 'cb_phone';
-      addMsg('bot', t('Thanks! What number should we call?', 'Спасибо! По какому номеру вам позвонить?'));
+      state.step      = 'cb_phone';
+      setPanel([], null);
+      addMsg('bot', t('Phone number to call?', 'Номер телефона для звонка?'));
+
     } else if (state.step === 'cb_phone') {
       state.data.phone = text;
-      state.step = 'cb_msg';
+      state.step       = 'cb_msg';
       addMsg('bot', t(
-        'Got it. Any message for the manager? (or tap Skip)',
-        'Хорошо. Есть ли сообщение для менеджера? (или нажмите «Пропустить»)'
+        'Any message for the manager? (or tap Skip)',
+        'Сообщение для менеджера? (или «Пропустить»)'
       ));
-      addQuickReplies([{ en: 'Skip', ru: 'Пропустить' }], () => {
-        state.data.msg = '';
-        submitCallback();
-      });
+      setPanel(SKIP_QR, () => { state.data.msg = ''; submitCallback(); });
+
     } else if (state.step === 'cb_msg') {
       state.data.msg = text;
       submitCallback();
@@ -671,97 +743,106 @@
   }
 
   async function submitCallback() {
+    setPanel([], null);
     showTyping();
-    const comment = 'Callback request' + (state.data.msg ? ': ' + state.data.msg : '');
-    const r = await apiPost('/api/intake', {
-      name: state.data.name,
-      phone: state.data.phone,
-      comment,
-      source: 'bot',
-    });
+    const comment = t('Callback request', 'Обратный звонок') + (state.data.msg ? ': ' + state.data.msg : '');
+    const r = await apiPost('/api/intake', { name: state.data.name, phone: state.data.phone, comment, source: 'bot' });
     removeTyping();
-
     if (r.ok) {
-      addMsg('bot', t(
-        '✅ A manager will call you back shortly. Thank you!',
-        '✅ Менеджер перезвонит вам в ближайшее время. Спасибо!'
-      ));
+      addMsg('bot', t('✅ Noted! A manager will call you back shortly.', '✅ Принято! Менеджер перезвонит вам.'));
     } else {
-      addMsg('bot', t('❌ Something went wrong. Please try again.', '❌ Что-то пошло не так. Попробуйте снова.'));
+      addMsg('bot', t('❌ Something went wrong. Please try again.', '❌ Ошибка. Попробуйте снова.'));
     }
     state.step = 'done';
-    setTimeout(showMainMenu, 1200);
+    setTimeout(showMainMenu, 1400);
   }
 
   /* ── FAQ ── */
   function showFaq() {
     state.step = 'faq';
-    addMsg('bot', t('Here are the most common topics:', 'Вот самые частые вопросы:'));
-    addQuickReplies([
-      { en: '⏱️ How long does processing take?', ru: '⏱️ Сколько занимает обработка?' },
-      { en: '📂 What documents do I need?',      ru: '📂 Какие документы нужны?' },
-      { en: '💳 Payment and pricing',            ru: '💳 Оплата и цены' },
-      { en: '⬅️ Back to menu',                   ru: '⬅️ Назад в меню' },
-    ], sub => {
-      if (sub.en.includes('Back')) { showMainMenu(); return; }
-      if (sub.en.includes('long')) {
-        addMsg('bot', t(
-          'Standard requests are processed within 3–5 business days. Urgent processing is available in 1–2 days for an additional fee.',
-          'Стандартные заявки обрабатываются 3–5 рабочих дней. Срочная обработка — 1–2 дня за дополнительную плату.'
-        ));
-      } else if (sub.en.includes('document')) {
-        addMsg('bot', t(
-          'Required documents depend on the service type. Generally: a valid ID, proof of address, and relevant certificates. The form lists what\'s needed specifically.',
-          'Необходимые документы зависят от типа услуги. Как правило: удостоверение личности, подтверждение адреса и соответствующие сертификаты.'
-        ));
-      } else if (sub.en.includes('Payment')) {
-        addMsg('bot', t(
-          'We accept bank transfer, card, and cash at our office. Prices vary by service.',
-          'Принимаем банковский перевод, карту и наличные в офисе. Цены зависят от типа услуги.'
-        ));
-      }
-      setTimeout(showMainMenu, 1400);
-    });
+    addMsg('bot',
+      t('FAQ — tap a topic or type 1 / 2 / 3 / 0 to go back.',
+        'Вопросы — нажмите тему или введите 1 / 2 / 3 / 0 для возврата.')
+    );
+    setPanel(FAQ_QR, handleFaqAction);
   }
 
-  /* ── Wire initial menu ── */
-  document.querySelectorAll('#mainMenu .qr-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#mainMenu .qr-btn').forEach(b => b.classList.add('used'));
-      addMsg('user', btn.textContent);
-      showTyping();
-      setTimeout(() => { removeTyping(); handleMenuAction(btn.dataset.action); }, 700 + Math.random() * 250);
-    });
-  });
+  function handleFaqAction(value) {
+    if (value === 'faq_back') { showMainMenu(); return; }
+    if (value === 'faq_time') {
+      addMsg('bot', t(
+        'Standard requests: 3–5 business days. Urgent: 1–2 days (additional fee applies).',
+        'Стандартные заявки: 3–5 рабочих дней. Срочно: 1–2 дня (доп. оплата).'
+      ));
+    } else if (value === 'faq_docs') {
+      addMsg('bot', t(
+        'Usually: valid ID, proof of address, relevant certificates. The exact list depends on the service.',
+        'Обычно: удостоверение личности, подтверждение адреса, сертификаты. Список зависит от услуги.'
+      ));
+    } else if (value === 'faq_pay') {
+      addMsg('bot', t(
+        'We accept bank transfer, card, and cash at the office. Pricing varies by service.',
+        'Принимаем перевод, карту и наличные в офисе. Цены зависят от типа услуги.'
+      ));
+    }
+    state.step = 'done';
+    setTimeout(showMainMenu, 1600);
+  }
 
-  /* ── Free text handler ── */
+  /* ─────────────────────────────────────────────────────────────────────────
+     INPUT ROUTER — single entry point for all typed text
+  ───────────────────────────────────────────────────────────────────────── */
+  function routeText(txt) {
+    const step   = state.step;
+    const intent = parseIntent(txt, step);
+
+    if (step === 'menu') {
+      if (intent) handleMenuAction(intent);
+      else addMsg('bot', t('Please type 1, 2, 3, or 4.', 'Введите 1, 2, 3 или 4.'));
+      return;
+    }
+    if (['new_name','new_phone','new_email','new_desc'].includes(step)) {
+      if (intent === 'skip') {
+        if (step === 'new_email') { state.data.email   = ''; goToDesc(); }
+        else                      { state.data.comment = ''; showConfirm(); }
+      } else { handleNewRequest(txt); }
+      return;
+    }
+    if (step === 'new_confirm') {
+      if (intent === 'confirm')      submitNewRequest();
+      else if (intent === 'restart') startNewRequest();
+      else addMsg('bot', t('Reply "yes" to submit or "no" to start over.', 'Ответьте «да» или «нет».'));
+      return;
+    }
+    if (step === 'track_query') { handleTrack(txt); return; }
+    if (['cb_name','cb_phone','cb_msg'].includes(step)) {
+      if (intent === 'skip') { state.data.msg = ''; submitCallback(); }
+      else handleCallback(txt);
+      return;
+    }
+    if (step === 'faq') {
+      if (intent) handleFaqAction(intent);
+      else addMsg('bot', t('Type 1, 2, 3, or 0 to go back.', 'Введите 1, 2, 3 или 0.'));
+      return;
+    }
+    addMsg('bot', t('Got it. A specialist will be in touch.', 'Принято. Специалист свяжется с вами.'));
+    setTimeout(showMainMenu, 1200);
+  }
+
+  /* ── Text input ── */
   function send() {
     const txt = msgInput.value.trim();
     if (!txt) return;
     addMsg('user', txt);
     msgInput.value = '';
     showTyping();
-    setTimeout(() => {
-      removeTyping();
-      const step = state.step;
-      if (step === 'new_name' || step === 'new_phone' || step === 'new_email' || step === 'new_desc') {
-        handleNewRequest(txt);
-      } else if (step === 'track_query') {
-        handleTrack(txt);
-      } else if (step === 'cb_name' || step === 'cb_phone' || step === 'cb_msg') {
-        handleCallback(txt);
-      } else {
-        addMsg('bot', t(
-          'Thank you! A specialist will get back to you shortly.',
-          'Спасибо! Специалист ответит в ближайшее время.'
-        ));
-        setTimeout(showMainMenu, 1200);
-      }
-    }, 700 + Math.random() * 300);
+    setTimeout(() => { removeTyping(); routeText(txt); }, 700 + Math.random() * 300);
   }
-
   sendBtn.addEventListener('click', send);
   msgInput.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+
+  /* ── Init ── */
+  setPanel(MENU_QR, handleMenuAction);
 })();
 </script>
 </body>
