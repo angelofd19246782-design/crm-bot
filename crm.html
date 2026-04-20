@@ -1511,6 +1511,83 @@
       transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
     }
 
+    /* ─── Insight analytics cards ─── */
+    .insight-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .insight-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 12px 14px 46px;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ic-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+    }
+
+    .ic-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text3);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .ic-delta {
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 5px;
+      letter-spacing: 0.1px;
+      white-space: nowrap;
+    }
+
+    .ic-delta.up   { color: #19b885; background: rgba(25,184,133,0.10); }
+    .ic-delta.down { color: #e04d6a; background: rgba(224,77,106,0.10); }
+    .ic-delta.flat { color: var(--text3); background: rgba(0,0,0,0.04); }
+    .ic-delta:empty { display: none; }
+
+    .ic-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text1);
+      letter-spacing: -0.8px;
+      line-height: 1;
+    }
+
+    .ic-sub {
+      font-size: 10px;
+      color: var(--text3);
+      font-weight: 500;
+      margin-top: 3px;
+    }
+
+    .ic-spark-wrap {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 42px;
+      pointer-events: none;
+    }
+
+    .ic-spark { display: block; height: 42px !important; }
+
+    @media (max-width: 900px) {
+      .insight-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 540px) {
+      .insight-row { grid-template-columns: 1fr; }
+    }
+
     /* ─── Line chart custom tooltip ─── */
     .line-tooltip {
       position: fixed;
@@ -2058,6 +2135,51 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Insight analytics cards -->
+        <div class="insight-row">
+
+          <div class="insight-card">
+            <div class="ic-top">
+              <span class="ic-label" data-en="Total · 30d" data-ru="Итого · 30д" data-ko="합계 · 30일">Total · 30d</span>
+              <span class="ic-delta" id="icDeltaTotal"></span>
+            </div>
+            <div class="ic-val" id="icValTotal">—</div>
+            <div class="ic-sub" data-en="requests received" data-ru="заявок получено" data-ko="접수된 신청">requests received</div>
+            <div class="ic-spark-wrap"><canvas id="icSparkTotal" class="ic-spark"></canvas></div>
+          </div>
+
+          <div class="insight-card">
+            <div class="ic-top">
+              <span class="ic-label" data-en="Daily avg · 30d" data-ru="Среднее/день" data-ko="일 평균 · 30일">Daily avg · 30d</span>
+              <span class="ic-delta" id="icDeltaAvg"></span>
+            </div>
+            <div class="ic-val" id="icValAvg">—</div>
+            <div class="ic-sub" data-en="requests per day" data-ru="заявок в день" data-ko="일별 신청 수">requests per day</div>
+            <div class="ic-spark-wrap"><canvas id="icSparkAvg" class="ic-spark"></canvas></div>
+          </div>
+
+          <div class="insight-card">
+            <div class="ic-top">
+              <span class="ic-label" data-en="Peak day · 30d" data-ru="Пиковый день" data-ko="최대치 · 30일">Peak day · 30d</span>
+              <span class="ic-delta" id="icDeltaPeak"></span>
+            </div>
+            <div class="ic-val" id="icValPeak">—</div>
+            <div class="ic-sub" data-en="max in one day" data-ru="макс. за один день" data-ko="하루 최대">max in one day</div>
+            <div class="ic-spark-wrap"><canvas id="icSparkPeak" class="ic-spark"></canvas></div>
+          </div>
+
+          <div class="insight-card">
+            <div class="ic-top">
+              <span class="ic-label" data-en="This week" data-ru="Эта неделя" data-ko="이번 주">This week</span>
+              <span class="ic-delta" id="icDeltaWeek"></span>
+            </div>
+            <div class="ic-val" id="icValWeek">—</div>
+            <div class="ic-sub" data-en="last 7 days" data-ru="последние 7 дней" data-ko="최근 7일">last 7 days</div>
+            <div class="ic-spark-wrap"><canvas id="icSparkWeek" class="ic-spark"></canvas></div>
+          </div>
+
         </div>
 
         <!-- Recent table -->
@@ -2648,6 +2770,7 @@
   let _lineAllDates     = [];
   let _lineValues       = [];
   let _sparkCharts      = {};
+  let _insightCharts    = {};
   let _dailyByStatus    = [];
 
   function applyLang(l) {
@@ -2866,6 +2989,7 @@
     buildLineChart(chartPeriod);
     buildDonutChart(active);
     buildSparklines();
+    buildInsightCards();
   }
 
   function sparkSeries(statusFilter, days) {
@@ -2940,6 +3064,117 @@
           layout: { padding: { left: 14, right: 14, top: 6, bottom: 8 } }
         }
       });
+    });
+  }
+
+  /* ── Insight analytics row ── */
+  function buildInsightCards() {
+    const PERIOD = 30;
+    const dayMap = {};
+    _lastDaily.forEach(d => { dayMap[d.day] = d.count; });
+
+    const vals = [];
+    for (let i = PERIOD - 1; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      vals.push(dayMap[d.toISOString().slice(0, 10)] || 0);
+    }
+
+    const total  = vals.reduce((a, b) => a + b, 0);
+    const avg    = total / PERIOD;
+    const peak   = Math.max(...vals, 0);
+    const week1  = vals.slice(-7).reduce((a, b) => a + b, 0);
+    const week2  = vals.slice(-14, -7).reduce((a, b) => a + b, 0);
+    const half   = Math.floor(PERIOD / 2);
+    const prev   = vals.slice(0, half).reduce((a, b) => a + b, 0);
+    const curr   = vals.slice(half).reduce((a, b) => a + b, 0);
+
+    const pctDelta = (a, b) => b > 0 ? Math.round((a - b) / b * 100) : null;
+
+    document.getElementById('icValTotal').textContent = total;
+    document.getElementById('icValAvg').textContent   = avg % 1 === 0 ? avg : avg.toFixed(1);
+    document.getElementById('icValPeak').textContent  = peak;
+    document.getElementById('icValWeek').textContent  = week1;
+
+    setInsightDelta('icDeltaTotal', pctDelta(curr, prev));
+    setInsightDelta('icDeltaAvg',   pctDelta(curr / half, prev / half));
+    setInsightDelta('icDeltaPeak',  peak > 0 && avg > 0 ? `${(peak / avg).toFixed(1)}× avg` : null, true);
+    setInsightDelta('icDeltaWeek',  pctDelta(week1, week2));
+
+    // Rolling 7-day avg for the Avg card sparkline
+    const rollingAvg = vals.map((_, i, a) => {
+      const s = Math.max(0, i - 6);
+      return a.slice(s, i + 1).reduce((x, y) => x + y, 0) / (i - s + 1);
+    });
+
+    buildInsightSparks([
+      { id: 'icSparkTotal', color: '#6366f1', rgb: '99,102,241',  data: vals },
+      { id: 'icSparkAvg',   color: '#4a7fde', rgb: '74,127,222',  data: rollingAvg },
+      { id: 'icSparkPeak',  color: '#e89d1a', rgb: '232,157,26',  data: vals },
+      { id: 'icSparkWeek',  color: '#19b885', rgb: '25,184,133',  data: vals.slice(-14) },
+    ]);
+  }
+
+  function setInsightDelta(id, val, isLabel) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (val === null || val === undefined) { el.textContent = ''; el.className = 'ic-delta'; return; }
+    if (isLabel) {
+      el.textContent = val;
+      el.className = 'ic-delta flat';
+      return;
+    }
+    const sign = val > 0 ? '+' : '';
+    el.textContent = `${sign}${val}%`;
+    el.className = `ic-delta ${val > 0 ? 'up' : val < 0 ? 'down' : 'flat'}`;
+  }
+
+  function buildInsightSparks(configs) {
+    configs.forEach(({ id, color, rgb, data }) => {
+      const canvas = document.getElementById(id);
+      if (!canvas) return;
+      if (_insightCharts[id]) {
+        _insightCharts[id].data.datasets[0].data = data;
+        _insightCharts[id].update('none');
+        return;
+      }
+      const ctx = canvas.getContext('2d');
+      _insightCharts[id] = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.map((_, i) => i),
+          datasets: [{
+            data,
+            borderColor: color,
+            borderWidth: 1.2,
+            backgroundColor: (context) => {
+              const { chart } = context;
+              const { ctx: c, chartArea: ca } = chart;
+              if (!ca) return 'transparent';
+              const g = c.createLinearGradient(0, ca.top, 0, ca.bottom);
+              g.addColorStop(0,    `rgba(${rgb},0.18)`);
+              g.addColorStop(0.6,  `rgba(${rgb},0.04)`);
+              g.addColorStop(1,    `rgba(${rgb},0)`);
+              return g;
+            },
+            fill: 'origin',
+            tension: 0.42,
+            pointRadius: 0,
+            pointHoverRadius: 0,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          plugins: { legend: { display: false }, tooltip: { enabled: false } },
+          scales: {
+            x: { display: false },
+            y: { display: false, beginAtZero: true, grace: '15%' }
+          },
+          layout: { padding: { left: 12, right: 12, top: 5, bottom: 6 } }
+        }
+      });
+      requestAnimationFrame(() => { if (_insightCharts[id]) _insightCharts[id].update('none'); });
     });
   }
 
