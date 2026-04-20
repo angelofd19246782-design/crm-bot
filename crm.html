@@ -570,28 +570,18 @@
 
     .kpi-card {
       background: var(--card);
-      border-radius: 16px;
-      padding: 22px 22px 0;
+      border-radius: 14px;
+      padding: 16px 18px 15px;
       box-shadow: var(--card-shadow);
       position: relative;
       overflow: hidden;
-      transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), box-shadow 0.22s;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .kpi-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(9,9,24,0.1), 0 2px 8px rgba(0,0,0,0.05);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
-
-    .kpi-spark-wrap {
-      display: block;
-      height: 52px;
-      margin: 10px -22px 0;
-      pointer-events: none;
-      opacity: 0.58;
-      overflow: hidden;
-    }
-    .kpi-spark { display: block; height: 52px !important; }
 
     .kpi-card.c-indigo { background: linear-gradient(145deg, #fff 60%, rgba(99,102,241,0.04) 100%); }
     .kpi-card.c-green  { background: linear-gradient(145deg, #fff 60%, rgba(34,197,94,0.04)  100%); }
@@ -603,7 +593,7 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     .kpi-label {
@@ -615,16 +605,16 @@
     }
 
     .kpi-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
 
-    .kpi-icon svg { width: 19px; height: 19px; }
+    .kpi-icon svg { width: 16px; height: 16px; }
 
     .c-indigo .kpi-icon { background: linear-gradient(145deg, rgba(99,102,241,0.18), rgba(99,102,241,0.08)); color: #6366f1; box-shadow: 0 2px 8px rgba(99,102,241,0.18); }
     .c-green  .kpi-icon { background: linear-gradient(145deg, rgba(34,197,94,0.18),  rgba(34,197,94,0.08));  color: #22c55e; box-shadow: 0 2px 8px rgba(34,197,94,0.18); }
@@ -632,16 +622,16 @@
     .c-blue   .kpi-icon { background: linear-gradient(145deg, rgba(59,130,246,0.18),  rgba(59,130,246,0.08));  color: #3b82f6; box-shadow: 0 2px 8px rgba(59,130,246,0.18); }
 
     .kpi-val {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 800;
       color: var(--text1);
-      letter-spacing: -1.5px;
+      letter-spacing: -1px;
       line-height: 1;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
     }
 
     .kpi-change {
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 500;
       display: flex;
       align-items: center;
@@ -1651,9 +1641,8 @@
 
       /* KPI */
       .kpi-row { gap: 10px; }
-      .kpi-card { padding: 14px 14px 0; }
-      .kpi-spark-wrap { margin: 8px -14px 0; }
-      .kpi-val { font-size: 24px; }
+      .kpi-card { padding: 13px 14px 12px; }
+      .kpi-val { font-size: 22px; }
 
       /* Charts */
       .charts-row { gap: 10px; }
@@ -1686,10 +1675,8 @@
     }
 
     @media (max-width: 480px) {
-      .kpi-val { font-size: 20px; }
-      .kpi-card { padding: 12px 12px 0; }
-      .kpi-spark-wrap { margin: 6px -12px 0; height: 44px; }
-      .kpi-spark { height: 44px !important; }
+      .kpi-val { font-size: 19px; }
+      .kpi-card { padding: 11px 12px 10px; }
       .kpi-icon { width: 30px; height: 30px; border-radius: 8px; }
       .kpi-icon svg { width: 15px; height: 15px; }
       .topbar-right { gap: 4px; }
@@ -1849,7 +1836,6 @@
             <div class="kpi-change flat">
               <span data-en="All active requests" data-ru="Все активные заявки" data-ko="전체 활성 신청서">All active requests</span>
             </div>
-            <div class="kpi-spark-wrap"><canvas id="sparkTotal" class="kpi-spark"></canvas></div>
           </div>
 
           <div class="kpi-card c-green">
@@ -1865,7 +1851,6 @@
             <div class="kpi-change flat" id="kpiCompletedPct">
               <span>—</span>
             </div>
-            <div class="kpi-spark-wrap"><canvas id="sparkCompleted" class="kpi-spark"></canvas></div>
           </div>
 
           <div class="kpi-card c-amber">
@@ -1881,7 +1866,6 @@
             <div class="kpi-change down">
               <span data-en="Awaiting assignment" data-ru="Без исполнителя" data-ko="담당자 미배정">Awaiting assignment</span>
             </div>
-            <div class="kpi-spark-wrap"><canvas id="sparkNew" class="kpi-spark"></canvas></div>
           </div>
 
           <div class="kpi-card c-blue">
@@ -1897,7 +1881,6 @@
             <div class="kpi-change up">
               <span data-en="Being processed" data-ru="Принято в работу" data-ko="검토 중">Being processed</span>
             </div>
-            <div class="kpi-spark-wrap"><canvas id="sparkInProgress" class="kpi-spark"></canvas></div>
           </div>
         </div>
 
@@ -2584,7 +2567,6 @@
   let chartPeriod  = 30;
   let _lineAllDates = [];
   let _lineValues   = [];
-  let _sparkCharts  = {};
 
   function applyLang(l) {
     L.lang = l;
@@ -2800,65 +2782,6 @@
     _lastDaily  = daily || [];
     buildLineChart(chartPeriod);
     buildDonutChart(active);
-    buildSparklines(active);
-  }
-
-  function buildSparklines(active) {
-    const tot = active.total || 1;
-    const base = _lineValues.length >= 7 ? _lineValues.slice(-14) : _lineValues.concat(Array(14).fill(0)).slice(0, 14);
-    const rC = (active.completed   || 0) / tot;
-    const rN = (active.new         || 0) / tot;
-    const rP = (active.in_progress || 0) / tot;
-
-    const configs = [
-      { id: 'sparkTotal',      color: '#818cf8', rgb: '129,140,248', data: base.slice() },
-      { id: 'sparkCompleted',  color: '#22c55e', rgb: '34,197,94',   data: base.map(v => Math.round(v * rC)) },
-      { id: 'sparkNew',        color: '#f59e0b', rgb: '245,158,11',  data: base.map(v => Math.round(v * rN)) },
-      { id: 'sparkInProgress', color: '#3b82f6', rgb: '59,130,246',  data: base.map(v => Math.round(v * rP)) },
-    ];
-
-    configs.forEach(({ id, color, rgb, data }) => {
-      const canvas = document.getElementById(id);
-      if (!canvas) return;
-      if (_sparkCharts[id]) {
-        _sparkCharts[id].data.datasets[0].data = data;
-        _sparkCharts[id].update('none');
-        return;
-      }
-      const ctx = canvas.getContext('2d');
-      const h = canvas.parentElement.offsetHeight || 52;
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0,   `rgba(${rgb},0.48)`);
-      grad.addColorStop(0.6, `rgba(${rgb},0.12)`);
-      grad.addColorStop(1,   `rgba(${rgb},0)`);
-      _sparkCharts[id] = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: data.map((_, i) => i),
-          datasets: [{
-            data,
-            borderColor: color,
-            borderWidth: 2,
-            backgroundColor: grad,
-            fill: true,
-            tension: 0.44,
-            pointRadius: 0,
-            pointHoverRadius: 0,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          animation: false,
-          plugins: { legend: { display: false }, tooltip: { enabled: false } },
-          scales: {
-            x: { display: false },
-            y: { display: false, beginAtZero: true }
-          },
-          layout: { padding: { left: 0, right: 0, top: 4, bottom: 0 } }
-        }
-      });
-    });
   }
 
   /* ── Custom external tooltip for line chart ── */
