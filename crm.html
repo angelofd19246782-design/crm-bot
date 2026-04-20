@@ -88,7 +88,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 4px 16px rgba(99,102,241,0.55), 0 0 0 1px rgba(255,255,255,0.08);
+      box-shadow: 0 2px 8px rgba(99,102,241,0.28), 0 0 0 1px rgba(255,255,255,0.08);
     }
 
     .logo-text {
@@ -159,7 +159,6 @@
       height: 60%;
       background: #818cf8;
       border-radius: 0 3px 3px 0;
-      box-shadow: 0 0 8px rgba(129,140,248,0.5);
     }
 
     .nav-item.active .nav-ic { color: #fff; }
@@ -366,7 +365,7 @@
 
     .btn-primary:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(99,102,241,0.42);
+      box-shadow: 0 4px 14px rgba(99,102,241,0.28);
     }
 
     .btn-primary:active { transform: scale(0.98); }
@@ -467,7 +466,7 @@
       gap: 20px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 8px 36px rgba(67,56,202,0.38), 0 2px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 20px rgba(67,56,202,0.20), 0 1px 6px rgba(0,0,0,0.10);
     }
 
     .dash-hero::before {
@@ -1839,6 +1838,59 @@
       .chart-canvas-wrap { min-height: 0; }
     }
 
+    /* ─── Charts right column ─── */
+    .charts-right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 310px;
+      flex-shrink: 0;
+    }
+    @media (max-width: 1100px) { .charts-right-col { width: auto; } }
+
+    /* ─── Source breakdown card ─── */
+    .source-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f4f4fa;
+    }
+    .source-item:last-child { border-bottom: none; }
+    .source-icon {
+      width: 32px; height: 32px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .source-info { flex: 1; min-width: 0; }
+    .source-name { font-size: 12.5px; font-weight: 600; color: var(--text1); margin-bottom: 5px; }
+    .source-bar-track {
+      height: 4px; background: #ededf5; border-radius: 3px; overflow: hidden;
+    }
+    .source-bar-fill {
+      height: 100%; border-radius: 3px;
+      transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+    .source-meta { text-align: right; flex-shrink: 0; }
+    .source-count { font-size: 15px; font-weight: 800; color: var(--text1); letter-spacing: -0.5px; line-height: 1; }
+    .source-pct   { font-size: 10.5px; color: var(--text3); font-weight: 600; margin-top: 2px; }
+
+    /* ─── Stacked chart row ─── */
+    .stacked-legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-self: flex-start;
+    }
+    .sl-item { display: flex; align-items: center; gap: 5px; }
+    .sl-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .sl-label { font-size: 11.5px; color: var(--text2); font-weight: 500; }
+
+    @media (max-width: 800px) {
+      .stacked-legend { gap: 10px; }
+      .sl-label { font-size: 10.5px; }
+    }
+
     /* ─── Clickable KPI card ─── */
     .kpi-card.clickable { cursor: pointer; }
     .kpi-card.clickable:hover {
@@ -2204,73 +2256,61 @@
                 <div class="cstat-label" data-en="Peak day" data-ru="Пиковый день" data-ko="최대치">Peak day</div>
               </div>
             </div>
-            <div class="chart-canvas-wrap" style="height:185px;position:relative">
+            <div class="chart-canvas-wrap" style="height:200px;position:relative">
               <canvas id="lineChart"></canvas>
             </div>
           </div>
 
-          <div class="chart-card">
-            <div class="chart-hdr">
-              <div>
-                <div class="chart-title" data-en="By Status" data-ru="По статусу" data-ko="상태별 분포">By Status</div>
-                <div class="chart-subtitle" data-en="Request distribution" data-ru="Распределение заявок" data-ko="신청서 분포">Request distribution</div>
-              </div>
-            </div>
-            <div class="chart-canvas-wrap" style="height:160px;display:flex;align-items:center;justify-content:center;position:relative">
-              <canvas id="donutChart"></canvas>
-              <div id="donutCenter" style="position:absolute;text-align:center;pointer-events:none;transition:all 0.18s">
-                <div id="donutCenterVal" style="font-size:26px;font-weight:900;color:var(--text1);letter-spacing:-1px;line-height:1;transition:all 0.18s">—</div>
-                <div id="donutCenterLabel" style="font-size:10.5px;color:var(--text3);margin-top:4px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;transition:all 0.18s" data-en="total" data-ru="всего" data-ko="전체">total</div>
-              </div>
-            </div>
-            <div class="chart-legend">
-              <div class="legend-item">
-                <div class="legend-left">
-                  <span class="legend-dot" style="background:#19b885"></span>
-                  <span class="legend-label" data-en="Completed" data-ru="Завершена" data-ko="완료">Completed</span>
-                </div>
-                <div class="legend-right">
-                  <div class="legend-bar-wrap"><div class="legend-bar-fill" id="barCompleted" style="width:0%"></div></div>
-                  <span class="legend-pct" id="legendCompletedPct">—</span>
-                  <span class="legend-val" id="legendCompleted">—</span>
+          <div class="charts-right-col">
+
+            <!-- Donut chart -->
+            <div class="chart-card">
+              <div class="chart-hdr">
+                <div>
+                  <div class="chart-title" data-en="By Status" data-ru="По статусу" data-ko="상태별 분포">By Status</div>
+                  <div class="chart-subtitle" data-en="Request distribution" data-ru="Распределение заявок" data-ko="신청서 분포">Request distribution</div>
                 </div>
               </div>
-              <div class="legend-item">
-                <div class="legend-left">
-                  <span class="legend-dot" style="background:#4a7fde"></span>
-                  <span class="legend-label" data-en="In Progress" data-ru="В работе" data-ko="처리 중">In Progress</span>
-                </div>
-                <div class="legend-right">
-                  <div class="legend-bar-wrap"><div class="legend-bar-fill" id="barInProgress" style="width:0%"></div></div>
-                  <span class="legend-pct" id="legendInProgressPct">—</span>
-                  <span class="legend-val" id="legendInProgress">—</span>
+              <div class="chart-canvas-wrap" style="height:148px;display:flex;align-items:center;justify-content:center;position:relative">
+                <canvas id="donutChart"></canvas>
+                <div id="donutCenter" style="position:absolute;text-align:center;pointer-events:none;transition:all 0.18s">
+                  <div id="donutCenterVal" style="font-size:24px;font-weight:900;color:var(--text1);letter-spacing:-1px;line-height:1;transition:all 0.18s">—</div>
+                  <div id="donutCenterLabel" style="font-size:10px;color:var(--text3);margin-top:4px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;transition:all 0.18s" data-en="total" data-ru="всего" data-ko="전체">total</div>
                 </div>
               </div>
-              <div class="legend-item">
-                <div class="legend-left">
-                  <span class="legend-dot" style="background:#e89d1a"></span>
-                  <span class="legend-label" data-en="New" data-ru="Новые" data-ko="신규">New</span>
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <div class="legend-left"><span class="legend-dot" style="background:#19b885"></span><span class="legend-label" data-en="Completed" data-ru="Завершена" data-ko="완료">Completed</span></div>
+                  <div class="legend-right"><div class="legend-bar-wrap"><div class="legend-bar-fill" id="barCompleted" style="width:0%"></div></div><span class="legend-pct" id="legendCompletedPct">—</span><span class="legend-val" id="legendCompleted">—</span></div>
                 </div>
-                <div class="legend-right">
-                  <div class="legend-bar-wrap"><div class="legend-bar-fill" id="barNew" style="width:0%"></div></div>
-                  <span class="legend-pct" id="legendNewPct">—</span>
-                  <span class="legend-val" id="legendNew">—</span>
+                <div class="legend-item">
+                  <div class="legend-left"><span class="legend-dot" style="background:#4a7fde"></span><span class="legend-label" data-en="In Progress" data-ru="В работе" data-ko="처리 중">In Progress</span></div>
+                  <div class="legend-right"><div class="legend-bar-wrap"><div class="legend-bar-fill" id="barInProgress" style="width:0%"></div></div><span class="legend-pct" id="legendInProgressPct">—</span><span class="legend-val" id="legendInProgress">—</span></div>
                 </div>
-              </div>
-              <div class="legend-item">
-                <div class="legend-left">
-                  <span class="legend-dot" style="background:#e04d6a"></span>
-                  <span class="legend-label" data-en="Incomplete" data-ru="Не завершена" data-ko="미완료">Incomplete</span>
+                <div class="legend-item">
+                  <div class="legend-left"><span class="legend-dot" style="background:#e89d1a"></span><span class="legend-label" data-en="New" data-ru="Новые" data-ko="신규">New</span></div>
+                  <div class="legend-right"><div class="legend-bar-wrap"><div class="legend-bar-fill" id="barNew" style="width:0%"></div></div><span class="legend-pct" id="legendNewPct">—</span><span class="legend-val" id="legendNew">—</span></div>
                 </div>
-                <div class="legend-right">
-                  <div class="legend-bar-wrap"><div class="legend-bar-fill" id="barIncomplete" style="width:0%"></div></div>
-                  <span class="legend-pct" id="legendIncompletePct">—</span>
-                  <span class="legend-val" id="legendIncomplete">—</span>
+                <div class="legend-item">
+                  <div class="legend-left"><span class="legend-dot" style="background:#e04d6a"></span><span class="legend-label" data-en="Incomplete" data-ru="Не завершена" data-ko="미완료">Incomplete</span></div>
+                  <div class="legend-right"><div class="legend-bar-wrap"><div class="legend-bar-fill" id="barIncomplete" style="width:0%"></div></div><span class="legend-pct" id="legendIncompletePct">—</span><span class="legend-val" id="legendIncomplete">—</span></div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+
+            <!-- Source breakdown -->
+            <div class="chart-card">
+              <div class="chart-hdr" style="margin-bottom:14px">
+                <div>
+                  <div class="chart-title" data-en="Request Sources" data-ru="Источники заявок" data-ko="접수 경로">Request Sources</div>
+                  <div class="chart-subtitle" data-en="Origin of all active requests" data-ru="Откуда поступают заявки" data-ko="활성 신청서 접수 경로">Origin of all active requests</div>
+                </div>
+              </div>
+              <div id="sourceBreakdown"></div>
+            </div>
+
+          </div><!-- /charts-right-col -->
+        </div><!-- /charts-row -->
 
         <!-- Insight analytics cards -->
         <div class="insight-row">
@@ -2315,6 +2355,25 @@
             <div class="ic-spark-wrap"><canvas id="icSparkWeek" class="ic-spark"></canvas></div>
           </div>
 
+        </div>
+
+        <!-- Status Distribution stacked chart -->
+        <div class="chart-card" style="margin-bottom:20px">
+          <div class="chart-hdr">
+            <div>
+              <div class="chart-title" data-en="Daily Status Distribution" data-ru="Распределение статусов по дням" data-ko="일별 상태 분포">Daily Status Distribution</div>
+              <div class="chart-subtitle" data-en="Last 30 days · stacked by status" data-ru="Последние 30 дней · по статусу" data-ko="최근 30일 · 상태별 분포">Last 30 days · stacked by status</div>
+            </div>
+            <div class="stacked-legend">
+              <div class="sl-item"><span class="sl-dot" style="background:#e89d1a"></span><span class="sl-label" data-en="New" data-ru="Новые" data-ko="신규">New</span></div>
+              <div class="sl-item"><span class="sl-dot" style="background:#4a7fde"></span><span class="sl-label" data-en="In Progress" data-ru="В работе" data-ko="처리 중">In Progress</span></div>
+              <div class="sl-item"><span class="sl-dot" style="background:#19b885"></span><span class="sl-label" data-en="Completed" data-ru="Завершена" data-ko="완료">Completed</span></div>
+              <div class="sl-item"><span class="sl-dot" style="background:#e04d6a"></span><span class="sl-label" data-en="Incomplete" data-ru="Не завершена" data-ko="미완료">Incomplete</span></div>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap" style="height:175px;position:relative">
+            <canvas id="stackedChart"></canvas>
+          </div>
         </div>
 
         <!-- Recent table -->
@@ -2925,6 +2984,8 @@
   let _insightCharts    = {};
   let _dailyByStatus    = [];
   let _selectedIds      = new Set();
+  let stackedChart      = null;
+  let _lastBySource     = [];
 
   function applyLang(l) {
     L.lang = l;
@@ -3098,7 +3159,7 @@
       if (el) { el._skeled = false; el.style.cssText = ''; el.classList.remove('skeleton'); }
     });
     if (!r.ok) return;
-    const { active, inTrash, daily, dailyByStatus } = r.data;
+    const { active, inTrash, daily, dailyByStatus, bySource } = r.data;
 
     // Hero
     const hour = new Date().getHours();
@@ -3148,7 +3209,7 @@
 
     document.getElementById('navBadgeNew').textContent = active.new ?? 0;
 
-    buildCharts(active, daily, dailyByStatus);
+    buildCharts(active, daily, dailyByStatus, bySource || []);
 
     const appsR = await api('GET', '/api/applications');
     if (appsR.ok) {
@@ -3158,14 +3219,17 @@
     }
   }
 
-  function buildCharts(active, daily, dailyByStatus) {
+  function buildCharts(active, daily, dailyByStatus, bySource) {
     _lastActive       = active;
     _lastDaily        = daily || [];
     _dailyByStatus    = dailyByStatus || [];
+    _lastBySource     = bySource || [];
     buildLineChart(chartPeriod);
     buildDonutChart(active);
     buildSparklines();
     buildInsightCards();
+    buildSourceCard(_lastBySource);
+    buildStackedChart();
   }
 
   function sparkSeries(statusFilter, days) {
@@ -3288,6 +3352,135 @@
       { id: 'icSparkPeak',  color: '#e89d1a', rgb: '232,157,26',  data: vals },
       { id: 'icSparkWeek',  color: '#19b885', rgb: '25,184,133',  data: vals.slice(-14) },
     ]);
+  }
+
+  /* ── Source breakdown card ── */
+  function buildSourceCard(bySource) {
+    const el = document.getElementById('sourceBreakdown');
+    if (!el) return;
+    if (!bySource || !bySource.length) { el.innerHTML = ''; return; }
+
+    const total = bySource.reduce((a, b) => a + b.count, 0) || 1;
+    const palette = {
+      crm:      { color: '#6366f1', bg: 'rgba(99,102,241,0.10)',  icon: `<svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>` },
+      bot:      { color: '#7c5af0', bg: 'rgba(124,90,240,0.10)', icon: `<svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/></svg>` },
+      web_form: { color: '#4a7fde', bg: 'rgba(74,127,222,0.10)',  icon: `<svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.56.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clip-rule="evenodd"/></svg>` },
+    };
+    const labelOf = src => T({ crm: 'src_crm', bot: 'src_bot', web_form: 'src_web_form' }[src] || src);
+
+    el.innerHTML = bySource.map(({ source, count }) => {
+      const p    = palette[source] || { color: '#9292b2', bg: 'rgba(146,146,178,0.10)', icon: '·' };
+      const pct  = Math.round(count / total * 100);
+      return `
+        <div class="source-item">
+          <div class="source-icon" style="background:${p.bg};color:${p.color}">${p.icon}</div>
+          <div class="source-info">
+            <div class="source-name">${esc(labelOf(source))}</div>
+            <div class="source-bar-track">
+              <div class="source-bar-fill" style="width:${pct}%;background:${p.color}"></div>
+            </div>
+          </div>
+          <div class="source-meta">
+            <div class="source-count">${count}</div>
+            <div class="source-pct">${pct}%</div>
+          </div>
+        </div>`;
+    }).join('');
+    requestAnimationFrame(() => {
+      el.querySelectorAll('.source-bar-fill').forEach(b => { const w = b.style.width; b.style.width = '0%'; requestAnimationFrame(() => { b.style.width = w; }); });
+    });
+  }
+
+  /* ── Stacked status distribution chart ── */
+  function buildStackedChart() {
+    const DAYS = 30;
+    const statusKeys  = ['new', 'in_progress', 'completed', 'incomplete'];
+    const statusColors = { new: '#e89d1a', in_progress: '#4a7fde', completed: '#19b885', incomplete: '#e04d6a' };
+    const labelKeys    = { new: 's_new', in_progress: 's_in_progress', completed: 's_completed', incomplete: 's_incomplete' };
+
+    const dayMap = {};
+    _dailyByStatus.forEach(r => {
+      if (!dayMap[r.day]) dayMap[r.day] = {};
+      dayMap[r.day][r.status] = r.count;
+    });
+
+    const locale = L.lang === 'ru' ? 'ru-RU' : L.lang === 'ko' ? 'ko-KR' : 'en-US';
+    const step = 5;
+    const tickLabels = [];
+    for (let i = DAYS - 1; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      tickLabels.push((DAYS - 1 - i) % step === 0
+        ? d.toLocaleDateString(locale, { month: 'short', day: 'numeric' })
+        : '');
+    }
+
+    const datasets = statusKeys.map(sk => {
+      const data = [];
+      for (let i = DAYS - 1; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        data.push((dayMap[d.toISOString().slice(0, 10)] || {})[sk] || 0);
+      }
+      return {
+        label: T(labelKeys[sk]),
+        data,
+        backgroundColor: statusColors[sk] + 'c0',
+        borderColor: statusColors[sk],
+        borderWidth: 0,
+        borderRadius: 1,
+      };
+    });
+
+    if (stackedChart) {
+      stackedChart.data.labels = tickLabels;
+      stackedChart.data.datasets.forEach((ds, i) => {
+        ds.data  = datasets[i].data;
+        ds.label = datasets[i].label;
+      });
+      stackedChart.update('active');
+      return;
+    }
+
+    const ctx = document.getElementById('stackedChart');
+    if (!ctx) return;
+    stackedChart = new Chart(ctx.getContext('2d'), {
+      type: 'bar',
+      data: { labels: tickLabels, datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(10,11,22,0.94)',
+            titleColor: 'rgba(255,255,255,0.45)',
+            bodyColor: '#ffffff',
+            borderColor: 'rgba(99,102,241,0.12)',
+            borderWidth: 1,
+            padding: { x: 12, y: 10 },
+            callbacks: {
+              title: items => items[0]?.label || '',
+              label: item => `  ${item.dataset.label}: ${item.raw}`,
+            }
+          }
+        },
+        scales: {
+          x: {
+            stacked: true,
+            grid: { display: false },
+            border: { display: false },
+            ticks: { color: '#a0a0c0', font: { size: 10, family: 'inherit' }, maxRotation: 0, padding: 5 },
+          },
+          y: {
+            stacked: true,
+            grid: { color: 'rgba(0,0,0,0.032)', tickLength: 0 },
+            border: { display: false },
+            ticks: { color: '#a0a0c0', font: { size: 10, family: 'inherit' }, maxTicksLimit: 4, padding: 10 },
+            beginAtZero: true,
+          }
+        }
+      }
+    });
   }
 
   function setInsightDelta(id, val, isLabel) {

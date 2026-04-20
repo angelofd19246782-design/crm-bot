@@ -49,7 +49,15 @@ router.get('/stats', requireLogin, (req, res) => {
     ORDER BY day, status ASC
   `).all();
 
-  res.json({ active, inTrash, daily, dailyByStatus });
+  const bySource = db.prepare(`
+    SELECT source, COUNT(*) AS count
+    FROM applications
+    WHERE deleted_at IS NULL
+    GROUP BY source
+    ORDER BY count DESC
+  `).all();
+
+  res.json({ active, inTrash, daily, dailyByStatus, bySource });
 });
 
 // ─── GET /api/employee-stats ─────────────────────────────────────────────────
