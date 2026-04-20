@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(ellipse 70% 55% at 20% 35%, rgba(99,102,241,0.14) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 55% at 78% 65%, rgba(139,92,246,0.09) 0%, transparent 65%),
+        #0d0d1b;
+    }
+
+    .chat-widget {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .chat-card {
+      background: #fff;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.05),
+        0 30px 80px rgba(0,0,0,0.65),
+        0 8px 20px rgba(0,0,0,0.35);
+    }
+
+    /* ─── Header ─── */
+    .chat-header {
+      background: linear-gradient(150deg, #0f0f21 0%, #14142f 100%);
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .bot-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #6366f1 0%, #8b5cf6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(99,102,241,0.45);
+    }
+
+    .bot-avatar svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .bot-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .bot-name {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.2px;
+    }
+
+    .bot-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 0 2.5px rgba(34,197,94,0.2);
+      animation: pulse-dot 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 0 2.5px rgba(34,197,94,0.2); }
+      50% { box-shadow: 0 0 0 4px rgba(34,197,94,0.1), 0 0 10px rgba(34,197,94,0.15); }
+    }
+
+    .status-label {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 400;
+    }
+
+    .lang-btn {
+      height: 31px;
+      padding: 0 13px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px;
+      color: rgba(255,255,255,0.55);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .lang-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    /* ─── Messages ─── */
+    .messages-area {
+      background: #f6f6fb;
+      height: 450px;
+      overflow-y: auto;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.1) transparent;
+    }
+
+    .messages-area::-webkit-scrollbar { width: 3px; }
+    .messages-area::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+
+    .msg {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg.bot { align-items: flex-start; }
+    .msg.user { align-items: flex-end; }
+
+    .bubble {
+      max-width: 82%;
+      padding: 11px 15px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #0f0f1e;
+      background: #fff;
+      border-radius: 5px 18px 18px 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.035);
+      word-break: break-word;
+    }
+
+    .msg.user .bubble {
+      background: linear-gradient(145deg, #6366f1 0%, #5254d8 100%);
+      color: #fff;
+      border-radius: 18px 5px 18px 18px;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.32);
+    }
+
+    .msg-time {
+      font-size: 10.5px;
+      color: #c0c0cc;
+      margin-top: 5px;
+      padding: 0 4px;
+    }
+
+    .msg.user .msg-time { text-align: right; }
+
+    /* Quick replies */
+    .quick-replies {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 7px;
+      padding-top: 2px;
+    }
+
+    .qr-btn {
+      padding: 10px 17px;
+      background: #fff;
+      border: 1.5px solid #e2e2ed;
+      border-radius: 18px 5px 18px 18px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a2e;
+      cursor: pointer;
+      transition: all 0.17s ease;
+      text-align: right;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.055);
+      white-space: nowrap;
+    }
+
+    .qr-btn:hover {
+      background: #6366f1;
+      border-color: #6366f1;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+    }
+
+    .qr-btn.used {
+      background: #6366f1;
+      border-color: #6366f1;
+      color: #fff;
+      opacity: 0.65;
+      pointer-events: none;
+      transform: none;
+    }
+
+    /* Typing indicator */
+    .typing-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 14px;
+      background: #fff;
+      border-radius: 5px 18px 18px 18px;
+      width: fit-content;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.035);
+    }
+
+    .typing-wrap span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #c8c8d8;
+      animation: bounce-dot 1.3s ease-in-out infinite;
+    }
+
+    .typing-wrap span:nth-child(2) { animation-delay: 0.18s; }
+    .typing-wrap span:nth-child(3) { animation-delay: 0.36s; }
+
+    @keyframes bounce-dot {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+      40% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ─── Input area ─── */
+    .input-area {
+      padding: 14px 16px;
+      background: #fff;
+      border-top: 1px solid #eeeef6;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .msg-input {
+      flex: 1;
+      background: #f3f3f9;
+      border: 1.5px solid transparent;
+      border-radius: 100px;
+      padding: 11px 17px;
+      font-family: inherit;
+      font-size: 13.5px;
+      color: #0f0f1e;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .msg-input::placeholder { color: #b8b8cc; }
+
+    .msg-input:focus {
+      background: #fff;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+
+    .send-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #6366f1 0%, #5254d8 100%);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.42);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+
+    .send-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(99,102,241,0.52);
+    }
+
+    .send-btn:active { transform: scale(0.96); }
+
+    .send-btn svg {
+      width: 17px;
+      height: 17px;
+      fill: #fff;
+      margin-left: 2px;
+    }
+
+    /* ─── Widget footer ─── */
+    .widget-footer {
+      text-align: center;
+      margin-top: 13px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.2px;
+    }
+
+    .widget-footer a {
+      color: rgba(255,255,255,0.35);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .widget-footer a:hover { color: rgba(255,255,255,0.6); }
+  </style>
+</head>
+<body>
+
+<div class="chat-widget">
+  <div class="chat-card">
+
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="header-left">
+        <div class="bot-avatar">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3L13.7 8.3H19.3L14.8 11.5L16.5 16.8L12 13.6L7.5 16.8L9.2 11.5L4.7 8.3H10.3L12 3Z" fill="rgba(255,255,255,0.95)"/>
+          </svg>
+        </div>
+        <div class="bot-info">
+          <span class="bot-name" data-en="Request Assistant" data-ru="Помощник по заявкам">Request Assistant</span>
+          <div class="bot-status">
+            <span class="status-dot"></span>
+            <span class="status-label" data-en="Online · Ready to help" data-ru="В сети · Готов помочь">Online · Ready to help</span>
+          </div>
+        </div>
+      </div>
+      <button class="lang-btn" id="langBtn">RU</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages-area" id="msgArea">
+
+      <div class="msg bot">
+        <div class="bubble"
+          data-en="Hello! I'm here to help you submit and track service requests. What would you like to do today?"
+          data-ru="Привет! Я помогу вам подать и отследить заявки на услуги. Что хотите сделать?">
+          Hello! I'm here to help you submit and track service requests. What would you like to do today?
+        </div>
+        <span class="msg-time">now</span>
+      </div>
+
+      <div class="quick-replies" id="mainMenu">
+        <button class="qr-btn" data-action="new"     data-en="📋 Submit a new request"   data-ru="📋 Подать новую заявку">📋 Submit a new request</button>
+        <button class="qr-btn" data-action="status"  data-en="🔍 Track my request"        data-ru="🔍 Отследить заявку">🔍 Track my request</button>
+        <button class="qr-btn" data-action="manager" data-en="💬 Talk to a manager"       data-ru="💬 Поговорить с менеджером">💬 Talk to a manager</button>
+        <button class="qr-btn" data-action="faq"     data-en="❓ FAQ &amp; Help"          data-ru="❓ Вопросы и помощь">❓ FAQ &amp; Help</button>
+      </div>
+
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <input class="msg-input" id="msgInput" type="text"
+        placeholder="Write a message…"
+        data-en="Write a message…"
+        data-ru="Написать сообщение…">
+      <button class="send-btn" id="sendBtn" aria-label="Send">
+        <svg viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2v7z"/></svg>
+      </button>
+    </div>
+
+  </div>
+  <div class="widget-footer">Powered by <a href="crm.html">Nexus CRM</a></div>
+</div>
+
+<script>
+(function () {
+  const state = { lang: 'en' };
+  const langBtn = document.getElementById('langBtn');
+  const msgArea = document.getElementById('msgArea');
+  const msgInput = document.getElementById('msgInput');
+  const sendBtn = document.getElementById('sendBtn');
+
+  /* ── Language ── */
+  function applyLang(l) {
+    state.lang = l;
+    langBtn.textContent = l === 'en' ? 'RU' : 'EN';
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const val = el.dataset[l] || el.dataset.en;
+      if (el.tagName === 'INPUT') el.placeholder = val;
+      else el.textContent = val;
+    });
+  }
+  langBtn.addEventListener('click', () => applyLang(state.lang === 'en' ? 'ru' : 'en'));
+
+  /* ── Helpers ── */
+  function nowTime() {
+    return new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+
+  function addMsg(who, text) {
+    const d = document.createElement('div');
+    d.className = `msg ${who}`;
+    d.innerHTML = `<div class="bubble">${text}</div><span class="msg-time">${nowTime()}</span>`;
+    msgArea.appendChild(d);
+    msgArea.scrollTop = msgArea.scrollHeight;
+    return d;
+  }
+
+  let typingEl = null;
+  function showTyping() {
+    typingEl = document.createElement('div');
+    typingEl.className = 'msg bot';
+    typingEl.innerHTML = `<div class="typing-wrap"><span></span><span></span><span></span></div>`;
+    msgArea.appendChild(typingEl);
+    msgArea.scrollTop = msgArea.scrollHeight;
+  }
+  function removeTyping() { typingEl?.remove(); typingEl = null; }
+
+  function addQuickReplies(options, onSelect) {
+    const wrap = document.createElement('div');
+    wrap.className = 'quick-replies';
+    options.forEach(opt => {
+      const b = document.createElement('button');
+      b.className = 'qr-btn';
+      b.dataset.en = opt.en;
+      b.dataset.ru = opt.ru;
+      b.textContent = opt[state.lang] || opt.en;
+      b.addEventListener('click', () => {
+        wrap.querySelectorAll('.qr-btn').forEach(x => x.classList.add('used'));
+        addMsg('user', b.textContent);
+        showTyping();
+        setTimeout(() => { removeTyping(); onSelect(opt); }, 850 + Math.random() * 300);
+      });
+      wrap.appendChild(b);
+    });
+    msgArea.appendChild(wrap);
+    msgArea.scrollTop = msgArea.scrollHeight;
+  }
+
+  /* ── Content trees ── */
+  const copy = {
+    new: {
+      en: "Great! Which type of service are you looking for?",
+      ru: "Отлично! Какой тип услуги вас интересует?"
+    },
+    new_sub: [
+      { en: "🏗️ Construction & Permits", ru: "🏗️ Строительство и разрешения" },
+      { en: "📄 Document Services",       ru: "📄 Документальные услуги" },
+      { en: "💼 Business Registration",   ru: "💼 Регистрация бизнеса" },
+      { en: "⬅️ Back to menu",            ru: "⬅️ Назад в меню" }
+    ],
+    new_confirm: {
+      en: "Understood. I'll open the request form for you. It takes under 2 minutes to fill out.",
+      ru: "Понял. Открываю форму заявки. Заполнение займёт менее 2 минут."
+    },
+    new_confirm_sub: [
+      { en: "📝 Open the form",   ru: "📝 Открыть форму" },
+      { en: "⏰ Remind me later", ru: "⏰ Напомнить позже" }
+    ],
+    form_open: {
+      en: "The form is now open. Fill in all fields and submit — your request will be registered instantly and a manager will contact you.",
+      ru: "Форма открыта. Заполните все поля и отправьте — заявка будет зарегистрирована, и менеджер свяжется с вами."
+    },
+    remind: {
+      en: "No problem! I'll remind you in 1 hour. You can also come back anytime.",
+      ru: "Хорошо! Напомню через час. Вы всегда можете вернуться."
+    },
+    status: {
+      en: "Please enter your request ID (e.g. #1042) or the phone number you registered with.",
+      ru: "Введите номер заявки (например, #1042) или телефон, с которым регистрировались."
+    },
+    manager: {
+      en: "Connecting you now. Estimated wait: 2–4 minutes. You can also leave a message below and we'll call you back.",
+      ru: "Соединяю с менеджером. Ожидаемое время: 2–4 минуты. Можете оставить сообщение — мы перезвоним."
+    },
+    faq: {
+      en: "Here are the most common topics:",
+      ru: "Вот самые частые вопросы:"
+    },
+    faq_sub: [
+      { en: "⏱️ How long does processing take?", ru: "⏱️ Сколько занимает обработка?" },
+      { en: "📂 What documents do I need?",      ru: "📂 Какие документы нужны?" },
+      { en: "💳 Payment and pricing",            ru: "💳 Оплата и цены" },
+      { en: "⬅️ Back to menu",                   ru: "⬅️ Назад в меню" }
+    ],
+    faq_timing: {
+      en: "Standard requests are processed within 3–5 business days. Urgent processing is available in 1–2 days for an additional fee.",
+      ru: "Стандартные заявки обрабатываются 3–5 рабочих дней. Срочная обработка — 1–2 дня за дополнительную плату."
+    },
+    faq_docs: {
+      en: "Required documents depend on the service type. Generally you'll need: a valid ID, proof of address, and any relevant certificates. The form will list what's needed specifically.",
+      ru: "Необходимые документы зависят от типа услуги. Как правило: удостоверение личности, подтверждение адреса и соответствующие сертификаты."
+    },
+    faq_payment: {
+      en: "We accept bank transfer, card, and cash at our office. Prices vary by service — you'll see the exact cost before confirming your request.",
+      ru: "Принимаем банковский перевод, карту и наличные в офисе. Цены зависят от услуги — точную стоимость увидите перед подтверждением."
+    },
+    fallback: {
+      en: "Thank you for your message. A specialist will get back to you shortly.",
+      ru: "Спасибо за сообщение. Специалист ответит в ближайшее время."
+    }
+  };
+
+  const t = (key) => copy[key]?.[state.lang] || copy[key]?.en || '';
+
+  function showMainMenu() {
+    addMsg('bot', state.lang === 'ru' ? 'Чем ещё могу помочь?' : 'How else can I help you?');
+    addQuickReplies([
+      { en: "📋 Submit a new request", ru: "📋 Подать новую заявку", action: 'new' },
+      { en: "🔍 Track my request",     ru: "🔍 Отследить заявку",    action: 'status' },
+      { en: "💬 Talk to a manager",    ru: "💬 Поговорить с менеджером", action: 'manager' }
+    ], opt => dispatch(opt.action, opt));
+  }
+
+  function dispatch(action, opt) {
+    if (action === 'new') {
+      addMsg('bot', t('new'));
+      addQuickReplies(copy.new_sub, sub => {
+        if (sub.en.includes('Back')) { showMainMenu(); return; }
+        addMsg('bot', t('new_confirm'));
+        addQuickReplies(copy.new_confirm_sub, btn => {
+          if (btn.en.includes('Open')) {
+            addMsg('bot', t('form_open'));
+          } else {
+            addMsg('bot', t('remind'));
+          }
+        });
+      });
+    } else if (action === 'status') {
+      addMsg('bot', t('status'));
+    } else if (action === 'manager') {
+      addMsg('bot', t('manager'));
+    } else if (action === 'faq') {
+      addMsg('bot', t('faq'));
+      addQuickReplies(copy.faq_sub, sub => {
+        if (sub.en.includes('Back')) { showMainMenu(); return; }
+        if (sub.en.includes('long'))    addMsg('bot', t('faq_timing'));
+        if (sub.en.includes('document')) addMsg('bot', t('faq_docs'));
+        if (sub.en.includes('Payment'))  addMsg('bot', t('faq_payment'));
+      });
+    }
+  }
+
+  /* ── Wire initial menu ── */
+  document.querySelectorAll('#mainMenu .qr-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#mainMenu .qr-btn').forEach(b => b.classList.add('used'));
+      addMsg('user', btn.textContent);
+      showTyping();
+      setTimeout(() => { removeTyping(); dispatch(btn.dataset.action, btn); }, 900 + Math.random() * 250);
+    });
+  });
+
+  /* ── Free text ── */
+  function send() {
+    const txt = msgInput.value.trim();
+    if (!txt) return;
+    addMsg('user', txt);
+    msgInput.value = '';
+    showTyping();
+    setTimeout(() => { removeTyping(); addMsg('bot', t('fallback')); }, 950 + Math.random() * 400);
+  }
+
+  sendBtn.addEventListener('click', send);
+  msgInput.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+})();
+</script>
+</body>
+</html>
