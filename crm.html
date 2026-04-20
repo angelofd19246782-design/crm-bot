@@ -591,6 +591,15 @@
       border-radius: 0 3px 3px 0;
     }
 
+    .kpi-spark-wrap {
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 96px; height: 38px;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+    .kpi-spark { display: block; width: 96px !important; height: 38px !important; }
+
     .kpi-card.c-indigo { background: linear-gradient(145deg, #fff 60%, rgba(99,102,241,0.04) 100%); }
     .kpi-card.c-green  { background: linear-gradient(145deg, #fff 60%, rgba(34,197,94,0.04)  100%); }
     .kpi-card.c-amber  { background: linear-gradient(145deg, #fff 60%, rgba(245,158,11,0.04) 100%); }
@@ -1856,6 +1865,7 @@
             <div class="kpi-change flat">
               <span data-en="All active requests" data-ru="Все активные заявки" data-ko="전체 활성 신청서">All active requests</span>
             </div>
+            <div class="kpi-spark-wrap"><canvas id="sparkTotal" class="kpi-spark"></canvas></div>
           </div>
 
           <div class="kpi-card c-green">
@@ -1871,6 +1881,7 @@
             <div class="kpi-change flat" id="kpiCompletedPct">
               <span>—</span>
             </div>
+            <div class="kpi-spark-wrap"><canvas id="sparkCompleted" class="kpi-spark"></canvas></div>
           </div>
 
           <div class="kpi-card c-amber">
@@ -1886,6 +1897,7 @@
             <div class="kpi-change down">
               <span data-en="Awaiting assignment" data-ru="Без исполнителя" data-ko="담당자 미배정">Awaiting assignment</span>
             </div>
+            <div class="kpi-spark-wrap"><canvas id="sparkNew" class="kpi-spark"></canvas></div>
           </div>
 
           <div class="kpi-card c-blue">
@@ -1901,6 +1913,7 @@
             <div class="kpi-change up">
               <span data-en="Being processed" data-ru="Принято в работу" data-ko="검토 중">Being processed</span>
             </div>
+            <div class="kpi-spark-wrap"><canvas id="sparkInProgress" class="kpi-spark"></canvas></div>
           </div>
         </div>
 
@@ -2587,6 +2600,7 @@
   let chartPeriod  = 30;
   let _lineAllDates = [];
   let _lineValues   = [];
+  let _sparkCharts  = {};
 
   function applyLang(l) {
     L.lang = l;
@@ -2802,6 +2816,62 @@
     _lastDaily  = daily || [];
     buildLineChart(chartPeriod);
     buildDonutChart(active);
+    buildSparklines(active);
+  }
+
+  function buildSparklines(active) {
+    const tot = active.total || 1;
+    const base = _lineValues.length >= 7 ? _lineValues.slice(-14) : _lineValues.concat(Array(14).fill(0)).slice(0, 14);
+    const rC = (active.completed   || 0) / tot;
+    const rN = (active.new         || 0) / tot;
+    const rP = (active.in_progress || 0) / tot;
+
+    const configs = [
+      { id: 'sparkTotal',      color: '#818cf8', rgb: '129,140,248', data: base.slice() },
+      { id: 'sparkCompleted',  color: '#22c55e', rgb: '34,197,94',   data: base.map(v => Math.round(v * rC)) },
+      { id: 'sparkNew',        color: '#f59e0b', rgb: '245,158,11',  data: base.map(v => Math.round(v * rN)) },
+      { id: 'sparkInProgress', color: '#3b82f6', rgb: '59,130,246',  data: base.map(v => Math.round(v * rP)) },
+    ];
+
+    configs.forEach(({ id, color, rgb, data }) => {
+      const canvas = document.getElementById(id);
+      if (!canvas) return;
+      if (_sparkCharts[id]) {
+        _sparkCharts[id].data.datasets[0].data = data;
+        _sparkCharts[id].update('none');
+        return;
+      }
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 38);
+      grad.addColorStop(0, `rgba(${rgb},0.5)`);
+      grad.addColorStop(1, `rgba(${rgb},0)`);
+      _sparkCharts[id] = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.map((_, i) => i),
+          datasets: [{
+            data,
+            borderColor: color,
+            borderWidth: 1.5,
+            backgroundColor: grad,
+            fill: true,
+            tension: 0.42,
+            pointRadius: 0,
+            pointHoverRadius: 0,
+          }]
+        },
+        options: {
+          responsive: false,
+          animation: false,
+          plugins: { legend: { display: false }, tooltip: { enabled: false } },
+          scales: {
+            x: { display: false },
+            y: { display: false, beginAtZero: true }
+          },
+          layout: { padding: 0 }
+        }
+      });
+    });
   }
 
   /* ── Custom external tooltip for line chart ── */
@@ -2959,6 +3029,7 @@
     if (donutChart) {
       donutChart.data.labels = [T('chart_completed'), T('chart_in_progress'), T('chart_new'), T('chart_incomplete')];
       donutChart.data.datasets[0].data = donutData;
+      donutChart.data.datasets[0].backgroundColor = colors.slice();
       donutChart.update();
       syncDonutCenter(null);
       return;
@@ -2969,13 +3040,20 @@
       type: 'doughnut',
       data: {
         labels: [T('chart_completed'), T('chart_in_progress'), T('chart_new'), T('chart_incomplete')],
-        datasets: [{ data: donutData, backgroundColor: colors, borderWidth: 0, hoverOffset: 10, spacing: 3, borderRadius: 4 }]
+        datasets: [{ data: donutData, backgroundColor: colors.slice(), borderWidth: 2, borderColor: 'transparent', hoverOffset: 18, spacing: 3, borderRadius: 6 }]
       },
       options: {
-        responsive: true, maintainAspectRatio: false, cutout: '73%',
+        responsive: true, maintainAspectRatio: false, cutout: '72%',
+        layout: { padding: 18 },
         onHover: (event, elements) => {
-          syncDonutCenter(elements.length > 0 ? elements[0].index : null);
-          ctx2.canvas.style.cursor = elements.length > 0 ? 'pointer' : 'default';
+          const idx = elements.length > 0 ? elements[0].index : null;
+          syncDonutCenter(idx);
+          ctx2.canvas.style.cursor = idx !== null ? 'pointer' : 'default';
+          const dimmed = ['rgba(34,197,94,0.25)','rgba(139,92,246,0.25)','rgba(245,158,11,0.25)','rgba(239,68,68,0.25)'];
+          donutChart.data.datasets[0].backgroundColor = idx !== null
+            ? colors.map((c, i) => i === idx ? c : dimmed[i])
+            : colors.slice();
+          donutChart.update('none');
         },
         plugins: {
           legend: { display: false },
