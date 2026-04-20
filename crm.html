@@ -1838,6 +1838,141 @@
       /* Reduce chart height slightly */
       .chart-canvas-wrap { min-height: 0; }
     }
+
+    /* ─── Clickable KPI card ─── */
+    .kpi-card.clickable { cursor: pointer; }
+    .kpi-card.clickable:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .kpi-card.clickable:active { transform: scale(0.99); }
+
+    /* ─── View fade-in ─── */
+    @keyframes viewFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .view-section.v-in {
+      animation: viewFadeIn 0.28s cubic-bezier(0.4,0,0.2,1) both;
+    }
+
+    /* ─── Empty state ─── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px 52px;
+    }
+    .empty-state-icon {
+      width: 52px; height: 52px; border-radius: 16px;
+      background: rgba(99,102,241,0.08);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+      color: var(--primary);
+    }
+    .empty-state-title {
+      font-size: 14px; font-weight: 700; color: var(--text1);
+      margin-bottom: 5px; letter-spacing: -0.2px;
+    }
+    .empty-state-sub {
+      font-size: 12.5px; color: var(--text3); line-height: 1.5;
+    }
+
+    /* ─── Bulk action bar ─── */
+    .bulk-bar {
+      position: fixed;
+      bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #0f0f1e;
+      border-radius: 14px; padding: 8px 10px 8px 16px;
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.32), 0 2px 8px rgba(0,0,0,0.2);
+      z-index: 400;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.22s, transform 0.22s;
+      white-space: nowrap;
+    }
+    .bulk-bar.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: all;
+    }
+    .bulk-count {
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55);
+      margin-right: 2px;
+    }
+    .bulk-count strong { color: #fff; }
+    .bulk-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+    .bulk-status-btns { display: flex; gap: 4px; }
+    .bulk-st-btn {
+      height: 28px; padding: 0 10px; border-radius: 7px; border: none;
+      font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer;
+      color: #fff; opacity: 0.82; transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.1px;
+    }
+    .bulk-st-btn:hover { opacity: 1; transform: translateY(-1px); }
+    .bulk-trash-btn {
+      height: 28px; padding: 0 10px; border-radius: 7px; border: none;
+      font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer;
+      background: rgba(224,77,106,0.18); color: #f87171;
+      transition: background 0.15s;
+    }
+    .bulk-trash-btn:hover { background: rgba(224,77,106,0.28); }
+    .bulk-close {
+      width: 28px; height: 28px; border-radius: 7px; border: none;
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4);
+      font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .bulk-close:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+
+    /* ─── Row checkbox ─── */
+    .row-check {
+      width: 15px; height: 15px; accent-color: var(--primary);
+      cursor: pointer; flex-shrink: 0; display: block;
+    }
+    th.th-check { width: 40px; padding: 10px 4px 10px 18px !important; }
+    td.td-check { padding: 13px 4px 13px 18px !important; vertical-align: middle; }
+    tbody tr.row-selected { background: rgba(99,102,241,0.05) !important; }
+
+    /* ─── Status timeline stepper ─── */
+    .status-timeline {
+      display: flex; align-items: flex-start;
+      margin: 6px 0 18px;
+    }
+    .st-step {
+      display: flex; flex-direction: column; align-items: center;
+      flex: 1; position: relative;
+    }
+    .st-step:not(:last-child)::after {
+      content: '';
+      position: absolute; top: 12px; left: calc(50% + 14px);
+      width: calc(100% - 28px); height: 2px;
+      background: #eeeef5;
+    }
+    .st-step.st-done:not(:last-child)::after { background: #19b885; }
+    .st-step.st-active:not(:last-child)::after {
+      background: linear-gradient(90deg, #6366f1 0%, #eeeef5 100%);
+    }
+    .st-dot {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9.5px; font-weight: 800;
+      border: 2px solid #e5e5ef; background: #fff; color: var(--text3);
+      position: relative; z-index: 1; transition: all 0.2s;
+    }
+    .st-step.st-done .st-dot   { border-color: #19b885; background: #19b885; color: #fff; }
+    .st-step.st-active .st-dot {
+      border-color: var(--primary); background: var(--primary); color: #fff;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.18);
+    }
+    .st-step.st-incomplete .st-dot { border-color: #e04d6a; background: #e04d6a; color: #fff; }
+    .st-label {
+      font-size: 9px; font-weight: 700; color: var(--text3);
+      letter-spacing: 0.2px; margin-top: 5px; text-align: center;
+      text-transform: uppercase; line-height: 1.2;
+    }
+    .st-step.st-done .st-label,
+    .st-step.st-active .st-label { color: var(--text2); }
+    .st-step.st-incomplete .st-label { color: #e04d6a; }
   </style>
 </head>
 <body>
@@ -1974,7 +2109,7 @@
 
         <!-- KPI cards -->
         <div class="kpi-row">
-          <div class="kpi-card c-indigo">
+          <div class="kpi-card c-indigo clickable" onclick="navigateTo('requests',{filterStatus:''})">
             <div class="kpi-top">
               <span class="kpi-label" data-en="Total Active" data-ru="Активных" data-ko="전체 활성">Total Active</span>
               <div class="kpi-icon">
@@ -1991,7 +2126,7 @@
             <div class="kpi-spark-wrap"><canvas id="sparkTotal" class="kpi-spark"></canvas></div>
           </div>
 
-          <div class="kpi-card c-green">
+          <div class="kpi-card c-green clickable" onclick="navigateTo('requests',{filterStatus:'completed'})">
             <div class="kpi-top">
               <span class="kpi-label" data-en="Completed" data-ru="Завершено" data-ko="완료">Completed</span>
               <div class="kpi-icon">
@@ -2007,7 +2142,7 @@
             <div class="kpi-spark-wrap"><canvas id="sparkCompleted" class="kpi-spark"></canvas></div>
           </div>
 
-          <div class="kpi-card c-amber">
+          <div class="kpi-card c-amber clickable" onclick="navigateTo('requests',{filterStatus:'new'})">
             <div class="kpi-top">
               <span class="kpi-label" data-en="New" data-ru="Новые" data-ko="신규">New</span>
               <div class="kpi-icon">
@@ -2023,7 +2158,7 @@
             <div class="kpi-spark-wrap"><canvas id="sparkNew" class="kpi-spark"></canvas></div>
           </div>
 
-          <div class="kpi-card c-blue">
+          <div class="kpi-card c-blue clickable" onclick="navigateTo('requests',{filterStatus:'in_progress'})">
             <div class="kpi-top">
               <span class="kpi-label" data-en="In Progress" data-ru="В работе" data-ko="처리 중">In Progress</span>
               <div class="kpi-icon">
@@ -2235,6 +2370,7 @@
           <table>
             <thead>
               <tr>
+                <th class="th-check"><input type="checkbox" class="row-check" id="reqHeaderCheck" title="Select all"></th>
                 <th data-en="ID" data-ru="ID" data-ko="ID">ID</th>
                 <th data-en="Client" data-ru="Клиент" data-ko="고객">Client</th>
                 <th data-en="Phone" data-ru="Телефон" data-ko="전화번호">Phone</th>
@@ -2414,6 +2550,22 @@
 <!-- ─── Chart tooltips ─── -->
 <div id="lineTooltipEl"  class="line-tooltip"></div>
 <div id="donutTooltipEl" class="donut-tooltip"></div>
+
+<!-- ─── Bulk action bar ─── -->
+<div class="bulk-bar" id="bulkBar">
+  <span class="bulk-count"><strong id="bulkCount">0</strong> selected</span>
+  <div class="bulk-sep"></div>
+  <span style="font-size:10.5px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:0.3px;text-transform:uppercase;">Set status:</span>
+  <div class="bulk-status-btns">
+    <button class="bulk-st-btn" style="background:#e89d1a" onclick="bulkSetStatus('new')" data-en="New" data-ru="Новая" data-ko="신규">New</button>
+    <button class="bulk-st-btn" style="background:#4a7fde" onclick="bulkSetStatus('in_progress')" data-en="In Progress" data-ru="В работе" data-ko="처리 중">In Progress</button>
+    <button class="bulk-st-btn" style="background:#19b885" onclick="bulkSetStatus('completed')" data-en="Completed" data-ru="Завершена" data-ko="완료">Completed</button>
+    <button class="bulk-st-btn" style="background:#e04d6a" onclick="bulkSetStatus('incomplete')" data-en="Incomplete" data-ru="Не завершена" data-ko="미완료">Incomplete</button>
+  </div>
+  <div class="bulk-sep"></div>
+  <button class="bulk-trash-btn" onclick="bulkMoveTrash()">🗑 Trash</button>
+  <button class="bulk-close" id="bulkClose">✕</button>
+</div>
 
 <!-- ─── Toast ─── -->
 <div class="toast" id="toast"></div>
@@ -2772,6 +2924,7 @@
   let _sparkCharts      = {};
   let _insightCharts    = {};
   let _dailyByStatus    = [];
+  let _selectedIds      = new Set();
 
   function applyLang(l) {
     L.lang = l;
@@ -2813,7 +2966,7 @@
 
   /* ─── Static custom dropdowns ─── */
   let reqStatusValue = '';
-  createDropdown({
+  let reqStatusDropdown = createDropdown({
     el: document.getElementById('reqStatusFilterWrap'),
     items: STATUS_FILTER_ITEMS,
     value: '',
@@ -2886,12 +3039,13 @@
   /* ── Navigation ── */
   let currentView = 'dashboard';
 
-  window.navigateTo = function(view) {
+  window.navigateTo = function(view, opts) {
     document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
     document.querySelectorAll('.nav-item[data-view]').forEach(item => {
       item.classList.toggle('active', item.dataset.view === view);
     });
     currentView = view;
+    clearSelection();
 
     const pgKey = { dashboard: 'pg_dashboard', requests: 'pg_requests', trash: 'pg_trash', users: 'pg_users' }[view];
     const titleEl = document.getElementById('topbarTitle');
@@ -2902,10 +3056,24 @@
       titleEl.textContent = T(pgKey);
     }
 
-    if (view === 'dashboard') { document.getElementById('viewDashboard').style.display = ''; loadDashboard(); }
-    else if (view === 'requests') { document.getElementById('viewRequests').style.display = ''; loadRequests(); }
-    else if (view === 'trash') { document.getElementById('viewTrash').style.display = ''; loadTrash(); }
-    else if (view === 'users') { document.getElementById('viewUsers').style.display = ''; loadUsers(); }
+    if (opts && opts.filterStatus !== undefined && reqStatusDropdown) {
+      reqStatusValue = opts.filterStatus;
+      reqStatusDropdown.setValue(opts.filterStatus);
+    }
+
+    const viewIds = { dashboard: 'viewDashboard', requests: 'viewRequests', trash: 'viewTrash', users: 'viewUsers' };
+    const section = document.getElementById(viewIds[view]);
+    if (section) {
+      section.style.display = '';
+      section.classList.remove('v-in');
+      void section.offsetWidth;
+      section.classList.add('v-in');
+    }
+
+    if (view === 'dashboard') loadDashboard();
+    else if (view === 'requests') loadRequests();
+    else if (view === 'trash') loadTrash();
+    else if (view === 'users') loadUsers();
   };
 
   document.querySelectorAll('.nav-item[data-view]').forEach(item => {
@@ -2920,7 +3088,15 @@
 
   /* ── Dashboard ── */
   async function loadDashboard() {
+    ['kpiTotal','kpiCompleted','kpiNew','kpiInProgress'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && !el._skeled) { el._skeled = true; el.style.cssText = 'display:inline-block;width:56px;height:28px;border-radius:6px;vertical-align:middle'; el.classList.add('skeleton'); el.textContent = ''; }
+    });
     const r = await api('GET', '/api/stats');
+    ['kpiTotal','kpiCompleted','kpiNew','kpiInProgress'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el._skeled = false; el.style.cssText = ''; el.classList.remove('skeleton'); }
+    });
     if (!r.ok) return;
     const { active, inTrash, daily, dailyByStatus } = r.data;
 
@@ -3476,7 +3652,7 @@
   function renderDashTable(apps) {
     const tbody = document.getElementById('tableBody');
     if (!apps.length) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">${T('no_requests')}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7">${emptyStateHtml(EMPTY_DOC_ICON, T('no_requests'), L.lang==='ru'?'Создайте первую заявку':L.lang==='ko'?'첫 번째 신청서를 등록하세요':'Create your first request to get started')}</td></tr>`;
       return;
     }
     tbody.innerHTML = apps.map(a => `
@@ -3503,6 +3679,87 @@
     filterRequests();
   }
 
+  function emptyStateHtml(icon, title, sub) {
+    return `<div class="empty-state"><div class="empty-state-icon">${icon}</div><div class="empty-state-title">${title}</div><div class="empty-state-sub">${sub}</div></div>`;
+  }
+
+  const EMPTY_DOC_ICON = `<svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>`;
+  const EMPTY_SEARCH_ICON = `<svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>`;
+  const EMPTY_TRASH_ICON  = `<svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>`;
+
+  /* ─── Bulk selection helpers ─── */
+  function clearSelection() {
+    _selectedIds.clear();
+    updateBulkBar();
+    document.querySelectorAll('.row-check:not(#reqHeaderCheck)').forEach(cb => { cb.checked = false; });
+    document.querySelectorAll('tr.row-selected').forEach(tr => tr.classList.remove('row-selected'));
+    const hc = document.getElementById('reqHeaderCheck');
+    if (hc) hc.checked = false;
+  }
+
+  function updateBulkBar() {
+    const bar = document.getElementById('bulkBar');
+    const n = _selectedIds.size;
+    const countEl = document.getElementById('bulkCount');
+    if (countEl) countEl.textContent = n;
+    if (bar) bar.classList.toggle('visible', n > 0);
+  }
+
+  window.toggleRowSelect = function(id, cb) {
+    const tr = cb.closest('tr');
+    if (cb.checked) { _selectedIds.add(id); tr && tr.classList.add('row-selected'); }
+    else            { _selectedIds.delete(id); tr && tr.classList.remove('row-selected'); }
+    updateBulkBar();
+    const hc = document.getElementById('reqHeaderCheck');
+    if (hc) {
+      const all = document.querySelectorAll('.row-check:not(#reqHeaderCheck)');
+      hc.checked = all.length > 0 && [...all].every(c => c.checked);
+      hc.indeterminate = _selectedIds.size > 0 && !hc.checked;
+    }
+  };
+
+  window.toggleSelectAll = function(cb) {
+    const all = document.querySelectorAll('.row-check:not(#reqHeaderCheck)');
+    all.forEach(c => {
+      c.checked = cb.checked;
+      const id = Number(c.closest('tr')?.dataset.id);
+      const tr = c.closest('tr');
+      if (cb.checked) { if (id) _selectedIds.add(id); tr && tr.classList.add('row-selected'); }
+      else            { if (id) _selectedIds.delete(id); tr && tr.classList.remove('row-selected'); }
+    });
+    updateBulkBar();
+  };
+
+  window.bulkSetStatus = async function(status) {
+    if (!_selectedIds.size) return;
+    const ids = [..._selectedIds];
+    await Promise.all(ids.map(id => api('PUT', `/api/applications/${id}`, { status })));
+    toast(T('status_updated'));
+    clearSelection();
+    loadRequests();
+  };
+
+  window.bulkMoveTrash = async function() {
+    if (!_selectedIds.size) return;
+    const n = _selectedIds.size;
+    customConfirm({
+      title: T('trash_title'),
+      body: L.lang === 'ru' ? `Будет перемещено ${n} заявок` : L.lang === 'ko' ? `${n}개 이동` : `Move ${n} request${n > 1 ? 's' : ''} to trash?`,
+      okLabel: T('trash_ok'),
+      okClass: 'danger',
+      onOk: async () => {
+        const ids = [..._selectedIds];
+        await Promise.all(ids.map(id => api('DELETE', `/api/applications/${id}`)));
+        toast(T('moved_trash'));
+        clearSelection();
+        loadRequests();
+        loadDashboard();
+      },
+    });
+  };
+
+  document.getElementById('bulkClose').addEventListener('click', clearSelection);
+
   function filterRequests() {
     const q = document.getElementById('reqSearch').value.trim().toLowerCase();
     const filtered = q ? allRequests.filter(a =>
@@ -3513,11 +3770,17 @@
     document.getElementById('reqTableCount').textContent = filtered.length;
     const tbody = document.getElementById('reqTableBody');
     if (!filtered.length) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">${T('no_results')}</td></tr>`;
+      const isSearch = q.length > 0 || reqStatusValue !== '';
+      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+        <div class="empty-state-icon">${isSearch ? EMPTY_SEARCH_ICON : EMPTY_DOC_ICON}</div>
+        <div class="empty-state-title">${isSearch ? (L.lang==='ru'?'Ничего не найдено':L.lang==='ko'?'검색 결과 없음':T('no_results')) : (L.lang==='ru'?'Заявок пока нет':L.lang==='ko'?'신청서가 없습니다':T('no_requests'))}</div>
+        <div class="empty-state-sub">${isSearch ? (L.lang==='ru'?'Попробуйте изменить поисковый запрос или фильтр':L.lang==='ko'?'검색어나 필터를 변경해보세요':'Try adjusting your search or filter') : (L.lang==='ru'?'Создайте первую заявку нажав кнопку «Новая заявка»':L.lang==='ko'?'상단의 새 신청 버튼을 눌러 첫 번째 신청서를 등록하세요':'Create your first request using the New Request button above')}</div>
+      </div></td></tr>`;
       return;
     }
     tbody.innerHTML = filtered.map(a => `
-      <tr>
+      <tr data-id="${a.id}" class="${_selectedIds.has(a.id) ? 'row-selected' : ''}">
+        <td class="td-check"><input type="checkbox" class="row-check" ${_selectedIds.has(a.id) ? 'checked' : ''} onchange="toggleRowSelect(${a.id}, this)"></td>
         <td class="cell-id">#${a.id}</td>
         <td class="cell-name">${esc(a.name)}</td>
         <td style="color:var(--text2);font-size:12.5px">${esc(a.phone || '—')}</td>
@@ -3527,6 +3790,8 @@
         <td><button class="view-btn" onclick="openDrawer(${a.id})">${T('view')}</button></td>
       </tr>
     `).join('');
+    const hc = document.getElementById('reqHeaderCheck');
+    if (hc) { hc.checked = false; hc.indeterminate = _selectedIds.size > 0; }
   }
 
   document.getElementById('reqSearch').addEventListener('input', filterRequests);
@@ -3539,7 +3804,7 @@
     document.getElementById('trashTableCount').textContent = apps.length;
     const tbody = document.getElementById('trashTableBody');
     if (!apps.length) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text3)">${T('trash_empty')}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6">${emptyStateHtml(EMPTY_TRASH_ICON, T('trash_empty'), L.lang==='ru'?'Здесь отображаются удалённые заявки':L.lang==='ko'?'삭제된 신청서가 여기에 표시됩니다':'Deleted requests will appear here')}</td></tr>`;
       return;
     }
     tbody.innerHTML = apps.map(a => `
@@ -3656,6 +3921,27 @@
   document.getElementById('drawerClose').addEventListener('click', closeDrawer);
   document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
 
+  function statusTimeline(status) {
+    const stepDefs = [
+      { key: 'new',         labelKey: 's_new' },
+      { key: 'in_progress', labelKey: 's_in_progress' },
+      { key: 'done',        labelKey: status === 'incomplete' ? 's_incomplete' : 's_completed' },
+    ];
+    const order = ['new', 'in_progress', 'completed', 'incomplete'];
+    const idx = order.indexOf(status);
+    return `<div class="status-timeline">${stepDefs.map((step, i) => {
+      let cls = '';
+      if (i < 2) {
+        if (i < idx) cls = 'st-done';
+        else if (i === idx) cls = 'st-active';
+      } else {
+        if (idx >= 2) cls = status === 'incomplete' ? 'st-incomplete' : 'st-active';
+      }
+      const dot = cls === 'st-done' ? '✓' : String(i + 1);
+      return `<div class="st-step ${cls}"><div class="st-dot">${dot}</div><div class="st-label">${T(step.labelKey)}</div></div>`;
+    }).join('')}</div>`;
+  }
+
   function renderDrawer(app, notes, atts, users) {
     const isAdmin = currentUser.role === 'admin';
     document.getElementById('drawerContent').innerHTML = `
@@ -3666,6 +3952,7 @@
         </div>
         ${statusBadge(app.status)}
       </div>
+      ${statusTimeline(app.status)}
 
       <div class="drawer-section">
         <div class="drawer-label" style="margin-bottom:8px">${T('contact_info')}</div>
@@ -3925,6 +4212,26 @@
     chartPeriod = Number(btn.dataset.days);
     document.querySelectorAll('.cpd-btn').forEach(b => b.classList.toggle('active', b === btn));
     buildLineChart(chartPeriod);
+  });
+
+  /* ── Keyboard shortcuts ── */
+  document.addEventListener('keydown', e => {
+    const tag = document.activeElement ? document.activeElement.tagName : '';
+    const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
+
+    if (e.key === 'Escape') {
+      if (document.getElementById('drawer').classList.contains('open')) {
+        closeDrawer(); return;
+      }
+      if (document.getElementById('newReqModal').classList.contains('open')) {
+        document.getElementById('newReqModal').classList.remove('open'); return;
+      }
+      if (_selectedIds.size > 0) { clearSelection(); return; }
+    }
+
+    if (!isTyping && (e.key === 'n' || e.key === 'N') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      document.getElementById('newReqModal').classList.add('open');
+    }
   });
 
   /* ── Initial load ── */
