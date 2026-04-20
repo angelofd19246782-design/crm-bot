@@ -527,10 +527,11 @@
       b.dataset.ru   = opt.label_ru || opt.label_en;
       b.textContent  = opt['label_' + L()] || opt.label_en;
       b.addEventListener('click', () => {
-        const label = b.textContent;
-        setPanel([], null);                  // clear panel immediately
-        addMsg('user', label);               // bubble appears as sent message
-        botReply(() => _panelOnPick && _panelOnPick(opt.value));
+        const label   = b.textContent;
+        const handler = _panelOnPick;        // capture before clearing
+        setPanel([], null);
+        addMsg('user', label);
+        botReply(() => handler && handler(opt.value));
       });
       qrPanel.appendChild(b);
     });
