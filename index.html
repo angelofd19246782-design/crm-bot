@@ -345,14 +345,14 @@
           </svg>
         </div>
         <div class="bot-info">
-          <span class="bot-name" data-en="Request Assistant" data-ru="Помощник по заявкам">Request Assistant</span>
+          <span class="bot-name" data-en="Request Assistant" data-ru="Помощник по заявкам" data-ko="서비스 도우미">Request Assistant</span>
           <div class="bot-status">
             <span class="status-dot"></span>
-            <span class="status-label" data-en="Online · Ready to help" data-ru="В сети · Готов помочь">Online · Ready to help</span>
+            <span class="status-label" data-en="Online · Ready to help" data-ru="В сети · Готов помочь" data-ko="온라인 · 도움 준비 완료">Online · Ready to help</span>
           </div>
         </div>
       </div>
-      <button class="lang-btn" id="langBtn">RU</button>
+      <button class="lang-btn" id="langBtn" title="Language">RU</button>
     </div>
 
     <!-- Messages -->
@@ -361,7 +361,8 @@
       <div class="msg bot">
         <div class="bubble"
           data-en="Hi! I can help you submit or track service requests. Choose an option or type a number:&lt;br&gt;&lt;br&gt;1 — New request&lt;br&gt;2 — Track my request&lt;br&gt;3 — Request callback&lt;br&gt;4 — FAQ"
-          data-ru="Привет! Помогу подать или отследить заявку. Выберите пункт или введите цифру:&lt;br&gt;&lt;br&gt;1 — Подать заявку&lt;br&gt;2 — Отследить заявку&lt;br&gt;3 — Обратный звонок&lt;br&gt;4 — Частые вопросы">
+          data-ru="Привет! Помогу подать или отследить заявку. Выберите пункт или введите цифру:&lt;br&gt;&lt;br&gt;1 — Подать заявку&lt;br&gt;2 — Отследить заявку&lt;br&gt;3 — Обратный звонок&lt;br&gt;4 — Частые вопросы"
+          data-ko="안녕하세요! 서비스 신청이나 접수 현황 조회를 도와드릴게요. 버튼을 누르거나 번호를 입력하세요:&lt;br&gt;&lt;br&gt;1 — 신규 신청&lt;br&gt;2 — 신청 조회&lt;br&gt;3 — 상담 요청&lt;br&gt;4 — 자주 묻는 질문">
           Hi! I can help you submit or track service requests. Choose an option or type a number:<br><br>1 — New request<br>2 — Track my request<br>3 — Request callback<br>4 — FAQ
         </div>
         <span class="msg-time">now</span>
@@ -378,7 +379,8 @@
       <input class="msg-input" id="msgInput" type="text"
         placeholder="Write a message…"
         data-en="Write a message…"
-        data-ru="Написать сообщение…">
+        data-ru="Написать сообщение…"
+        data-ko="메시지를 입력하세요…">
       <button class="send-btn" id="sendBtn" aria-label="Send">
         <svg viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2v7z"/></svg>
       </button>
@@ -407,45 +409,50 @@
   /* ── Language ── */
   function applyLang(l) {
     state.lang = l;
-    langBtn.textContent = l === 'en' ? 'RU' : 'EN';
+    const next = { en: 'RU', ru: 'KO', ko: 'EN' };
+    langBtn.textContent = next[l] || 'RU';
     document.querySelectorAll('[data-en]').forEach(el => {
       const val = el.dataset[l] || el.dataset.en;
+      if (!val) return;
       if (el.tagName === 'INPUT') el.placeholder = val;
       else if (el.classList.contains('bubble')) el.innerHTML = val;
       else el.textContent = val;
     });
     renderPanel(); // re-label panel chips in new language
   }
-  langBtn.addEventListener('click', () => applyLang(state.lang === 'en' ? 'ru' : 'en'));
+  langBtn.addEventListener('click', () => {
+    const cycle = { en: 'ru', ru: 'ko', ko: 'en' };
+    applyLang(cycle[state.lang] || 'en');
+  });
 
   const L  = () => state.lang;
-  const t  = (en, ru) => L() === 'ru' ? ru : en;
+  const t  = (en, ru, ko) => L() === 'ko' ? (ko || en) : L() === 'ru' ? ru : en;
   const nl = '<br>';
 
   /* ── Intent parser ── */
   function parseIntent(raw, step) {
     const s = raw.trim().toLowerCase();
     if (step === 'menu') {
-      if (/^(1|new|submit|new request|новую|подать|заявк)/.test(s))        return 'new';
-      if (/^(2|track|status|find|check|отследить|найти|номер|queue)/.test(s)) return 'track';
-      if (/^(3|callback|call|manager|менеджер|звонок|перезвон)/.test(s))    return 'callback';
-      if (/^(4|faq|help|помощь|вопрос)/.test(s))                            return 'faq';
+      if (/^(1|new|submit|new request|новую|подать|заявк|신청|신규)/.test(s))        return 'new';
+      if (/^(2|track|status|find|check|отследить|найти|номер|queue|조회|현황|번호)/.test(s)) return 'track';
+      if (/^(3|callback|call|manager|менеджер|звонок|перезвон|상담|전화|콜백)/.test(s))    return 'callback';
+      if (/^(4|faq|help|помощь|вопрос|질문|도움)/.test(s))                            return 'faq';
       return null;
     }
     if (step === 'new_confirm') {
-      if (/^(yes|y|ok|confirm|submit|да|подтвер|отправ)/.test(s))          return 'confirm';
-      if (/^(no|n|restart|again|start over|нет|заново|начать|сначала)/.test(s)) return 'restart';
+      if (/^(yes|y|ok|confirm|submit|да|подтвер|отправ|네|예|확인|제출)/.test(s))          return 'confirm';
+      if (/^(no|n|restart|again|start over|нет|заново|начать|сначала|아니|다시|처음)/.test(s)) return 'restart';
       return null;
     }
     if (['new_email','new_desc','cb_msg'].includes(step)) {
-      if (/^(skip|no|нет|пропустить|-)$/.test(s)) return 'skip';
+      if (/^(skip|no|нет|пропустить|-|건너뛰|스킵)$/.test(s)) return 'skip';
       return null;
     }
     if (step === 'faq') {
-      if (/^(1|time|long|process|days|срок|сколько|дней|времен)/.test(s))  return 'faq_time';
-      if (/^(2|doc|document|какие|документ)/.test(s))                       return 'faq_docs';
-      if (/^(3|pay|payment|price|cost|оплат|цен|стоим)/.test(s))           return 'faq_pay';
-      if (/^(0|back|menu|главн|назад|меню)/.test(s))                        return 'faq_back';
+      if (/^(1|time|long|process|days|срок|сколько|дней|времен|기간|시간|며칠)/.test(s))  return 'faq_time';
+      if (/^(2|doc|document|какие|документ|서류|문서|필요)/.test(s))                       return 'faq_docs';
+      if (/^(3|pay|payment|price|cost|оплат|цен|стоим|결제|비용|가격)/.test(s))           return 'faq_pay';
+      if (/^(0|back|menu|главн|назад|меню|뒤로|메뉴|돌아)/.test(s))                        return 'faq_back';
       return null;
     }
     return null;
@@ -466,14 +473,20 @@
   }
 
   function statusLabel(s) {
-    return { new: t('New','Новая'), in_progress: t('In Progress','В обработке'), completed: t('Completed','Завершено'), incomplete: t('Incomplete','Не завершено') }[s] || s;
+    return {
+      new:         t('New',         'Новая',         '신규'),
+      in_progress: t('In Progress', 'В работе',      '처리 중'),
+      completed:   t('Completed',   'Завершена',      '완료'),
+      incomplete:  t('Incomplete',  'Не завершена',   '미완료'),
+    }[s] || s;
   }
 
   /* ─────────────────────────────────────────────────────────────────────────
      WEB UI — MESSAGES
   ───────────────────────────────────────────────────────────────────────── */
   function nowTime() {
-    return new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const loc = L() === 'ko' ? 'ko-KR' : L() === 'ru' ? 'ru-RU' : 'en-US';
+    return new Date().toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit', hour12: false });
   }
   function addMsg(who, html) {
     const d = document.createElement('div');
@@ -525,6 +538,7 @@
       b.className    = 'qr-chip';
       b.dataset.en   = opt.label_en;
       b.dataset.ru   = opt.label_ru || opt.label_en;
+      b.dataset.ko   = opt.label_ko || opt.label_en;
       b.textContent  = opt['label_' + L()] || opt.label_en;
       b.addEventListener('click', () => {
         const label   = b.textContent;
@@ -542,26 +556,26 @@
      FLOW OPTION SETS
   ───────────────────────────────────────────────────────────────────────── */
   const MENU_QR = [
-    { label_en: '📋 New request',      label_ru: '📋 Новая заявка',      value: 'new'      },
-    { label_en: '🔍 Track my request', label_ru: '🔍 Отследить заявку',  value: 'track'    },
-    { label_en: '💬 Request callback', label_ru: '💬 Обратный звонок',   value: 'callback' },
-    { label_en: '❓ FAQ',              label_ru: '❓ Частые вопросы',     value: 'faq'      },
+    { label_en: '📋 New request',      label_ru: '📋 Новая заявка',      label_ko: '📋 신규 신청',      value: 'new'      },
+    { label_en: '🔍 Track my request', label_ru: '🔍 Отследить заявку',  label_ko: '🔍 신청 조회',      value: 'track'    },
+    { label_en: '💬 Request callback', label_ru: '💬 Обратный звонок',   label_ko: '💬 상담 요청',      value: 'callback' },
+    { label_en: '❓ FAQ',              label_ru: '❓ Частые вопросы',     label_ko: '❓ 자주 묻는 질문', value: 'faq'      },
   ];
 
   const SKIP_QR = [
-    { label_en: 'Skip', label_ru: 'Пропустить', value: 'skip' },
+    { label_en: 'Skip', label_ru: 'Пропустить', label_ko: '건너뛰기', value: 'skip' },
   ];
 
   const CONFIRM_QR = [
-    { label_en: '✅ Yes, submit',  label_ru: '✅ Да, отправить', value: 'confirm' },
-    { label_en: '✏️ Start over',  label_ru: '✏️ Начать заново', value: 'restart' },
+    { label_en: '✅ Yes, submit',  label_ru: '✅ Да, отправить', label_ko: '✅ 제출하기',   value: 'confirm' },
+    { label_en: '✏️ Start over',  label_ru: '✏️ Начать заново', label_ko: '✏️ 다시 입력', value: 'restart' },
   ];
 
   const FAQ_QR = [
-    { label_en: '⏱ Processing time',    label_ru: '⏱ Сроки обработки',   value: 'faq_time' },
-    { label_en: '📂 Required documents', label_ru: '📂 Нужные документы', value: 'faq_docs' },
-    { label_en: '💳 Payment & pricing',  label_ru: '💳 Оплата и цены',    value: 'faq_pay'  },
-    { label_en: '← Back',               label_ru: '← Назад',             value: 'faq_back' },
+    { label_en: '⏱ Processing time',    label_ru: '⏱ Сроки обработки',   label_ko: '⏱ 처리 기간',      value: 'faq_time' },
+    { label_en: '📂 Required documents', label_ru: '📂 Нужные документы', label_ko: '📂 필요 서류',      value: 'faq_docs' },
+    { label_en: '💳 Payment & pricing',  label_ru: '💳 Оплата и цены',    label_ko: '💳 결제 및 요금',   value: 'faq_pay'  },
+    { label_en: '← Back',               label_ru: '← Назад',             label_ko: '← 돌아가기',        value: 'faq_back' },
   ];
 
   /* ─────────────────────────────────────────────────────────────────────────
@@ -574,7 +588,8 @@
     state.data = {};
     addMsg('bot',
       t('How can I help? Tap a button or type 1 / 2 / 3 / 4.',
-        'Чем могу помочь? Нажмите кнопку или введите 1 / 2 / 3 / 4.')
+        'Чем могу помочь? Нажмите кнопку или введите 1 / 2 / 3 / 4.',
+        '무엇을 도와드릴까요? 버튼을 누르거나 1 / 2 / 3 / 4를 입력하세요.')
     );
     setPanel(MENU_QR, handleMenuAction);
   }
@@ -593,7 +608,8 @@
     setPanel([], null);
     addMsg('bot', t(
       "Let's submit a request. What is your full name?",
-      'Оформим заявку. Как вас зовут?'
+      'Оформим заявку. Как вас зовут?',
+      '신청서를 작성합니다. 성함을 입력해 주세요.'
     ));
   }
 
@@ -602,14 +618,15 @@
       state.data.name = text;
       state.step      = 'new_phone';
       setPanel([], null);
-      addMsg('bot', t('Your phone number?', 'Ваш номер телефона?'));
+      addMsg('bot', t('Your phone number?', 'Ваш номер телефона?', '전화번호를 입력해 주세요.'));
 
     } else if (state.step === 'new_phone') {
       state.data.phone = text;
       state.step       = 'new_email';
       addMsg('bot', t(
         'Your email? (type it or tap Skip)',
-        'Ваш email? (напишите или нажмите «Пропустить»)'
+        'Ваш email? (напишите или нажмите «Пропустить»)',
+        '이메일 주소를 입력해 주세요. (없으면 건너뛰기)'
       ));
       setPanel(SKIP_QR, () => { state.data.email = ''; goToDesc(); });
 
@@ -627,7 +644,8 @@
     state.step = 'new_desc';
     addMsg('bot', t(
       'Briefly describe your request. (or tap Skip)',
-      'Кратко опишите заявку. (или «Пропустить»)'
+      'Кратко опишите заявку. (или «Пропустить»)',
+      '신청 내용을 간략히 설명해 주세요. (없으면 건너뛰기)'
     ));
     setPanel(SKIP_QR, () => { state.data.comment = ''; showConfirm(); });
   }
@@ -636,15 +654,16 @@
     state.step = 'new_confirm';
     const d = state.data;
     const lines = [
-      `${t('Name','Имя')}: <b>${d.name}</b>`,
-      `${t('Phone','Телефон')}: <b>${d.phone}</b>`,
+      `${t('Name','Имя','이름')}: <b>${d.name}</b>`,
+      `${t('Phone','Телефон','전화번호')}: <b>${d.phone}</b>`,
       d.email   ? `Email: <b>${d.email}</b>` : '',
-      d.comment ? `${t('Note','Примечание')}: <b>${d.comment.slice(0,80)}${d.comment.length > 80 ? '…' : ''}</b>` : '',
+      d.comment ? `${t('Note','Примечание','내용')}: <b>${d.comment.slice(0,80)}${d.comment.length > 80 ? '…' : ''}</b>` : '',
     ].filter(Boolean).join(nl);
     addMsg('bot',
-      t('Please confirm:', 'Подтвердите данные:') + nl + nl + lines + nl + nl +
+      t('Please confirm:', 'Подтвердите данные:', '정보를 확인해 주세요:') + nl + nl + lines + nl + nl +
       t('Reply "yes" to submit or "no" to start over.',
-        'Ответьте «да» для отправки или «нет» для повтора.')
+        'Ответьте «да» для отправки или «нет» для повтора.',
+        '제출하려면 "예", 다시 입력하려면 "아니요"를 누르세요.')
     );
     setPanel(CONFIRM_QR, v => v === 'confirm' ? submitNewRequest() : startNewRequest());
   }
@@ -660,12 +679,14 @@
     if (r.ok) {
       addMsg('bot', t(
         `✅ Request submitted. Your number: <b>#${r.data.queue_number}</b>. A manager will contact you soon.`,
-        `✅ Заявка принята. Ваш номер: <b>#${r.data.queue_number}</b>. Менеджер свяжется с вами.`
+        `✅ Заявка принята. Ваш номер: <b>#${r.data.queue_number}</b>. Менеджер свяжется с вами.`,
+        `✅ 신청이 접수되었습니다. 접수 번호: <b>#${r.data.queue_number}</b>. 담당자가 곧 연락드리겠습니다.`
       ));
     } else {
       addMsg('bot', t(
         `❌ Could not submit: ${r.data.error || 'error'}. Please try again.`,
-        `❌ Ошибка: ${r.data.error || 'ошибка'}. Попробуйте снова.`
+        `❌ Ошибка: ${r.data.error || 'ошибка'}. Попробуйте снова.`,
+        `❌ 신청에 실패했습니다: ${r.data.error || '오류'}. 다시 시도해 주세요.`
       ));
     }
     state.step = 'done';
@@ -678,7 +699,8 @@
     setPanel([], null);
     addMsg('bot', t(
       'Enter your queue number (e.g. 5) or the phone you registered with.',
-      'Введите номер в очереди (например, 5) или телефон, с которым подавали заявку.'
+      'Введите номер в очереди (например, 5) или телефон, с которым подавали заявку.',
+      '접수 번호(예: 5) 또는 등록 시 사용한 전화번호를 입력해 주세요.'
     ));
   }
 
@@ -688,23 +710,26 @@
     removeTyping();
     if (!r.ok) {
       addMsg('bot', r.data.error === 'Not found'
-        ? t('No request found. Check the number or phone and try again.', 'Заявка не найдена. Проверьте номер или телефон.')
-        : t('Something went wrong. Please try again.', 'Что-то пошло не так. Попробуйте снова.')
+        ? t('No request found. Check the number or phone and try again.',
+            'Заявка не найдена. Проверьте номер или телефон.',
+            '신청서를 찾을 수 없습니다. 번호 또는 전화번호를 확인해 주세요.')
+        : t('Something went wrong. Please try again.',
+            'Что-то пошло не так. Попробуйте снова.',
+            '오류가 발생했습니다. 다시 시도해 주세요.')
       );
       state.step = 'done';
       setTimeout(showMainMenu, 1400);
       return;
     }
     const a       = r.data;
-    const created = new Date(a.created_at).toLocaleDateString(
-      L() === 'ru' ? 'ru-RU' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' }
-    );
+    const locale  = L() === 'ko' ? 'ko-KR' : L() === 'ru' ? 'ru-RU' : 'en-US';
+    const created = new Date(a.created_at).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
     addMsg('bot',
-      t('Request found:', 'Заявка найдена:') + nl + nl +
-      `${t('Queue #','Номер')}: <b>${a.queue_number}</b>` + nl +
-      `${t('Name','Имя')}: <b>${a.name}</b>` + nl +
-      `${t('Status','Статус')}: <b>${statusLabel(a.status)}</b>` + nl +
-      `${t('Submitted','Подана')}: <b>${created}</b>`
+      t('Request found:', 'Заявка найдена:', '신청서를 찾았습니다:') + nl + nl +
+      `${t('Queue #', 'Номер', '접수 번호')}: <b>${a.queue_number}</b>` + nl +
+      `${t('Name', 'Имя', '이름')}: <b>${a.name}</b>` + nl +
+      `${t('Status', 'Статус', '상태')}: <b>${statusLabel(a.status)}</b>` + nl +
+      `${t('Submitted', 'Подана', '접수일')}: <b>${created}</b>`
     );
     state.step = 'done';
     setTimeout(showMainMenu, 1600);
@@ -717,7 +742,8 @@
     setPanel([], null);
     addMsg('bot', t(
       "I'll arrange a callback. Your name?",
-      'Организую обратный звонок. Как вас зовут?'
+      'Организую обратный звонок. Как вас зовут?',
+      '전화 상담을 신청합니다. 성함을 입력해 주세요.'
     ));
   }
 
@@ -726,14 +752,19 @@
       state.data.name = text;
       state.step      = 'cb_phone';
       setPanel([], null);
-      addMsg('bot', t('Phone number to call?', 'Номер телефона для звонка?'));
+      addMsg('bot', t(
+        'Phone number to call?',
+        'Номер телефона для звонка?',
+        '연락받을 전화번호를 입력해 주세요.'
+      ));
 
     } else if (state.step === 'cb_phone') {
       state.data.phone = text;
       state.step       = 'cb_msg';
       addMsg('bot', t(
         'Any message for the manager? (or tap Skip)',
-        'Сообщение для менеджера? (или «Пропустить»)'
+        'Сообщение для менеджера? (или «Пропустить»)',
+        '담당자에게 전달할 메시지를 입력해 주세요. (없으면 건너뛰기)'
       ));
       setPanel(SKIP_QR, () => { state.data.msg = ''; submitCallback(); });
 
@@ -746,13 +777,21 @@
   async function submitCallback() {
     setPanel([], null);
     showTyping();
-    const comment = t('Callback request', 'Обратный звонок') + (state.data.msg ? ': ' + state.data.msg : '');
+    const comment = t('Callback request', 'Обратный звонок', '전화 상담 요청') + (state.data.msg ? ': ' + state.data.msg : '');
     const r = await apiPost('/api/intake', { name: state.data.name, phone: state.data.phone, comment, source: 'bot' });
     removeTyping();
     if (r.ok) {
-      addMsg('bot', t('✅ Noted! A manager will call you back shortly.', '✅ Принято! Менеджер перезвонит вам.'));
+      addMsg('bot', t(
+        '✅ Noted! A manager will call you back shortly.',
+        '✅ Принято! Менеджер перезвонит вам.',
+        '✅ 접수되었습니다! 담당자가 곧 전화드리겠습니다.'
+      ));
     } else {
-      addMsg('bot', t('❌ Something went wrong. Please try again.', '❌ Ошибка. Попробуйте снова.'));
+      addMsg('bot', t(
+        '❌ Something went wrong. Please try again.',
+        '❌ Ошибка. Попробуйте снова.',
+        '❌ 오류가 발생했습니다. 다시 시도해 주세요.'
+      ));
     }
     state.step = 'done';
     setTimeout(showMainMenu, 1400);
@@ -763,7 +802,8 @@
     state.step = 'faq';
     addMsg('bot',
       t('FAQ — tap a topic or type 1 / 2 / 3 / 0 to go back.',
-        'Вопросы — нажмите тему или введите 1 / 2 / 3 / 0 для возврата.')
+        'Вопросы — нажмите тему или введите 1 / 2 / 3 / 0 для возврата.',
+        '자주 묻는 질문 — 주제를 선택하거나 1 / 2 / 3 / 0으로 돌아가세요.')
     );
     setPanel(FAQ_QR, handleFaqAction);
   }
@@ -773,17 +813,20 @@
     if (value === 'faq_time') {
       addMsg('bot', t(
         'Standard requests: 3–5 business days. Urgent: 1–2 days (additional fee applies).',
-        'Стандартные заявки: 3–5 рабочих дней. Срочно: 1–2 дня (доп. оплата).'
+        'Стандартные заявки: 3–5 рабочих дней. Срочно: 1–2 дня (доп. оплата).',
+        '일반 신청: 영업일 기준 3~5일. 긴급 처리: 1~2일 (추가 비용 발생).'
       ));
     } else if (value === 'faq_docs') {
       addMsg('bot', t(
         'Usually: valid ID, proof of address, relevant certificates. The exact list depends on the service.',
-        'Обычно: удостоверение личности, подтверждение адреса, сертификаты. Список зависит от услуги.'
+        'Обычно: удостоверение личности, подтверждение адреса, сертификаты. Список зависит от услуги.',
+        '일반적으로 신분증, 주소 확인 서류, 관련 증명서가 필요합니다. 서비스에 따라 목록이 달라질 수 있습니다.'
       ));
     } else if (value === 'faq_pay') {
       addMsg('bot', t(
         'We accept bank transfer, card, and cash at the office. Pricing varies by service.',
-        'Принимаем перевод, карту и наличные в офисе. Цены зависят от типа услуги.'
+        'Принимаем перевод, карту и наличные в офисе. Цены зависят от типа услуги.',
+        '계좌이체, 카드, 현금(창구)으로 결제 가능합니다. 요금은 서비스마다 다릅니다.'
       ));
     }
     state.step = 'done';
@@ -799,7 +842,7 @@
 
     if (step === 'menu') {
       if (intent) handleMenuAction(intent);
-      else addMsg('bot', t('Please type 1, 2, 3, or 4.', 'Введите 1, 2, 3 или 4.'));
+      else addMsg('bot', t('Please type 1, 2, 3, or 4.', 'Введите 1, 2, 3 или 4.', '1, 2, 3 또는 4를 입력해 주세요.'));
       return;
     }
     if (['new_name','new_phone','new_email','new_desc'].includes(step)) {
@@ -812,7 +855,7 @@
     if (step === 'new_confirm') {
       if (intent === 'confirm')      submitNewRequest();
       else if (intent === 'restart') startNewRequest();
-      else addMsg('bot', t('Reply "yes" to submit or "no" to start over.', 'Ответьте «да» или «нет».'));
+      else addMsg('bot', t('Reply "yes" to submit or "no" to start over.', 'Ответьте «да» или «нет».', '"예" 또는 "아니요"를 입력해 주세요.'));
       return;
     }
     if (step === 'track_query') { handleTrack(txt); return; }
@@ -823,10 +866,10 @@
     }
     if (step === 'faq') {
       if (intent) handleFaqAction(intent);
-      else addMsg('bot', t('Type 1, 2, 3, or 0 to go back.', 'Введите 1, 2, 3 или 0.'));
+      else addMsg('bot', t('Type 1, 2, 3, or 0 to go back.', 'Введите 1, 2, 3 или 0.', '1, 2, 3 또는 0을 입력해 주세요.'));
       return;
     }
-    addMsg('bot', t('Got it. A specialist will be in touch.', 'Принято. Специалист свяжется с вами.'));
+    addMsg('bot', t('Got it. A specialist will be in touch.', 'Принято. Специалист свяжется с вами.', '확인했습니다. 담당자가 곧 연락드리겠습니다.'));
     setTimeout(showMainMenu, 1200);
   }
 

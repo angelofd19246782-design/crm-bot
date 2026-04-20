@@ -1250,30 +1250,30 @@
           <rect x="1" y="11.5" width="7.5" height="7.5" rx="1.5"/>
           <rect x="11.5" y="11.5" width="7.5" height="7.5" rx="1.5"/>
         </svg>
-        <span data-en="Dashboard" data-ru="Дашборд">Dashboard</span>
+        <span data-en="Dashboard" data-ru="Дашборд" data-ko="대시보드">Dashboard</span>
       </a>
       <a class="nav-item" data-view="requests" href="#">
         <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
           <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-.293.707L13 10.414V17a1 1 0 01-1.447.894l-4-2A1 1 0 017 15v-4.586L3.293 6.707A1 1 0 013 6V4z"/>
         </svg>
-        <span data-en="Requests" data-ru="Заявки">Requests</span>
+        <span data-en="Requests" data-ru="Заявки" data-ko="신청 목록">Requests</span>
         <span class="nav-badge" id="navBadgeNew">0</span>
       </a>
       <a class="nav-item" data-view="trash" href="#" data-admin-only>
         <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
         </svg>
-        <span data-en="Trash" data-ru="Корзина">Trash</span>
+        <span data-en="Trash" data-ru="Корзина" data-ko="휴지통">Trash</span>
         <span class="nav-badge red" id="trashBadge" style="display:none">0</span>
       </a>
 
-      <div class="nav-section" data-admin-only>Admin</div>
+      <div class="nav-section" data-admin-only data-en="Admin" data-ru="Администрирование" data-ko="관리">Admin</div>
 
       <a class="nav-item" data-view="users" href="#" data-admin-only>
         <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
         </svg>
-        <span data-en="Users" data-ru="Пользователи">Users</span>
+        <span data-en="Users" data-ru="Пользователи" data-ko="사용자">Users</span>
       </a>
     </nav>
 
@@ -1296,7 +1296,7 @@
 
     <!-- Topbar -->
     <header class="topbar">
-      <span class="topbar-title" id="topbarTitle" data-en="Dashboard" data-ru="Дашборд">Dashboard</span>
+      <span class="topbar-title" id="topbarTitle" data-en="Dashboard" data-ru="Дашборд" data-ko="대시보드">Dashboard</span>
       <span class="topbar-sep"></span>
       <span class="topbar-date" id="topDate"></span>
 
@@ -1304,13 +1304,14 @@
         <div class="lang-switch">
           <button class="ls-btn active" id="lsEn">EN</button>
           <button class="ls-btn" id="lsRu">RU</button>
+          <button class="ls-btn" id="lsKo">KO</button>
         </div>
 
         <button class="btn-primary" id="newReqBtn">
           <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
           </svg>
-          <span data-en="New Request" data-ru="Новая заявка">New Request</span>
+          <span data-en="New Request" data-ru="Новая заявка" data-ko="신청서 등록">New Request</span>
         </button>
 
         <div class="topbar-user-avatar" id="topbarUserAvatar">?</div>
@@ -1325,8 +1326,8 @@
 
         <div class="page-hdr">
           <div>
-            <h1 data-en="Dashboard" data-ru="Дашборд">Dashboard</h1>
-            <div class="page-hdr-sub" data-en="Overview of all service requests" data-ru="Обзор всех заявок">Overview of all service requests</div>
+            <h1 data-en="Dashboard" data-ru="Дашборд" data-ko="대시보드">Dashboard</h1>
+            <div class="page-hdr-sub" data-en="Overview of all service requests" data-ru="Обзор всех заявок" data-ko="서비스 신청 현황">Overview of all service requests</div>
           </div>
         </div>
 
@@ -1334,7 +1335,7 @@
         <div class="kpi-row">
           <div class="kpi-card c-indigo">
             <div class="kpi-top">
-              <span class="kpi-label" data-en="Total Active" data-ru="Всего активных">Total Active</span>
+              <span class="kpi-label" data-en="Total Active" data-ru="Активных" data-ko="전체 활성">Total Active</span>
               <div class="kpi-icon">
                 <svg viewBox="0 0 20 20" fill="currentColor">
                   <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
@@ -1344,13 +1345,13 @@
             </div>
             <div class="kpi-val" id="kpiTotal">—</div>
             <div class="kpi-change flat">
-              <span data-en="All active requests" data-ru="Все активные заявки">All active requests</span>
+              <span data-en="All active requests" data-ru="Все активные заявки" data-ko="전체 활성 신청서">All active requests</span>
             </div>
           </div>
 
           <div class="kpi-card c-green">
             <div class="kpi-top">
-              <span class="kpi-label" data-en="Completed" data-ru="Завершено">Completed</span>
+              <span class="kpi-label" data-en="Completed" data-ru="Завершено" data-ko="완료">Completed</span>
               <div class="kpi-icon">
                 <svg viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
@@ -1365,7 +1366,7 @@
 
           <div class="kpi-card c-amber">
             <div class="kpi-top">
-              <span class="kpi-label" data-en="New" data-ru="Новые">New</span>
+              <span class="kpi-label" data-en="New" data-ru="Новые" data-ko="신규">New</span>
               <div class="kpi-icon">
                 <svg viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
@@ -1374,13 +1375,13 @@
             </div>
             <div class="kpi-val" id="kpiNew">—</div>
             <div class="kpi-change down">
-              <span data-en="Awaiting assignment" data-ru="Ожидают назначения">Awaiting assignment</span>
+              <span data-en="Awaiting assignment" data-ru="Без исполнителя" data-ko="담당자 미배정">Awaiting assignment</span>
             </div>
           </div>
 
           <div class="kpi-card c-blue">
             <div class="kpi-top">
-              <span class="kpi-label" data-en="In Progress" data-ru="В работе">In Progress</span>
+              <span class="kpi-label" data-en="In Progress" data-ru="В работе" data-ko="처리 중">In Progress</span>
               <div class="kpi-icon">
                 <svg viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
@@ -1389,7 +1390,7 @@
             </div>
             <div class="kpi-val" id="kpiInProgress">—</div>
             <div class="kpi-change up">
-              <span data-en="Being processed" data-ru="В обработке">Being processed</span>
+              <span data-en="Being processed" data-ru="Принято в работу" data-ko="검토 중">Being processed</span>
             </div>
           </div>
         </div>
@@ -1399,8 +1400,8 @@
           <div class="chart-card">
             <div class="chart-hdr">
               <div>
-                <div class="chart-title" data-en="Requests Over Time" data-ru="Заявки по времени">Requests Over Time</div>
-                <div class="chart-subtitle" data-en="Last 30 days · daily volume" data-ru="Последние 30 дней · суточный объём">Last 30 days · daily volume</div>
+                <div class="chart-title" data-en="Requests Over Time" data-ru="Заявки по времени" data-ko="기간별 신청 현황">Requests Over Time</div>
+                <div class="chart-subtitle" data-en="Last 30 days · daily volume" data-ru="Последние 30 дней · ежедневный объём" data-ko="최근 30일 · 일별 건수">Last 30 days · daily volume</div>
               </div>
             </div>
             <div class="chart-canvas-wrap" style="height:200px">
@@ -1411,43 +1412,43 @@
           <div class="chart-card">
             <div class="chart-hdr">
               <div>
-                <div class="chart-title" data-en="By Status" data-ru="По статусу">By Status</div>
-                <div class="chart-subtitle" data-en="Request distribution" data-ru="Распределение заявок">Request distribution</div>
+                <div class="chart-title" data-en="By Status" data-ru="По статусу" data-ko="상태별 분포">By Status</div>
+                <div class="chart-subtitle" data-en="Request distribution" data-ru="Распределение заявок" data-ko="신청서 분포">Request distribution</div>
               </div>
             </div>
             <div class="chart-canvas-wrap" style="height:160px;display:flex;align-items:center;justify-content:center;position:relative">
               <canvas id="donutChart"></canvas>
               <div id="donutCenter" style="position:absolute;text-align:center;pointer-events:none">
                 <div style="font-size:24px;font-weight:800;color:var(--text1);letter-spacing:-0.5px;line-height:1">—</div>
-                <div style="font-size:11px;color:var(--text3);margin-top:3px;font-weight:500" data-en="total" data-ru="всего">total</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:3px;font-weight:500" data-en="total" data-ru="всего" data-ko="전체">total</div>
               </div>
             </div>
             <div class="chart-legend">
               <div class="legend-item">
                 <div class="legend-left">
                   <span class="legend-dot" style="background:#22c55e"></span>
-                  <span class="legend-label" data-en="Completed" data-ru="Завершено">Completed</span>
+                  <span class="legend-label" data-en="Completed" data-ru="Завершена" data-ko="완료">Completed</span>
                 </div>
                 <span class="legend-val" id="legendCompleted">—</span>
               </div>
               <div class="legend-item">
                 <div class="legend-left">
                   <span class="legend-dot" style="background:#8b5cf6"></span>
-                  <span class="legend-label" data-en="In Progress" data-ru="В обработке">In Progress</span>
+                  <span class="legend-label" data-en="In Progress" data-ru="В работе" data-ko="처리 중">In Progress</span>
                 </div>
                 <span class="legend-val" id="legendInProgress">—</span>
               </div>
               <div class="legend-item">
                 <div class="legend-left">
                   <span class="legend-dot" style="background:#f59e0b"></span>
-                  <span class="legend-label" data-en="New" data-ru="Новые">New</span>
+                  <span class="legend-label" data-en="New" data-ru="Новые" data-ko="신규">New</span>
                 </div>
                 <span class="legend-val" id="legendNew">—</span>
               </div>
               <div class="legend-item">
                 <div class="legend-left">
                   <span class="legend-dot" style="background:#ef4444"></span>
-                  <span class="legend-label" data-en="Incomplete" data-ru="Не завершено">Incomplete</span>
+                  <span class="legend-label" data-en="Incomplete" data-ru="Не завершена" data-ko="미완료">Incomplete</span>
                 </div>
                 <span class="legend-val" id="legendIncomplete">—</span>
               </div>
@@ -1459,24 +1460,24 @@
         <div class="table-card">
           <div class="table-hdr">
             <div style="display:flex;align-items:center;gap:10px">
-              <span class="table-title" data-en="Recent Requests" data-ru="Последние заявки">Recent Requests</span>
+              <span class="table-title" data-en="Recent Requests" data-ru="Последние заявки" data-ko="최근 신청서">Recent Requests</span>
               <span class="table-count" id="dashTableCount">—</span>
             </div>
             <div class="table-actions">
               <button class="btn-ghost" onclick="navigateTo('requests')">
-                <span data-en="View all" data-ru="Все заявки">View all</span>
+                <span data-en="View all" data-ru="Все заявки" data-ko="전체 보기">View all</span>
               </button>
             </div>
           </div>
           <table>
             <thead>
               <tr>
-                <th data-en="ID" data-ru="ID">ID</th>
-                <th data-en="Client" data-ru="Клиент">Client</th>
-                <th data-en="Description" data-ru="Описание">Description</th>
-                <th data-en="Date" data-ru="Дата">Date</th>
-                <th data-en="Status" data-ru="Статус">Status</th>
-                <th data-en="Source" data-ru="Источник">Source</th>
+                <th data-en="ID" data-ru="ID" data-ko="ID">ID</th>
+                <th data-en="Client" data-ru="Клиент" data-ko="고객">Client</th>
+                <th data-en="Description" data-ru="Описание" data-ko="내용">Description</th>
+                <th data-en="Date" data-ru="Дата" data-ko="날짜">Date</th>
+                <th data-en="Status" data-ru="Статус" data-ko="상태">Status</th>
+                <th data-en="Source" data-ru="Источник" data-ko="접수 경로">Source</th>
                 <th></th>
               </tr>
             </thead>
@@ -1490,30 +1491,30 @@
       <div class="view-section" id="viewRequests" style="display:none">
         <div class="page-hdr">
           <div>
-            <h1 data-en="Requests" data-ru="Заявки">Requests</h1>
-            <div class="page-hdr-sub" data-en="All service requests" data-ru="Все заявки на услуги">All service requests</div>
+            <h1 data-en="Requests" data-ru="Заявки" data-ko="신청 목록">Requests</h1>
+            <div class="page-hdr-sub" data-en="All service requests" data-ru="Полный список заявок" data-ko="전체 서비스 신청서">All service requests</div>
           </div>
         </div>
         <div class="view-toolbar">
-          <input class="search-input" id="reqSearch" placeholder="Search by name, phone…" data-en="Search by name, phone…" data-ru="Поиск по имени, телефону…">
+          <input class="search-input" id="reqSearch" placeholder="Search by name, phone…" data-en="Search by name, phone…" data-ru="Поиск по имени, телефону…" data-ko="이름, 전화번호로 검색…">
           <div id="reqStatusFilterWrap" style="width:158px"></div>
         </div>
         <div class="table-card">
           <div class="table-hdr">
             <div style="display:flex;align-items:center;gap:10px">
-              <span class="table-title" data-en="All Requests" data-ru="Все заявки">All Requests</span>
+              <span class="table-title" data-en="All Requests" data-ru="Все заявки" data-ko="전체 신청서">All Requests</span>
               <span class="table-count" id="reqTableCount">—</span>
             </div>
           </div>
           <table>
             <thead>
               <tr>
-                <th data-en="ID" data-ru="ID">ID</th>
-                <th data-en="Client" data-ru="Клиент">Client</th>
-                <th data-en="Phone" data-ru="Телефон">Phone</th>
-                <th data-en="Date" data-ru="Дата">Date</th>
-                <th data-en="Status" data-ru="Статус">Status</th>
-                <th data-en="Source" data-ru="Источник">Source</th>
+                <th data-en="ID" data-ru="ID" data-ko="ID">ID</th>
+                <th data-en="Client" data-ru="Клиент" data-ko="고객">Client</th>
+                <th data-en="Phone" data-ru="Телефон" data-ko="전화번호">Phone</th>
+                <th data-en="Date" data-ru="Дата" data-ko="날짜">Date</th>
+                <th data-en="Status" data-ru="Статус" data-ko="상태">Status</th>
+                <th data-en="Source" data-ru="Источник" data-ko="접수 경로">Source</th>
                 <th></th>
               </tr>
             </thead>
@@ -1526,25 +1527,25 @@
       <div class="view-section" id="viewTrash" style="display:none">
         <div class="page-hdr">
           <div>
-            <h1 data-en="Trash" data-ru="Корзина">Trash</h1>
-            <div class="page-hdr-sub" data-en="Deleted requests — restore or permanently delete" data-ru="Удалённые заявки — восстановить или удалить навсегда">Deleted requests — restore or permanently delete</div>
+            <h1 data-en="Trash" data-ru="Корзина" data-ko="휴지통">Trash</h1>
+            <div class="page-hdr-sub" data-en="Deleted requests — restore or permanently delete" data-ru="Удалённые заявки — восстановить или удалить насовсем" data-ko="삭제된 신청서 — 복원 또는 영구 삭제">Deleted requests — restore or permanently delete</div>
           </div>
         </div>
         <div class="table-card">
           <div class="table-hdr">
             <div style="display:flex;align-items:center;gap:10px">
-              <span class="table-title" data-en="Deleted Requests" data-ru="Удалённые заявки">Deleted Requests</span>
+              <span class="table-title" data-en="Deleted Requests" data-ru="Удалённые заявки" data-ko="삭제된 신청서">Deleted Requests</span>
               <span class="table-count" id="trashTableCount">—</span>
             </div>
           </div>
           <table>
             <thead>
               <tr>
-                <th data-en="ID" data-ru="ID">ID</th>
-                <th data-en="Client" data-ru="Клиент">Client</th>
-                <th data-en="Phone" data-ru="Телефон">Phone</th>
-                <th data-en="Deleted" data-ru="Удалено">Deleted</th>
-                <th data-en="Status" data-ru="Статус">Status</th>
+                <th data-en="ID" data-ru="ID" data-ko="ID">ID</th>
+                <th data-en="Client" data-ru="Клиент" data-ko="고객">Client</th>
+                <th data-en="Phone" data-ru="Телефон" data-ko="전화번호">Phone</th>
+                <th data-en="Deleted" data-ru="Дата удаления" data-ko="삭제일">Deleted</th>
+                <th data-en="Status" data-ru="Статус" data-ko="상태">Status</th>
                 <th></th>
               </tr>
             </thead>
@@ -1557,14 +1558,14 @@
       <div class="view-section" id="viewUsers" style="display:none">
         <div class="page-hdr">
           <div>
-            <h1 data-en="Users" data-ru="Пользователи">Users</h1>
-            <div class="page-hdr-sub" data-en="Manage system users and roles" data-ru="Управление пользователями и ролями">Manage system users and roles</div>
+            <h1 data-en="Users" data-ru="Пользователи" data-ko="사용자">Users</h1>
+            <div class="page-hdr-sub" data-en="Manage system users and roles" data-ru="Управление пользователями и ролями" data-ko="사용자 및 권한 관리">Manage system users and roles</div>
           </div>
         </div>
         <div class="table-card">
           <div class="table-hdr">
             <div style="display:flex;align-items:center;gap:10px">
-              <span class="table-title" data-en="All Users" data-ru="Все пользователи">All Users</span>
+              <span class="table-title" data-en="All Users" data-ru="Все пользователи" data-ko="전체 사용자">All Users</span>
               <span class="table-count" id="usersTableCount">—</span>
             </div>
           </div>
@@ -1572,9 +1573,9 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th data-en="Username" data-ru="Имя пользователя">Username</th>
-                <th data-en="Role" data-ru="Роль">Role</th>
-                <th data-en="Created" data-ru="Создан">Created</th>
+                <th data-en="Username" data-ru="Логин" data-ko="사용자명">Username</th>
+                <th data-en="Role" data-ru="Роль" data-ko="권한">Role</th>
+                <th data-en="Created" data-ru="Дата создания" data-ko="생성일">Created</th>
                 <th></th>
               </tr>
             </thead>
@@ -1583,25 +1584,25 @@
         </div>
 
         <div class="add-user-card">
-          <h3 data-en="Add New User" data-ru="Добавить пользователя">Add New User</h3>
+          <h3 data-en="Add New User" data-ru="Добавить пользователя" data-ko="사용자 추가">Add New User</h3>
           <form id="addUserForm">
             <div class="add-user-row">
               <div>
-                <label class="form-label" data-en="Username" data-ru="Имя пользователя">Username</label>
+                <label class="form-label" data-en="Username" data-ru="Логин" data-ko="사용자명">Username</label>
                 <input class="form-input" name="username" required placeholder="Username">
               </div>
               <div>
-                <label class="form-label" data-en="Password" data-ru="Пароль">Password</label>
+                <label class="form-label" data-en="Password" data-ru="Пароль" data-ko="비밀번호">Password</label>
                 <input class="form-input" name="password" type="password" required placeholder="Min. 6 characters">
               </div>
               <div>
-                <label class="form-label" data-en="Role" data-ru="Роль">Role</label>
+                <label class="form-label" data-en="Role" data-ru="Роль" data-ko="권한">Role</label>
                 <div id="addUserRoleWrap"></div>
                 <input type="hidden" name="role" id="addUserRoleHidden" value="employee">
               </div>
               <div style="display:flex;align-items:flex-end">
                 <button type="submit" class="btn-submit" style="flex:1;font-size:13px">
-                  <span data-en="Add User" data-ru="Добавить">Add User</span>
+                  <span data-en="Add User" data-ru="Добавить" data-ko="추가">Add User</span>
                 </button>
               </div>
             </div>
@@ -1618,7 +1619,7 @@
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-header">
-    <span class="drawer-title" data-en="Request Detail" data-ru="Детали заявки">Request Detail</span>
+    <span class="drawer-title" data-en="Request Detail" data-ru="Детали заявки" data-ko="신청서 상세">Request Detail</span>
     <button class="drawer-close" id="drawerClose">✕</button>
   </div>
   <div class="drawer-body" id="drawerContent">
@@ -1630,35 +1631,35 @@
 <div class="modal-bd" id="newReqModal">
   <div class="modal-card">
     <div class="modal-hdr">
-      <span class="modal-title" data-en="New Request" data-ru="Новая заявка">New Request</span>
+      <span class="modal-title" data-en="New Request" data-ru="Новая заявка" data-ko="신청서 등록">New Request</span>
       <button class="modal-close" id="closeNewModal">✕</button>
     </div>
     <div class="form-error" id="newReqError"></div>
     <form id="newReqForm">
       <div class="form-row">
-        <label class="form-label" data-en="Full Name *" data-ru="Полное имя *">Full Name *</label>
-        <input class="form-input" name="name" required placeholder="Client name" data-en="Client name" data-ru="Имя клиента">
+        <label class="form-label" data-en="Full Name *" data-ru="Полное имя *" data-ko="성명 *">Full Name *</label>
+        <input class="form-input" name="name" required placeholder="Client name" data-en="Client name" data-ru="Имя клиента" data-ko="고객 이름">
       </div>
       <div class="form-row">
-        <label class="form-label" data-en="Phone" data-ru="Телефон">Phone</label>
-        <input class="form-input" name="phone" placeholder="+7 900 000-0000" data-en="+7 900 000-0000" data-ru="+7 900 000-0000">
+        <label class="form-label" data-en="Phone" data-ru="Телефон" data-ko="전화번호">Phone</label>
+        <input class="form-input" name="phone" placeholder="+7 900 000-0000" data-en="+7 900 000-0000" data-ru="+7 900 000-0000" data-ko="+82 10-0000-0000">
       </div>
       <div class="form-row">
-        <label class="form-label" data-en="Email" data-ru="Email">Email</label>
-        <input class="form-input" name="email" type="email" placeholder="client@example.com" data-en="client@example.com" data-ru="client@example.com">
+        <label class="form-label" data-en="Email" data-ru="Email" data-ko="이메일">Email</label>
+        <input class="form-input" name="email" type="email" placeholder="client@example.com" data-en="client@example.com" data-ru="client@example.com" data-ko="client@example.com">
       </div>
       <div class="form-row">
-        <label class="form-label" data-en="Description" data-ru="Описание">Description</label>
-        <textarea class="form-textarea" name="comment" placeholder="Describe the request…" data-en="Describe the request…" data-ru="Опишите заявку…"></textarea>
+        <label class="form-label" data-en="Description" data-ru="Описание" data-ko="내용">Description</label>
+        <textarea class="form-textarea" name="comment" placeholder="Describe the request…" data-en="Describe the request…" data-ru="Опишите заявку…" data-ko="신청 내용을 입력하세요…"></textarea>
       </div>
       <div class="form-row">
-        <label class="form-label" data-en="Status" data-ru="Статус">Status</label>
+        <label class="form-label" data-en="Status" data-ru="Статус" data-ko="상태">Status</label>
         <div id="newReqStatusWrap"></div>
         <input type="hidden" name="status" id="newReqStatusHidden" value="new">
       </div>
       <div class="form-footer">
-        <button type="button" class="btn-cancel" id="cancelNewReq" data-en="Cancel" data-ru="Отмена">Cancel</button>
-        <button type="submit" class="btn-submit" data-en="Create Request" data-ru="Создать заявку">Create Request</button>
+        <button type="button" class="btn-cancel" id="cancelNewReq" data-en="Cancel" data-ru="Отмена" data-ko="취소">Cancel</button>
+        <button type="submit" class="btn-submit" data-en="Create Request" data-ru="Создать заявку" data-ko="등록">Create Request</button>
       </div>
     </form>
   </div>
@@ -1675,7 +1676,7 @@
     <div class="confirm-title" id="confirmTitle">Are you sure?</div>
     <div class="confirm-body" id="confirmBody">This action cannot be undone.</div>
     <div class="confirm-btns">
-      <button class="confirm-cancel" id="confirmCancel">Cancel</button>
+      <button class="confirm-cancel" id="confirmCancel" data-en="Cancel" data-ru="Отмена" data-ko="취소">Cancel</button>
       <button class="confirm-ok danger" id="confirmOk">Delete</button>
     </div>
   </div>
@@ -1720,11 +1721,21 @@
 
     function getItem(v) { return items.find(i => i.value === v); }
 
+    function itemLabel(it) {
+      if (!it) return '';
+      if (L.lang !== 'en' && it['label_' + L.lang]) return it['label_' + L.lang];
+      return it.label || '';
+    }
+
     function syncTrigger() {
       const it = getItem(current);
       if (it?.dot) { dotEl.style.cssText = `background:${it.dot};display:inline-block`; }
       else { dotEl.style.display = 'none'; }
-      labelEl.textContent = it?.label || items[0]?.label || '';
+      const lbl = itemLabel(it) || itemLabel(items[0]);
+      labelEl.dataset.en = it?.label || items[0]?.label || '';
+      labelEl.dataset.ru = it?.label_ru || it?.label || items[0]?.label_ru || items[0]?.label || '';
+      labelEl.dataset.ko = it?.label_ko || it?.label || items[0]?.label_ko || items[0]?.label || '';
+      labelEl.textContent = lbl;
     }
 
     function syncMenu() {
@@ -1732,8 +1743,23 @@
       items.forEach(it => {
         const row = document.createElement('div');
         row.className = 'cd-item' + (it.value === current ? ' active' : '');
-        row.innerHTML = (it.dot ? `<span class="cd-item-dot" style="background:${it.dot}"></span>` : '') +
-          `<span class="cd-item-label">${it.label}</span><span class="cd-item-check">${CHECK_SVG}</span>`;
+        const lbl = document.createElement('span');
+        lbl.className = 'cd-item-label';
+        lbl.dataset.en = it.label || '';
+        lbl.dataset.ru = it.label_ru || it.label || '';
+        lbl.dataset.ko = it.label_ko || it.label || '';
+        lbl.textContent = itemLabel(it);
+        const check = document.createElement('span');
+        check.className = 'cd-item-check';
+        check.innerHTML = CHECK_SVG;
+        if (it.dot) {
+          const dot = document.createElement('span');
+          dot.className = 'cd-item-dot';
+          dot.style.background = it.dot;
+          row.appendChild(dot);
+        }
+        row.appendChild(lbl);
+        row.appendChild(check);
         row.addEventListener('click', () => {
           current = it.value;
           syncTrigger(); syncMenu(); close();
@@ -1777,18 +1803,18 @@
 
   /* ─── Item definitions ─── */
   const STATUS_ITEMS = [
-    { value: 'new',         label: 'New',         dot: '#f59e0b' },
-    { value: 'in_progress', label: 'In Progress', dot: '#8b5cf6' },
-    { value: 'completed',   label: 'Completed',   dot: '#22c55e' },
-    { value: 'incomplete',  label: 'Incomplete',  dot: '#ef4444' },
+    { value: 'new',         label: 'New',         label_ru: 'Новая',        label_ko: '신규',    dot: '#f59e0b' },
+    { value: 'in_progress', label: 'In Progress', label_ru: 'В работе',     label_ko: '처리 중', dot: '#8b5cf6' },
+    { value: 'completed',   label: 'Completed',   label_ru: 'Завершена',    label_ko: '완료',    dot: '#22c55e' },
+    { value: 'incomplete',  label: 'Incomplete',  label_ru: 'Не завершена', label_ko: '미완료',  dot: '#ef4444' },
   ];
   const STATUS_FILTER_ITEMS = [
-    { value: '', label: 'All statuses' },
+    { value: '', label: 'All statuses', label_ru: 'Все статусы', label_ko: '전체 상태' },
     ...STATUS_ITEMS,
   ];
   const ROLE_ITEMS = [
-    { value: 'employee', label: 'Employee', dot: '#f59e0b' },
-    { value: 'admin',    label: 'Admin',    dot: '#8b5cf6' },
+    { value: 'employee', label: 'Employee', label_ru: 'Сотрудник',     label_ko: '직원',  dot: '#f59e0b' },
+    { value: 'admin',    label: 'Admin',    label_ru: 'Администратор', label_ko: '관리자', dot: '#8b5cf6' },
   ];
 
   /* ─── Custom confirm dialog ─── */
@@ -1846,7 +1872,11 @@
   const initials = currentUser.username.slice(0, 2).toUpperCase();
   document.getElementById('sbAvatar').textContent = initials;
   document.getElementById('sbUserName').textContent = currentUser.username;
-  document.getElementById('sbUserRole').textContent = currentUser.role === 'admin' ? 'Administrator' : 'Employee';
+  const sbRoleEl = document.getElementById('sbUserRole');
+  sbRoleEl.dataset.en = currentUser.role === 'admin' ? 'Administrator' : 'Employee';
+  sbRoleEl.dataset.ru = currentUser.role === 'admin' ? 'Администратор' : 'Сотрудник';
+  sbRoleEl.dataset.ko = currentUser.role === 'admin' ? '관리자' : '직원';
+  sbRoleEl.textContent = sbRoleEl.dataset.en;
   document.getElementById('topbarUserAvatar').textContent = initials;
 
   if (currentUser.role !== 'admin') {
@@ -1858,21 +1888,184 @@
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   });
 
-  /* ── Language ── */
+  /* ── Translations ── */
   const L = { lang: 'en' };
+
+  const TR = {
+    en: {
+      s_new: 'New', s_in_progress: 'In Progress', s_completed: 'Completed', s_incomplete: 'Incomplete',
+      src_crm: 'CRM', src_bot: 'Bot', src_web_form: 'Web Form',
+      r_employee: 'Employee', r_admin: 'Admin',
+      unassigned: '— Unassigned —',
+      restored: 'Request restored', perm_deleted: 'Permanently deleted',
+      user_deleted: 'User deleted', user_created: 'User created',
+      status_updated: 'Status updated', assigned: 'Assignment updated',
+      note_added: 'Note added', file_attached: 'File attached',
+      att_deleted: 'Attachment deleted', moved_trash: 'Moved to trash',
+      req_created: 'Request created', failed: 'Failed',
+      no_requests: 'No requests yet', no_results: 'No requests found', trash_empty: 'Trash is empty',
+      no_notes: 'No notes yet', no_attachments: 'No attachments',
+      perm_del_title: 'Delete permanently?',
+      perm_del_body: 'This request will be removed forever. This cannot be undone.',
+      perm_del_ok: 'Delete forever',
+      del_user_title: name => `Delete "${name}"?`,
+      del_user_body: 'This user will be removed. Their applications will be unassigned.',
+      del_user_ok: 'Delete user',
+      del_att_title: 'Delete attachment?',
+      del_att_body: 'The file will be permanently removed.',
+      del_att_ok: 'Delete',
+      trash_title: 'Move to trash?',
+      trash_body: 'The request will be moved to trash. You can restore it later.',
+      trash_ok: 'Move to trash',
+      contact_info: 'Contact Info', phone: 'Phone', email: 'Email',
+      source: 'Source', assigned_to: 'Assigned to', created: 'Created',
+      description: 'Description', status: 'Status', notes: 'Notes',
+      attachments: 'Attachments', attach_file: '＋ Attach file', move_trash: 'Move to trash',
+      view: 'View', open: 'Open', add: 'Add',
+      restore: 'Restore', del_forever: 'Delete forever', del_btn: 'Delete', you: 'You',
+      pg_dashboard: 'Dashboard', pg_requests: 'Requests', pg_trash: 'Trash', pg_users: 'Users',
+      pg_sub_dashboard: 'Overview of all service requests',
+      pg_sub_requests: 'All service requests',
+      pg_sub_trash: 'Deleted requests — restore or permanently delete',
+      pg_sub_users: 'Manage system users and roles',
+      chart_completed: 'Completed', chart_in_progress: 'In Progress',
+      chart_new: 'New', chart_incomplete: 'Incomplete', chart_tooltip: 'requests',
+      completion_rate: pct => `${pct}% completion rate`,
+      role_admin: 'Administrator', role_employee: 'Employee',
+      loading: 'Loading…', note_placeholder: 'Add a note…',
+      cancel: 'Cancel',
+    },
+    ru: {
+      s_new: 'Новая', s_in_progress: 'В работе', s_completed: 'Завершена', s_incomplete: 'Не завершена',
+      src_crm: 'CRM', src_bot: 'Бот', src_web_form: 'Веб-форма',
+      r_employee: 'Сотрудник', r_admin: 'Администратор',
+      unassigned: '— Не назначен —',
+      restored: 'Заявка восстановлена', perm_deleted: 'Удалено навсегда',
+      user_deleted: 'Пользователь удалён', user_created: 'Пользователь создан',
+      status_updated: 'Статус обновлён', assigned: 'Исполнитель назначен',
+      note_added: 'Заметка добавлена', file_attached: 'Файл прикреплён',
+      att_deleted: 'Файл удалён', moved_trash: 'Заявка перемещена в корзину',
+      req_created: 'Заявка создана', failed: 'Ошибка',
+      no_requests: 'Заявок пока нет', no_results: 'Заявки не найдены', trash_empty: 'Корзина пуста',
+      no_notes: 'Заметок пока нет', no_attachments: 'Файлов нет',
+      perm_del_title: 'Удалить навсегда?',
+      perm_del_body: 'Заявка будет удалена без возможности восстановления.',
+      perm_del_ok: 'Удалить навсегда',
+      del_user_title: name => `Удалить «${name}»?`,
+      del_user_body: 'Пользователь будет удалён. Его заявки останутся без исполнителя.',
+      del_user_ok: 'Удалить пользователя',
+      del_att_title: 'Удалить файл?',
+      del_att_body: 'Файл будет удалён без возможности восстановления.',
+      del_att_ok: 'Удалить',
+      trash_title: 'Переместить в корзину?',
+      trash_body: 'Заявку можно будет восстановить из корзины позже.',
+      trash_ok: 'В корзину',
+      contact_info: 'Контакты', phone: 'Телефон', email: 'Email',
+      source: 'Источник', assigned_to: 'Исполнитель', created: 'Создана',
+      description: 'Описание', status: 'Статус', notes: 'Заметки',
+      attachments: 'Вложения', attach_file: '＋ Прикрепить файл', move_trash: 'В корзину',
+      view: 'Открыть', open: 'Открыть', add: 'Добавить',
+      restore: 'Восстановить', del_forever: 'Удалить навсегда', del_btn: 'Удалить', you: 'Вы',
+      pg_dashboard: 'Дашборд', pg_requests: 'Заявки', pg_trash: 'Корзина', pg_users: 'Пользователи',
+      pg_sub_dashboard: 'Обзор всех заявок',
+      pg_sub_requests: 'Полный список заявок',
+      pg_sub_trash: 'Удалённые заявки — восстановить или удалить насовсем',
+      pg_sub_users: 'Управление пользователями и ролями',
+      chart_completed: 'Завершена', chart_in_progress: 'В работе',
+      chart_new: 'Новая', chart_incomplete: 'Не завершена', chart_tooltip: 'заявок',
+      completion_rate: pct => `${pct}% выполнено`,
+      role_admin: 'Администратор', role_employee: 'Сотрудник',
+      loading: 'Загрузка…', note_placeholder: 'Добавить заметку…',
+      cancel: 'Отмена',
+    },
+    ko: {
+      s_new: '신규', s_in_progress: '처리 중', s_completed: '완료', s_incomplete: '미완료',
+      src_crm: 'CRM', src_bot: '챗봇', src_web_form: '웹 양식',
+      r_employee: '직원', r_admin: '관리자',
+      unassigned: '— 미배정 —',
+      restored: '신청서가 복원되었습니다', perm_deleted: '영구 삭제되었습니다',
+      user_deleted: '사용자가 삭제되었습니다', user_created: '사용자가 생성되었습니다',
+      status_updated: '상태가 변경되었습니다', assigned: '담당자가 지정되었습니다',
+      note_added: '메모가 추가되었습니다', file_attached: '파일이 첨부되었습니다',
+      att_deleted: '파일이 삭제되었습니다', moved_trash: '휴지통으로 이동되었습니다',
+      req_created: '신청서가 등록되었습니다', failed: '오류가 발생했습니다',
+      no_requests: '신청서가 없습니다', no_results: '검색 결과가 없습니다', trash_empty: '휴지통이 비어있습니다',
+      no_notes: '메모가 없습니다', no_attachments: '첨부 파일이 없습니다',
+      perm_del_title: '영구 삭제하시겠습니까?',
+      perm_del_body: '이 신청서는 복원할 수 없습니다.',
+      perm_del_ok: '영구 삭제',
+      del_user_title: name => `"${name}"를 삭제하시겠습니까?`,
+      del_user_body: '사용자가 삭제되며 해당 신청서는 담당자 없이 유지됩니다.',
+      del_user_ok: '사용자 삭제',
+      del_att_title: '파일을 삭제하시겠습니까?',
+      del_att_body: '파일은 복원할 수 없습니다.',
+      del_att_ok: '삭제',
+      trash_title: '휴지통으로 이동하시겠습니까?',
+      trash_body: '나중에 복원할 수 있습니다.',
+      trash_ok: '이동',
+      contact_info: '연락처', phone: '전화번호', email: '이메일',
+      source: '접수 경로', assigned_to: '담당자', created: '접수일',
+      description: '내용', status: '상태', notes: '메모',
+      attachments: '첨부 파일', attach_file: '＋ 파일 첨부', move_trash: '휴지통으로',
+      view: '보기', open: '열기', add: '추가',
+      restore: '복원', del_forever: '영구 삭제', del_btn: '삭제', you: '나',
+      pg_dashboard: '대시보드', pg_requests: '신청 목록', pg_trash: '휴지통', pg_users: '사용자',
+      pg_sub_dashboard: '서비스 신청 현황',
+      pg_sub_requests: '전체 서비스 신청서',
+      pg_sub_trash: '삭제된 신청서 — 복원 또는 영구 삭제',
+      pg_sub_users: '사용자 및 권한 관리',
+      chart_completed: '완료', chart_in_progress: '처리 중',
+      chart_new: '신규', chart_incomplete: '미완료', chart_tooltip: '건',
+      completion_rate: pct => `완료율 ${pct}%`,
+      role_admin: '관리자', role_employee: '직원',
+      loading: '불러오는 중…', note_placeholder: '메모를 입력하세요…',
+      cancel: '취소',
+    },
+  };
+
+  function T(key, ...args) {
+    const val = TR[L.lang]?.[key] ?? TR.en[key] ?? key;
+    return typeof val === 'function' ? val(...args) : val;
+  }
+
+  let _appReady = false;
+
   function applyLang(l) {
     L.lang = l;
     document.getElementById('lsEn').classList.toggle('active', l === 'en');
     document.getElementById('lsRu').classList.toggle('active', l === 'ru');
+    document.getElementById('lsKo').classList.toggle('active', l === 'ko');
     document.querySelectorAll('[data-en]').forEach(el => {
       const v = el.dataset[l] || el.dataset.en;
       if (!v) return;
       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = v;
       else el.textContent = v;
     });
+    // Update date locale
+    const dateLocale = l === 'ru' ? 'ru-RU' : l === 'ko' ? 'ko-KR' : 'en-US';
+    document.getElementById('topDate').textContent = new Date().toLocaleDateString(dateLocale, {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    });
+    // Update donut chart labels if chart exists
+    if (typeof donutChart !== 'undefined' && donutChart) {
+      donutChart.data.labels = [T('chart_completed'), T('chart_in_progress'), T('chart_new'), T('chart_incomplete')];
+      donutChart.update();
+    }
+    // Re-render current view so table content, statuses, and buttons update
+    if (_appReady) {
+      if (typeof drawerAppId !== 'undefined' && drawerAppId) {
+        openDrawer(drawerAppId);
+      } else if (typeof currentView !== 'undefined') {
+        if (currentView === 'dashboard')      loadDashboard();
+        else if (currentView === 'requests')  loadRequests();
+        else if (currentView === 'trash')     loadTrash();
+        else if (currentView === 'users')     loadUsers();
+      }
+    }
   }
   document.getElementById('lsEn').addEventListener('click', () => applyLang('en'));
   document.getElementById('lsRu').addEventListener('click', () => applyLang('ru'));
+  document.getElementById('lsKo').addEventListener('click', () => applyLang('ko'));
   applyLang('en');
 
   /* ─── Static custom dropdowns ─── */
@@ -1924,22 +2117,25 @@
 
   function fmtDate(dt) {
     if (!dt) return '—';
-    return new Date(dt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const locale = L.lang === 'ru' ? 'ru-RU' : L.lang === 'ko' ? 'ko-KR' : 'en-US';
+    return new Date(dt).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
   function statusBadge(status) {
     const map = {
-      new:         { cls: 'pending',    en: 'New',         ru: 'Новая' },
-      in_progress: { cls: 'processing', en: 'In Progress', ru: 'В обработке' },
-      completed:   { cls: 'completed',  en: 'Completed',   ru: 'Завершено' },
-      incomplete:  { cls: 'cancelled',  en: 'Incomplete',  ru: 'Не завершено' },
+      new:         'pending',
+      in_progress: 'processing',
+      completed:   'completed',
+      incomplete:  'cancelled',
     };
-    const m = map[status] || { cls: 'pending', en: status, ru: status };
-    return `<span class="badge ${m.cls}">${m[L.lang] || m.en}</span>`;
+    const cls = map[status] || 'pending';
+    const key = { new: 's_new', in_progress: 's_in_progress', completed: 's_completed', incomplete: 's_incomplete' }[status];
+    return `<span class="badge ${cls}">${key ? T(key) : status}</span>`;
   }
 
   function sourceLabel(src) {
-    return { crm: 'CRM', bot: 'Bot', web_form: 'Web Form' }[src] || src || '—';
+    const key = { crm: 'src_crm', bot: 'src_bot', web_form: 'src_web_form' }[src];
+    return key ? T(key) : (src || '—');
   }
 
   /* ── Navigation ── */
@@ -1952,18 +2148,13 @@
     });
     currentView = view;
 
-    const titles = {
-      dashboard: ['Dashboard', 'Дашборд'],
-      requests:  ['Requests',  'Заявки'],
-      trash:     ['Trash',     'Корзина'],
-      users:     ['Users',     'Пользователи'],
-    };
+    const pgKey = { dashboard: 'pg_dashboard', requests: 'pg_requests', trash: 'pg_trash', users: 'pg_users' }[view];
     const titleEl = document.getElementById('topbarTitle');
-    if (titles[view]) {
-      const [en, ru] = titles[view];
-      titleEl.dataset.en = en;
-      titleEl.dataset.ru = ru;
-      titleEl.textContent = L.lang === 'ru' ? ru : en;
+    if (pgKey) {
+      titleEl.dataset.en = TR.en[pgKey];
+      titleEl.dataset.ru = TR.ru[pgKey];
+      titleEl.dataset.ko = TR.ko[pgKey];
+      titleEl.textContent = T(pgKey);
     }
 
     if (view === 'dashboard') { document.getElementById('viewDashboard').style.display = ''; loadDashboard(); }
@@ -1998,7 +2189,7 @@
 
     const pct = active.total ? Math.round((active.completed / active.total) * 100) : 0;
     const pctEl = document.getElementById('kpiCompletedPct');
-    pctEl.textContent = `${pct}% completion rate`;
+    pctEl.textContent = T('completion_rate', pct);
     pctEl.className = 'kpi-change ' + (pct >= 50 ? 'up' : 'flat');
 
     document.getElementById('legendCompleted').textContent = active.completed ?? 0;
@@ -2062,7 +2253,7 @@
               backgroundColor: '#0f0f1e', titleColor: 'rgba(255,255,255,0.5)',
               bodyColor: '#fff', bodyFont: { weight: '600', size: 13 },
               padding: 10, cornerRadius: 8, displayColors: false,
-              callbacks: { title: items => items[0].label || '', label: item => `${item.raw} requests` }
+              callbacks: { title: items => items[0].label || '', label: item => `${item.raw} ${T('chart_tooltip')}` }
             }
           },
           scales: {
@@ -2081,7 +2272,7 @@
       const ctx2 = document.getElementById('donutChart').getContext('2d');
       donutChart = new Chart(ctx2, {
         type: 'doughnut',
-        data: { labels: ['Completed','In Progress','New','Incomplete'],
+        data: { labels: [T('chart_completed'), T('chart_in_progress'), T('chart_new'), T('chart_incomplete')],
           datasets: [{ data: donutData, backgroundColor: ['#22c55e','#8b5cf6','#f59e0b','#ef4444'], borderWidth: 0, hoverOffset: 4, spacing: 3, borderRadius: 3 }]
         },
         options: {
@@ -2106,7 +2297,7 @@
   function renderDashTable(apps) {
     const tbody = document.getElementById('tableBody');
     if (!apps.length) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">No requests yet</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">${T('no_requests')}</td></tr>`;
       return;
     }
     tbody.innerHTML = apps.map(a => `
@@ -2117,7 +2308,7 @@
         <td style="color:var(--text3);font-size:12.5px;white-space:nowrap">${fmtDate(a.created_at)}</td>
         <td>${statusBadge(a.status)}</td>
         <td class="cell-source">${sourceLabel(a.source)}</td>
-        <td><button class="view-btn" onclick="openDrawer(${a.id})">View</button></td>
+        <td><button class="view-btn" onclick="openDrawer(${a.id})">${T('view')}</button></td>
       </tr>
     `).join('');
   }
@@ -2143,7 +2334,7 @@
     document.getElementById('reqTableCount').textContent = filtered.length;
     const tbody = document.getElementById('reqTableBody');
     if (!filtered.length) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">No requests found</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">${T('no_results')}</td></tr>`;
       return;
     }
     tbody.innerHTML = filtered.map(a => `
@@ -2154,7 +2345,7 @@
         <td style="color:var(--text3);font-size:12.5px;white-space:nowrap">${fmtDate(a.created_at)}</td>
         <td>${statusBadge(a.status)}</td>
         <td class="cell-source">${sourceLabel(a.source)}</td>
-        <td><button class="view-btn" onclick="openDrawer(${a.id})">View</button></td>
+        <td><button class="view-btn" onclick="openDrawer(${a.id})">${T('view')}</button></td>
       </tr>
     `).join('');
   }
@@ -2169,7 +2360,7 @@
     document.getElementById('trashTableCount').textContent = apps.length;
     const tbody = document.getElementById('trashTableBody');
     if (!apps.length) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text3)">Trash is empty</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text3)">${T('trash_empty')}</td></tr>`;
       return;
     }
     tbody.innerHTML = apps.map(a => `
@@ -2180,8 +2371,8 @@
         <td style="color:var(--text3);font-size:12.5px;white-space:nowrap">${fmtDate(a.deleted_at)}</td>
         <td>${statusBadge(a.status)}</td>
         <td style="display:flex;gap:6px">
-          <button class="view-btn" onclick="restoreApp(${a.id})">Restore</button>
-          <button class="view-btn" style="color:var(--red)" onclick="permDeleteApp(${a.id})">Delete forever</button>
+          <button class="view-btn" onclick="restoreApp(${a.id})">${T('restore')}</button>
+          <button class="view-btn" style="color:var(--red)" onclick="permDeleteApp(${a.id})">${T('del_forever')}</button>
         </td>
       </tr>
     `).join('');
@@ -2189,19 +2380,19 @@
 
   window.restoreApp = async function(id) {
     const r = await api('POST', `/api/applications/${id}/restore`);
-    if (r.ok) { toast('Request restored'); loadTrash(); loadDashboard(); }
-    else toast(r.data.error || 'Failed', 'error');
+    if (r.ok) { toast(T('restored')); loadTrash(); loadDashboard(); }
+    else toast(r.data.error || T('failed'), 'error');
   };
 
   window.permDeleteApp = async function(id) {
     customConfirm({
-      title: 'Delete permanently?',
-      body: 'This request will be removed forever. This cannot be undone.',
-      okLabel: 'Delete forever',
+      title: T('perm_del_title'),
+      body: T('perm_del_body'),
+      okLabel: T('perm_del_ok'),
       onOk: async () => {
         const r = await api('DELETE', `/api/applications/${id}/permanent`);
-        if (r.ok) { toast('Permanently deleted'); loadTrash(); }
-        else toast(r.data.error || 'Failed', 'error');
+        if (r.ok) { toast(T('perm_deleted')); loadTrash(); }
+        else toast(r.data.error || T('failed'), 'error');
       },
     });
   };
@@ -2217,11 +2408,11 @@
       <tr>
         <td class="cell-id">${u.id}</td>
         <td class="cell-name">${esc(u.username)}</td>
-        <td><span class="badge ${u.role === 'admin' ? 'processing' : 'pending'}">${u.role}</span></td>
+        <td><span class="badge ${u.role === 'admin' ? 'processing' : 'pending'}">${T(u.role === 'admin' ? 'role_admin' : 'role_employee')}</span></td>
         <td style="color:var(--text3);font-size:12.5px">${fmtDate(u.created_at)}</td>
         <td>${u.id !== currentUser.id
-          ? `<button class="view-btn" style="color:var(--red)" onclick="deleteUser(${u.id},'${esc(u.username)}')">Delete</button>`
-          : `<span style="font-size:12px;color:var(--text3)">You</span>`}
+          ? `<button class="view-btn" style="color:var(--red)" onclick="deleteUser(${u.id},'${esc(u.username)}')">${T('del_btn')}</button>`
+          : `<span style="font-size:12px;color:var(--text3)">${T('you')}</span>`}
         </td>
       </tr>
     `).join('');
@@ -2229,13 +2420,13 @@
 
   window.deleteUser = async function(id, username) {
     customConfirm({
-      title: `Delete "${username}"?`,
-      body: 'This user will be removed. Their applications will be unassigned.',
-      okLabel: 'Delete user',
+      title: T('del_user_title', username),
+      body: T('del_user_body'),
+      okLabel: T('del_user_ok'),
       onOk: async () => {
         const r = await api('DELETE', `/api/users/${id}`);
-        if (r.ok) { toast('User deleted'); loadUsers(); }
-        else toast(r.data.error || 'Failed', 'error');
+        if (r.ok) { toast(T('user_deleted')); loadUsers(); }
+        else toast(r.data.error || T('failed'), 'error');
       },
     });
   };
@@ -2246,9 +2437,9 @@
     errEl.textContent = '';
     const body = Object.fromEntries(new FormData(e.target));
     const r = await api('POST', '/api/users', body);
-    if (!r.ok) { errEl.textContent = r.data.error || 'Failed'; return; }
+    if (!r.ok) { errEl.textContent = r.data.error || T('failed'); return; }
     e.target.reset();
-    toast('User created');
+    toast(T('user_created'));
     loadUsers();
   });
 
@@ -2259,7 +2450,7 @@
     drawerAppId = appId;
     document.getElementById('drawer').classList.add('open');
     document.getElementById('drawerOverlay').classList.add('visible');
-    document.getElementById('drawerContent').innerHTML = '<div style="padding:40px;text-align:center;color:var(--text3)">Loading…</div>';
+    document.getElementById('drawerContent').innerHTML = `<div style="padding:40px;text-align:center;color:var(--text3)">${T('loading')}</div>`;
 
     const [appR, notesR, attR, usersR] = await Promise.all([
       api('GET', `/api/applications/${appId}`),
@@ -2268,7 +2459,7 @@
       currentUser.role === 'admin' ? api('GET', '/api/users') : Promise.resolve({ ok: true, data: [] }),
     ]);
 
-    if (!appR.ok) { toast('Failed to load', 'error'); return; }
+    if (!appR.ok) { toast(T('failed'), 'error'); return; }
     const app     = appR.data;
     const notes   = notesR.ok ? notesR.data : [];
     const atts    = attR.ok  ? attR.data  : [];
@@ -2298,78 +2489,78 @@
       </div>
 
       <div class="drawer-section">
-        <div class="drawer-label" style="margin-bottom:8px">Contact Info</div>
+        <div class="drawer-label" style="margin-bottom:8px">${T('contact_info')}</div>
         <div class="drawer-field">
-          <span class="drawer-field-label">Phone</span>
+          <span class="drawer-field-label">${T('phone')}</span>
           <span class="drawer-val">${esc(app.phone) || '—'}</span>
         </div>
         <div class="drawer-field">
-          <span class="drawer-field-label">Email</span>
+          <span class="drawer-field-label">${T('email')}</span>
           <span class="drawer-val">${esc(app.email) || '—'}</span>
         </div>
         <div class="drawer-field">
-          <span class="drawer-field-label">Source</span>
+          <span class="drawer-field-label">${T('source')}</span>
           <span class="drawer-val">${sourceLabel(app.source)}</span>
         </div>
         <div class="drawer-field">
-          <span class="drawer-field-label">Assigned to</span>
+          <span class="drawer-field-label">${T('assigned_to')}</span>
           ${isAdmin
             ? `<div id="drawerAssignWrap" style="width:172px"></div>`
             : `<span class="drawer-val">${esc(app.assigned_username) || '—'}</span>`}
         </div>
         <div class="drawer-field">
-          <span class="drawer-field-label">Created</span>
+          <span class="drawer-field-label">${T('created')}</span>
           <span class="drawer-val">${fmtDate(app.created_at)}</span>
         </div>
       </div>
 
       ${app.comment ? `
       <div class="drawer-section">
-        <div class="drawer-label" style="margin-bottom:8px">Description</div>
+        <div class="drawer-label" style="margin-bottom:8px">${T('description')}</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.6;background:#f8f8fd;border-radius:10px;padding:12px 14px">${esc(app.comment)}</div>
       </div>` : ''}
 
       ${isAdmin ? `
       <div class="drawer-section">
-        <div class="drawer-label" style="margin-bottom:8px">Status</div>
+        <div class="drawer-label" style="margin-bottom:8px">${T('status')}</div>
         <div id="drawerStatusWrap"></div>
       </div>` : ''}
 
       <div class="drawer-section">
-        <div class="drawer-label" style="margin-bottom:10px">Notes (${notes.length})</div>
+        <div class="drawer-label" style="margin-bottom:10px">${T('notes')} (${notes.length})</div>
         <div id="notesList">
           ${notes.length
-            ? notes.map(n => `<div class="note-item"><div class="note-meta">${esc(n.author || 'Unknown')} · ${fmtDate(n.created_at)}</div><div class="note-text">${esc(n.content)}</div></div>`).join('')
-            : '<div style="font-size:12.5px;color:var(--text3);margin-bottom:10px">No notes yet</div>'}
+            ? notes.map(n => `<div class="note-item"><div class="note-meta">${esc(n.author || '—')} · ${fmtDate(n.created_at)}</div><div class="note-text">${esc(n.content)}</div></div>`).join('')
+            : `<div style="font-size:12.5px;color:var(--text3);margin-bottom:10px">${T('no_notes')}</div>`}
         </div>
         <div style="display:flex;gap:6px;margin-top:8px">
-          <input type="text" id="noteInput" placeholder="Add a note…" class="drawer-input" style="flex:1">
-          <button class="btn-primary" style="height:36px;padding:0 14px;font-size:12.5px" onclick="addNote()">Add</button>
+          <input type="text" id="noteInput" placeholder="${T('note_placeholder')}" class="drawer-input" style="flex:1">
+          <button class="btn-primary" style="height:36px;padding:0 14px;font-size:12.5px" onclick="addNote()">${T('add')}</button>
         </div>
       </div>
 
       <div class="drawer-section">
-        <div class="drawer-label" style="margin-bottom:10px">Attachments (${atts.length})</div>
+        <div class="drawer-label" style="margin-bottom:10px">${T('attachments')} (${atts.length})</div>
         <div id="attList">
           ${atts.map(f => `
             <div class="att-item">
               <div class="att-icon">📎</div>
               <span class="att-name">${esc(f.file_name)}</span>
-              <a href="/api/attachments/${f.id}/view" target="_blank" class="att-link">Open</a>
-              ${isAdmin ? `<button class="att-del" onclick="deleteAtt(${f.id})" title="Delete">✕</button>` : ''}
+              <a href="/api/attachments/${f.id}/view" target="_blank" class="att-link">${T('open')}</a>
+              ${isAdmin ? `<button class="att-del" onclick="deleteAtt(${f.id})" title="${T('del_btn')}">✕</button>` : ''}
             </div>
-          `).join('') || '<div style="font-size:12.5px;color:var(--text3);margin-bottom:8px">No attachments</div>'}
+          `).join('') || `<div style="font-size:12.5px;color:var(--text3);margin-bottom:8px">${T('no_attachments')}</div>`}
         </div>
         <input type="file" id="fileInput" style="display:none" onchange="uploadFile(this)">
         <button class="btn-ghost" style="height:32px;font-size:12px;margin-top:8px" onclick="document.getElementById('fileInput').click()">
-          ＋ Attach file
+          ${T('attach_file')}
         </button>
       </div>
 
       ${isAdmin ? `
       <div class="drawer-section" style="padding-top:16px">
         <button onclick="softDeleteApp(${app.id})" style="font-size:13px;color:var(--red);background:none;border:1.5px solid rgba(239,68,68,0.25);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:inherit;font-weight:500;transition:background 0.15s" onmouseover="this.style.background='rgba(239,68,68,0.05)'" onmouseout="this.style.background='none'">
-          Move to trash
+          ${T('move_trash')}
         </button>
       </div>` : ''}
     `;
@@ -2389,7 +2580,7 @@
     const assignWrap = document.getElementById('drawerAssignWrap');
     if (assignWrap) {
       const assignItems = [
-        { value: '', label: '— Unassigned —' },
+        { value: '', label: T('unassigned') },
         ...users.map(u => ({ value: String(u.id), label: u.username, dot: u.role === 'admin' ? '#8b5cf6' : '#f59e0b' })),
       ];
       createDropdown({
@@ -2406,18 +2597,18 @@
     if (!drawerAppId) return;
     const r = await api('PUT', `/api/applications/${drawerAppId}`, { status });
     if (r.ok) {
-      toast('Status updated');
+      toast(T('status_updated'));
       // Refresh the badge in drawer header
       const badge = document.querySelector('.drawer-app-hdr .badge');
       if (badge) { const tmp = document.createElement('div'); tmp.innerHTML = statusBadge(status); badge.replaceWith(tmp.firstChild); }
-    } else toast(r.data.error || 'Failed', 'error');
+    } else toast(r.data.error || T('failed'), 'error');
   };
 
   window.assignEmployee = async function(empId) {
     if (!drawerAppId) return;
     const r = await api('PUT', `/api/applications/${drawerAppId}`, { assigned_employee_id: empId });
-    if (r.ok) toast('Assignment updated');
-    else toast(r.data.error || 'Failed', 'error');
+    if (r.ok) toast(T('assigned'));
+    else toast(r.data.error || T('failed'), 'error');
   };
 
   window.addNote = async function() {
@@ -2425,7 +2616,7 @@
     const content = input.value.trim();
     if (!content) return;
     const r = await api('POST', `/api/applications/${drawerAppId}/notes`, { content });
-    if (!r.ok) { toast(r.data.error || 'Failed', 'error'); return; }
+    if (!r.ok) { toast(r.data.error || T('failed'), 'error'); return; }
     input.value = '';
     const list = document.getElementById('notesList');
     const n = r.data;
@@ -2434,7 +2625,7 @@
     item.innerHTML = `<div class="note-meta">${esc(n.author || currentUser.username)} · ${fmtDate(n.created_at)}</div><div class="note-text">${esc(n.content)}</div>`;
     if (!list.querySelector('.note-item')) list.innerHTML = '';
     list.prepend(item);
-    toast('Note added');
+    toast(T('note_added'));
   };
 
   window.uploadFile = async function(input) {
@@ -2442,46 +2633,46 @@
     const fd = new FormData();
     fd.append('file', input.files[0]);
     const r = await api('POST', `/api/applications/${drawerAppId}/attachments`, fd);
-    if (!r.ok) { toast(r.data.error || 'Upload failed', 'error'); input.value = ''; return; }
+    if (!r.ok) { toast(r.data.error || T('failed'), 'error'); input.value = ''; return; }
     const att = r.data;
     const list = document.getElementById('attList');
     if (list.querySelector('.att-item') === null) list.innerHTML = '';
     const item = document.createElement('div');
     item.className = 'att-item';
     const isAdmin = currentUser.role === 'admin';
-    item.innerHTML = `<div class="att-icon">📎</div><span class="att-name">${esc(att.file_name)}</span><a href="/api/attachments/${att.id}/view" target="_blank" class="att-link">Open</a>${isAdmin ? `<button class="att-del" onclick="deleteAtt(${att.id})" title="Delete">✕</button>` : ''}`;
+    item.innerHTML = `<div class="att-icon">📎</div><span class="att-name">${esc(att.file_name)}</span><a href="/api/attachments/${att.id}/view" target="_blank" class="att-link">${T('open')}</a>${isAdmin ? `<button class="att-del" onclick="deleteAtt(${att.id})" title="${T('del_btn')}">✕</button>` : ''}`;
     list.appendChild(item);
-    toast('File attached');
+    toast(T('file_attached'));
     input.value = '';
   };
 
   window.deleteAtt = async function(attId) {
     customConfirm({
-      title: 'Delete attachment?',
-      body: 'The file will be permanently removed.',
-      okLabel: 'Delete',
+      title: T('del_att_title'),
+      body: T('del_att_body'),
+      okLabel: T('del_att_ok'),
       onOk: async () => {
         const r = await api('DELETE', `/api/attachments/${attId}`);
-        if (r.ok) { toast('Deleted'); openDrawer(drawerAppId); }
-        else toast(r.data.error || 'Failed', 'error');
+        if (r.ok) { toast(T('att_deleted')); openDrawer(drawerAppId); }
+        else toast(r.data.error || T('failed'), 'error');
       },
     });
   };
 
   window.softDeleteApp = async function(appId) {
     customConfirm({
-      title: 'Move to trash?',
-      body: 'The request will be moved to trash. You can restore it later.',
-      okLabel: 'Move to trash',
+      title: T('trash_title'),
+      body: T('trash_body'),
+      okLabel: T('trash_ok'),
       okClass: 'danger',
       onOk: async () => {
         const r = await api('DELETE', `/api/applications/${appId}`);
         if (r.ok) {
-          toast('Moved to trash');
+          toast(T('moved_trash'));
           closeDrawer();
           if (currentView === 'dashboard') loadDashboard();
           else if (currentView === 'requests') loadRequests();
-        } else toast(r.data.error || 'Failed', 'error');
+        } else toast(r.data.error || T('failed'), 'error');
       },
     });
   };
@@ -2507,16 +2698,17 @@
     errEl.classList.remove('visible');
     const body = Object.fromEntries(new FormData(e.target));
     const r = await api('POST', '/api/applications', body);
-    if (!r.ok) { errEl.textContent = r.data.error || 'Failed'; errEl.classList.add('visible'); return; }
+    if (!r.ok) { errEl.textContent = r.data.error || T('failed'); errEl.classList.add('visible'); return; }
     document.getElementById('newReqModal').classList.remove('open');
     e.target.reset();
-    toast('Request created');
+    toast(T('req_created'));
     if (currentView === 'dashboard') loadDashboard();
     else if (currentView === 'requests') loadRequests();
   });
 
   /* ── Initial load ── */
   navigateTo('dashboard');
+  _appReady = true;
 
 })();
 </script>
