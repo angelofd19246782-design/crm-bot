@@ -2895,29 +2895,24 @@
 
       const ctx  = canvas.getContext('2d');
 
-      const sparkGradPlugin = {
-        id: 'sparkGrad',
-        beforeDatasetsDraw(chart) {
-          const { ctx: c, chartArea: ca } = chart;
-          if (!ca) return;
-          const g = c.createLinearGradient(0, ca.top, 0, ca.bottom);
-          g.addColorStop(0,    `rgba(${rgb},0.16)`);
-          g.addColorStop(0.55, `rgba(${rgb},0.04)`);
-          g.addColorStop(1,    `rgba(${rgb},0)`);
-          chart.data.datasets[0].backgroundColor = g;
-        }
-      };
-
       _sparkCharts[id] = new Chart(ctx, {
         type: 'line',
-        plugins: [sparkGradPlugin],
         data: {
           labels: data.map((_, i) => i),
           datasets: [{
             data,
             borderColor: color,
             borderWidth: 1.5,
-            backgroundColor: 'transparent',
+            backgroundColor: (context) => {
+              const { chart } = context;
+              const { ctx: c, chartArea: ca } = chart;
+              if (!ca) return 'transparent';
+              const g = c.createLinearGradient(0, ca.top, 0, ca.bottom);
+              g.addColorStop(0,    `rgba(${rgb},0.20)`);
+              g.addColorStop(0.55, `rgba(${rgb},0.05)`);
+              g.addColorStop(1,    `rgba(${rgb},0)`);
+              return g;
+            },
             fill: true,
             tension: 0.45,
             pointRadius: 0,
@@ -3011,19 +3006,6 @@
 
     const ctx = document.getElementById('lineChart').getContext('2d');
 
-    const areaGradPlugin = {
-      id: 'areaGrad',
-      beforeDatasetsDraw(chart) {
-        const { ctx: c, chartArea: ca } = chart;
-        if (!ca) return;
-        const g = c.createLinearGradient(0, ca.top, 0, ca.bottom);
-        g.addColorStop(0,    'rgba(99,102,241,0.15)');
-        g.addColorStop(0.45, 'rgba(99,102,241,0.05)');
-        g.addColorStop(1,    'rgba(99,102,241,0)');
-        chart.data.datasets[0].backgroundColor = g;
-      }
-    };
-
     const crosshairPlugin = {
       id: 'crosshairPlugin',
       afterDraw(chart) {
@@ -3061,9 +3043,19 @@
 
     lineChart = new Chart(ctx, {
       type: 'line',
-      plugins: [crosshairPlugin, areaGradPlugin],
+      plugins: [crosshairPlugin],
       data: { labels: tickLabels, datasets: [{
-        data: values, fill: true, backgroundColor: 'transparent',
+        data: values, fill: true,
+        backgroundColor: (context) => {
+          const { chart } = context;
+          const { ctx: c, chartArea: ca } = chart;
+          if (!ca) return 'transparent';
+          const g = c.createLinearGradient(0, ca.top, 0, ca.bottom);
+          g.addColorStop(0,    'rgba(99,102,241,0.22)');
+          g.addColorStop(0.45, 'rgba(99,102,241,0.08)');
+          g.addColorStop(1,    'rgba(99,102,241,0)');
+          return g;
+        },
         borderColor: '#6366f1', borderWidth: 2,
         pointRadius: 0,
         pointHoverRadius: 0,
