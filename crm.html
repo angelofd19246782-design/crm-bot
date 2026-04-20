@@ -1838,6 +1838,47 @@
       .chart-canvas-wrap { min-height: 0; }
     }
 
+    /* ─── Charts left column wrapper ─── */
+    .charts-left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-width: 0;
+    }
+    .charts-left-bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 860px) { .charts-left-bottom { grid-template-columns: 1fr; } }
+
+    /* ─── Today at a Glance ─── */
+    .tg-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid #f4f4fa;
+    }
+    .tg-row:last-child { border-bottom: none; }
+    .tg-dot   { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .tg-label { flex: 1; font-size: 13px; color: var(--text2); font-weight: 500; }
+    .tg-count { font-size: 20px; font-weight: 800; color: var(--text1); letter-spacing: -0.5px; }
+    .tg-delta { font-size: 11px; font-weight: 600; }
+    .tg-delta.up   { color: var(--green); }
+    .tg-delta.down { color: var(--red); }
+    .tg-delta.flat { color: var(--text3); }
+
+    /* ─── Activity Heatmap ─── */
+    .hm-outer       { display: flex; align-items: flex-start; }
+    .hm-day-labels  { display: flex; flex-direction: column; gap: 3px; margin-right: 6px; padding-top: 1px; }
+    .hm-day-label   { height: 16px; display: flex; align-items: center; font-size: 9px; color: var(--text3); font-weight: 600; letter-spacing: 0.3px; }
+    .heatmap-wrap   { display: flex; gap: 3px; flex: 1; }
+    .hm-week        { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+    .hm-cell        { height: 16px; border-radius: 3px; transition: opacity 0.15s; }
+    .hm-cell:hover  { opacity: 0.7 !important; }
+    .hm-cell.hm-today { outline: 2px solid var(--primary); outline-offset: 1px; }
+
     /* ─── Charts right column ─── */
     .charts-right-col {
       display: flex;
@@ -2229,6 +2270,7 @@
 
         <!-- Charts -->
         <div class="charts-row">
+          <div class="charts-left-col">
           <div class="chart-card chart-card-line">
             <div class="chart-hdr">
               <div>
@@ -2260,6 +2302,34 @@
               <canvas id="lineChart"></canvas>
             </div>
           </div>
+
+          <!-- Bottom row: Today at a Glance + Activity Heatmap -->
+          <div class="charts-left-bottom">
+
+            <!-- Today at a Glance -->
+            <div class="chart-card">
+              <div class="chart-hdr" style="margin-bottom:14px">
+                <div>
+                  <div class="chart-title" data-en="Today at a Glance" data-ru="Сегодня" data-ko="오늘 현황">Today at a Glance</div>
+                  <div class="chart-subtitle" id="todayGlanceDate">—</div>
+                </div>
+              </div>
+              <div id="todayGlanceRows"></div>
+            </div>
+
+            <!-- Activity Heatmap -->
+            <div class="chart-card">
+              <div class="chart-hdr" style="margin-bottom:14px">
+                <div>
+                  <div class="chart-title" data-en="Activity Heatmap" data-ru="Тепловая карта" data-ko="활동 히트맵">Activity Heatmap</div>
+                  <div class="chart-subtitle" data-en="Last 5 weeks · daily volume" data-ru="Последние 5 недель · объём по дням" data-ko="최근 5주 · 일별 건수">Last 5 weeks · daily volume</div>
+                </div>
+              </div>
+              <div id="heatmapContainer"></div>
+            </div>
+
+          </div><!-- /charts-left-bottom -->
+          </div><!-- /charts-left-col -->
 
           <div class="charts-right-col">
 
@@ -3230,6 +3300,8 @@
     buildInsightCards();
     buildSourceCard(_lastBySource);
     buildStackedChart();
+    buildTodayGlance();
+    buildActivityHeatmap();
   }
 
   function sparkSeries(statusFilter, days) {
@@ -3392,6 +3464,103 @@
   }
 
   /* ── Stacked status distribution chart ── */
+  function buildTodayGlance() {
+    const locale = L.lang === 'ru' ? 'ru-RU' : L.lang === 'ko' ? 'ko-KR' : 'en-US';
+    const today     = new Date().toISOString().slice(0, 10);
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+
+    const todayMap = {}, yestMap = {};
+    _dailyByStatus.forEach(r => {
+      if (r.day === today)     todayMap[r.status] = r.count;
+      if (r.day === yesterday) yestMap[r.status]  = r.count;
+    });
+
+    const dateEl = document.getElementById('todayGlanceDate');
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' });
+
+    const rows = [
+      { key: 'new',         color: '#e89d1a', labelKey: 's_new' },
+      { key: 'in_progress', color: '#4a7fde', labelKey: 's_in_progress' },
+      { key: 'completed',   color: '#19b885', labelKey: 's_completed' },
+      { key: 'incomplete',  color: '#e04d6a', labelKey: 's_incomplete' },
+    ];
+
+    const el = document.getElementById('todayGlanceRows');
+    if (!el) return;
+    el.innerHTML = rows.map(r => {
+      const count = todayMap[r.key] || 0;
+      const prev  = yestMap[r.key]  || 0;
+      const diff  = count - prev;
+      const deltaClass = diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat';
+      const deltaText  = diff > 0 ? `+${diff}` : diff < 0 ? `${diff}` : '—';
+      return `<div class="tg-row">
+        <div class="tg-dot" style="background:${r.color}"></div>
+        <div class="tg-label">${T(r.labelKey)}</div>
+        <div style="display:flex;align-items:baseline;gap:5px">
+          <div class="tg-count">${count}</div>
+          <span class="tg-delta ${deltaClass}">${deltaText}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function buildActivityHeatmap() {
+    const el = document.getElementById('heatmapContainer');
+    if (!el) return;
+
+    const WEEKS = 5;
+    const countMap = {};
+    _lastDaily.forEach(r => { countMap[r.day] = r.count; });
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const today    = new Date(todayStr);
+    const todayDow = today.getDay(); // 0=Sun
+
+    // Align to Monday of the week containing today, then go back (WEEKS-1) more weeks
+    const daysSinceMonday = todayDow === 0 ? 6 : todayDow - 1;
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - daysSinceMonday - (WEEKS - 1) * 7);
+
+    const maxCount = Math.max(...Object.values(countMap), 1);
+    const getColor = c => {
+      if (!c) return '#f0f0f8';
+      const t = c / maxCount;
+      if (t < 0.2)  return '#e0e0fa';
+      if (t < 0.4)  return '#c4b5fd';
+      if (t < 0.65) return '#818cf8';
+      if (t < 0.85) return '#6366f1';
+      return '#4338ca';
+    };
+
+    const dayLabels = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    const weeksHtml = Array.from({ length: WEEKS }, (_, w) =>
+      `<div class="hm-week">${Array.from({ length: 7 }, (__, d) => {
+        const cell = new Date(startDate);
+        cell.setDate(startDate.getDate() + w * 7 + d);
+        const ds     = cell.toISOString().slice(0, 10);
+        const count  = countMap[ds] || 0;
+        const future = ds > todayStr;
+        const isToday = ds === todayStr;
+        const locale  = L.lang === 'ru' ? 'ru-RU' : L.lang === 'ko' ? 'ko-KR' : 'en-US';
+        const label   = cell.toLocaleDateString(locale, { month: 'short', day: 'numeric' }) + ': ' + count;
+        return `<div class="hm-cell${isToday ? ' hm-today' : ''}" style="background:${getColor(count)};opacity:${future ? 0.25 : 1}" title="${label}"></div>`;
+      }).join('')}</div>`
+    ).join('');
+
+    const dayLabelsHtml = `<div class="hm-day-labels">${dayLabels.map(l => `<div class="hm-day-label">${l}</div>`).join('')}</div>`;
+
+    const legendStops = [0, 0.2, 0.45, 0.7, 1];
+    const legendHtml  = legendStops.map(s => `<div style="width:12px;height:12px;border-radius:3px;background:${getColor(s ? Math.ceil(s * maxCount) : 0)}"></div>`).join('');
+
+    el.innerHTML = `
+      <div class="hm-outer">${dayLabelsHtml}<div class="heatmap-wrap">${weeksHtml}</div></div>
+      <div style="display:flex;align-items:center;gap:5px;margin-top:12px;justify-content:flex-end">
+        <span style="font-size:10px;color:var(--text3)">Less</span>
+        ${legendHtml}
+        <span style="font-size:10px;color:var(--text3)">More</span>
+      </div>`;
+  }
+
   function buildStackedChart() {
     const DAYS = 30;
     // Bottom-to-top stack order: completed → in_progress → new → incomplete
