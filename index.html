@@ -393,7 +393,7 @@
 
 <script>
 (function () {
-  const state = { lang: 'en' };
+  const state = { lang: 'en', step: 'menu', data: {} };
   const langBtn = document.getElementById('langBtn');
   const msgArea = document.getElementById('msgArea');
   const msgInput = document.getElementById('msgInput');
@@ -448,116 +448,280 @@
         wrap.querySelectorAll('.qr-btn').forEach(x => x.classList.add('used'));
         addMsg('user', b.textContent);
         showTyping();
-        setTimeout(() => { removeTyping(); onSelect(opt); }, 850 + Math.random() * 300);
+        setTimeout(() => { removeTyping(); onSelect(opt); }, 700 + Math.random() * 300);
       });
       wrap.appendChild(b);
     });
     msgArea.appendChild(wrap);
     msgArea.scrollTop = msgArea.scrollHeight;
+    return wrap;
   }
 
-  /* ── Content trees ── */
-  const copy = {
-    new: {
-      en: "Great! Which type of service are you looking for?",
-      ru: "Отлично! Какой тип услуги вас интересует?"
-    },
-    new_sub: [
-      { en: "🏗️ Construction & Permits", ru: "🏗️ Строительство и разрешения" },
-      { en: "📄 Document Services",       ru: "📄 Документальные услуги" },
-      { en: "💼 Business Registration",   ru: "💼 Регистрация бизнеса" },
-      { en: "⬅️ Back to menu",            ru: "⬅️ Назад в меню" }
-    ],
-    new_confirm: {
-      en: "Understood. I'll open the request form for you. It takes under 2 minutes to fill out.",
-      ru: "Понял. Открываю форму заявки. Заполнение займёт менее 2 минут."
-    },
-    new_confirm_sub: [
-      { en: "📝 Open the form",   ru: "📝 Открыть форму" },
-      { en: "⏰ Remind me later", ru: "⏰ Напомнить позже" }
-    ],
-    form_open: {
-      en: "The form is now open. Fill in all fields and submit — your request will be registered instantly and a manager will contact you.",
-      ru: "Форма открыта. Заполните все поля и отправьте — заявка будет зарегистрирована, и менеджер свяжется с вами."
-    },
-    remind: {
-      en: "No problem! I'll remind you in 1 hour. You can also come back anytime.",
-      ru: "Хорошо! Напомню через час. Вы всегда можете вернуться."
-    },
-    status: {
-      en: "Please enter your request ID (e.g. #1042) or the phone number you registered with.",
-      ru: "Введите номер заявки (например, #1042) или телефон, с которым регистрировались."
-    },
-    manager: {
-      en: "Connecting you now. Estimated wait: 2–4 minutes. You can also leave a message below and we'll call you back.",
-      ru: "Соединяю с менеджером. Ожидаемое время: 2–4 минуты. Можете оставить сообщение — мы перезвоним."
-    },
-    faq: {
-      en: "Here are the most common topics:",
-      ru: "Вот самые частые вопросы:"
-    },
-    faq_sub: [
-      { en: "⏱️ How long does processing take?", ru: "⏱️ Сколько занимает обработка?" },
-      { en: "📂 What documents do I need?",      ru: "📂 Какие документы нужны?" },
-      { en: "💳 Payment and pricing",            ru: "💳 Оплата и цены" },
-      { en: "⬅️ Back to menu",                   ru: "⬅️ Назад в меню" }
-    ],
-    faq_timing: {
-      en: "Standard requests are processed within 3–5 business days. Urgent processing is available in 1–2 days for an additional fee.",
-      ru: "Стандартные заявки обрабатываются 3–5 рабочих дней. Срочная обработка — 1–2 дня за дополнительную плату."
-    },
-    faq_docs: {
-      en: "Required documents depend on the service type. Generally you'll need: a valid ID, proof of address, and any relevant certificates. The form will list what's needed specifically.",
-      ru: "Необходимые документы зависят от типа услуги. Как правило: удостоверение личности, подтверждение адреса и соответствующие сертификаты."
-    },
-    faq_payment: {
-      en: "We accept bank transfer, card, and cash at our office. Prices vary by service — you'll see the exact cost before confirming your request.",
-      ru: "Принимаем банковский перевод, карту и наличные в офисе. Цены зависят от услуги — точную стоимость увидите перед подтверждением."
-    },
-    fallback: {
-      en: "Thank you for your message. A specialist will get back to you shortly.",
-      ru: "Спасибо за сообщение. Специалист ответит в ближайшее время."
-    }
-  };
+  const L = () => state.lang;
+  const t = (en, ru) => L() === 'ru' ? ru : en;
 
-  const t = (key) => copy[key]?.[state.lang] || copy[key]?.en || '';
+  /* ── API ── */
+  async function apiPost(url, body) {
+    try {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      return { ok: r.ok, data: await r.json().catch(() => ({})) };
+    } catch { return { ok: false, data: { error: 'Network error' } }; }
+  }
 
+  async function apiGet(url) {
+    try {
+      const r = await fetch(url);
+      return { ok: r.ok, data: await r.json().catch(() => ({})) };
+    } catch { return { ok: false, data: { error: 'Network error' } }; }
+  }
+
+  /* ── Status labels ── */
+  function statusLabel(s) {
+    const map = { new: t('New','Новая'), in_progress: t('In Progress','В обработке'), completed: t('Completed','Завершено'), incomplete: t('Incomplete','Не завершено') };
+    return map[s] || s;
+  }
+
+  /* ── Main menu ── */
   function showMainMenu() {
-    addMsg('bot', state.lang === 'ru' ? 'Чем ещё могу помочь?' : 'How else can I help you?');
+    state.step = 'menu';
+    state.data = {};
+    addMsg('bot', t('How else can I help you?', 'Чем ещё могу помочь?'));
     addQuickReplies([
-      { en: "📋 Submit a new request", ru: "📋 Подать новую заявку", action: 'new' },
-      { en: "🔍 Track my request",     ru: "🔍 Отследить заявку",    action: 'status' },
-      { en: "💬 Talk to a manager",    ru: "💬 Поговорить с менеджером", action: 'manager' }
-    ], opt => dispatch(opt.action, opt));
+      { en: '📋 Submit a new request', ru: '📋 Подать новую заявку', action: 'new' },
+      { en: '🔍 Track my request',     ru: '🔍 Отследить заявку',    action: 'track' },
+      { en: '💬 Request a callback',   ru: '💬 Заказать обратный звонок', action: 'callback' },
+      { en: '❓ FAQ',                  ru: '❓ Частые вопросы',       action: 'faq' },
+    ], opt => handleMenuAction(opt.action));
   }
 
-  function dispatch(action, opt) {
-    if (action === 'new') {
-      addMsg('bot', t('new'));
-      addQuickReplies(copy.new_sub, sub => {
-        if (sub.en.includes('Back')) { showMainMenu(); return; }
-        addMsg('bot', t('new_confirm'));
-        addQuickReplies(copy.new_confirm_sub, btn => {
-          if (btn.en.includes('Open')) {
-            addMsg('bot', t('form_open'));
-          } else {
-            addMsg('bot', t('remind'));
-          }
-        });
+  function handleMenuAction(action) {
+    if (action === 'new')      startNewRequest();
+    else if (action === 'track')    startTrack();
+    else if (action === 'callback') startCallback();
+    else if (action === 'faq')      showFaq();
+  }
+
+  /* ── New request flow ── */
+  function startNewRequest() {
+    state.step = 'new_name';
+    state.data = {};
+    addMsg('bot', t(
+      "Let's submit your request. First, what's your full name?",
+      'Давайте оформим заявку. Сначала скажите ваше полное имя.'
+    ));
+  }
+
+  function handleNewRequest(text) {
+    if (state.step === 'new_name') {
+      state.data.name = text;
+      state.step = 'new_phone';
+      addMsg('bot', t('Thanks! What phone number can we reach you at?', 'Спасибо! По какому номеру телефона с вами можно связаться?'));
+    } else if (state.step === 'new_phone') {
+      state.data.phone = text;
+      state.step = 'new_email';
+      addMsg('bot', t("Got it. What's your email? (or tap Skip)", 'Хорошо. Ваш email? (или нажмите «Пропустить»)'));
+      addQuickReplies([{ en: 'Skip', ru: 'Пропустить' }], () => {
+        state.data.email = '';
+        goToDesc();
       });
-    } else if (action === 'status') {
-      addMsg('bot', t('status'));
-    } else if (action === 'manager') {
-      addMsg('bot', t('manager'));
-    } else if (action === 'faq') {
-      addMsg('bot', t('faq'));
-      addQuickReplies(copy.faq_sub, sub => {
-        if (sub.en.includes('Back')) { showMainMenu(); return; }
-        if (sub.en.includes('long'))    addMsg('bot', t('faq_timing'));
-        if (sub.en.includes('document')) addMsg('bot', t('faq_docs'));
-        if (sub.en.includes('Payment'))  addMsg('bot', t('faq_payment'));
-      });
+    } else if (state.step === 'new_email') {
+      state.data.email = text;
+      goToDesc();
+    } else if (state.step === 'new_desc') {
+      state.data.comment = text;
+      showConfirm();
     }
+  }
+
+  function goToDesc() {
+    state.step = 'new_desc';
+    addMsg('bot', t(
+      'Please briefly describe your request. (or tap Skip)',
+      'Кратко опишите вашу заявку. (или нажмите «Пропустить»)'
+    ));
+    addQuickReplies([{ en: 'Skip', ru: 'Пропустить' }], () => {
+      state.data.comment = '';
+      showConfirm();
+    });
+  }
+
+  function showConfirm() {
+    state.step = 'new_confirm';
+    const d = state.data;
+    const summary = [
+      `📛 ${t('Name','Имя')}: <b>${d.name}</b>`,
+      `📞 ${t('Phone','Телефон')}: <b>${d.phone}</b>`,
+      d.email ? `✉️ Email: <b>${d.email}</b>` : '',
+      d.comment ? `📝 ${t('Description','Описание')}: <b>${d.comment.slice(0, 80)}${d.comment.length > 80 ? '…' : ''}</b>` : '',
+    ].filter(Boolean).join('<br>');
+    addMsg('bot', t('Please confirm your details:', 'Пожалуйста, подтвердите данные:') + '<br><br>' + summary);
+    addQuickReplies([
+      { en: '✅ Confirm and submit', ru: '✅ Подтвердить и отправить' },
+      { en: '✏️ Start over', ru: '✏️ Начать заново' },
+    ], opt => {
+      if (opt.en.includes('Start') || opt.ru.includes('заново')) {
+        startNewRequest();
+      } else {
+        submitNewRequest();
+      }
+    });
+  }
+
+  async function submitNewRequest() {
+    showTyping();
+    const body = { name: state.data.name, phone: state.data.phone, source: 'bot' };
+    if (state.data.email)   body.email   = state.data.email;
+    if (state.data.comment) body.comment = state.data.comment;
+
+    const r = await apiPost('/api/intake', body);
+    removeTyping();
+
+    if (r.ok) {
+      const qn = r.data.queue_number;
+      addMsg('bot', t(
+        `✅ Your request has been submitted! Your queue number is <b>#${qn}</b>. A manager will contact you soon.`,
+        `✅ Ваша заявка принята! Номер в очереди: <b>#${qn}</b>. Менеджер свяжется с вами в ближайшее время.`
+      ));
+    } else {
+      addMsg('bot', t(
+        `❌ Failed to submit: ${r.data.error || 'Unknown error'}. Please try again.`,
+        `❌ Ошибка: ${r.data.error || 'Неизвестная ошибка'}. Попробуйте ещё раз.`
+      ));
+    }
+    state.step = 'done';
+    setTimeout(showMainMenu, 1200);
+  }
+
+  /* ── Track flow ── */
+  function startTrack() {
+    state.step = 'track_query';
+    addMsg('bot', t(
+      'Enter your queue number (e.g. 5) or the phone number you registered with.',
+      'Введите номер в очереди (например, 5) или телефон, с которым подавали заявку.'
+    ));
+  }
+
+  async function handleTrack(text) {
+    showTyping();
+    const r = await apiGet(`/api/intake/track?q=${encodeURIComponent(text.replace(/^#/, ''))}`);
+    removeTyping();
+
+    if (!r.ok) {
+      if (r.data.error === 'Not found') {
+        addMsg('bot', t(
+          'No request found for that number or phone. Please double-check and try again.',
+          'Заявка не найдена. Проверьте номер или телефон и попробуйте снова.'
+        ));
+      } else {
+        addMsg('bot', t('Something went wrong. Please try again.', 'Что-то пошло не так. Попробуйте снова.'));
+      }
+      state.step = 'done';
+      setTimeout(showMainMenu, 1200);
+      return;
+    }
+
+    const a = r.data;
+    const statusText = statusLabel(a.status);
+    const created = new Date(a.created_at).toLocaleDateString(L() === 'ru' ? 'ru-RU' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    addMsg('bot',
+      `🔍 ${t('Request found:','Заявка найдена:')}<br><br>` +
+      `📋 ${t('Queue #','Очередь #')}<b>${a.queue_number}</b><br>` +
+      `👤 ${t('Name','Имя')}: <b>${a.name}</b><br>` +
+      `📌 ${t('Status','Статус')}: <b>${statusText}</b><br>` +
+      `📅 ${t('Submitted','Подана')}: <b>${created}</b>`
+    );
+    state.step = 'done';
+    setTimeout(showMainMenu, 1500);
+  }
+
+  /* ── Callback flow ── */
+  function startCallback() {
+    state.step = 'cb_name';
+    state.data = {};
+    addMsg('bot', t(
+      "I'll arrange a callback. What's your name?",
+      'Организую обратный звонок. Как вас зовут?'
+    ));
+  }
+
+  function handleCallback(text) {
+    if (state.step === 'cb_name') {
+      state.data.name = text;
+      state.step = 'cb_phone';
+      addMsg('bot', t('Thanks! What number should we call?', 'Спасибо! По какому номеру вам позвонить?'));
+    } else if (state.step === 'cb_phone') {
+      state.data.phone = text;
+      state.step = 'cb_msg';
+      addMsg('bot', t(
+        'Got it. Any message for the manager? (or tap Skip)',
+        'Хорошо. Есть ли сообщение для менеджера? (или нажмите «Пропустить»)'
+      ));
+      addQuickReplies([{ en: 'Skip', ru: 'Пропустить' }], () => {
+        state.data.msg = '';
+        submitCallback();
+      });
+    } else if (state.step === 'cb_msg') {
+      state.data.msg = text;
+      submitCallback();
+    }
+  }
+
+  async function submitCallback() {
+    showTyping();
+    const comment = 'Callback request' + (state.data.msg ? ': ' + state.data.msg : '');
+    const r = await apiPost('/api/intake', {
+      name: state.data.name,
+      phone: state.data.phone,
+      comment,
+      source: 'bot',
+    });
+    removeTyping();
+
+    if (r.ok) {
+      addMsg('bot', t(
+        '✅ A manager will call you back shortly. Thank you!',
+        '✅ Менеджер перезвонит вам в ближайшее время. Спасибо!'
+      ));
+    } else {
+      addMsg('bot', t('❌ Something went wrong. Please try again.', '❌ Что-то пошло не так. Попробуйте снова.'));
+    }
+    state.step = 'done';
+    setTimeout(showMainMenu, 1200);
+  }
+
+  /* ── FAQ ── */
+  function showFaq() {
+    state.step = 'faq';
+    addMsg('bot', t('Here are the most common topics:', 'Вот самые частые вопросы:'));
+    addQuickReplies([
+      { en: '⏱️ How long does processing take?', ru: '⏱️ Сколько занимает обработка?' },
+      { en: '📂 What documents do I need?',      ru: '📂 Какие документы нужны?' },
+      { en: '💳 Payment and pricing',            ru: '💳 Оплата и цены' },
+      { en: '⬅️ Back to menu',                   ru: '⬅️ Назад в меню' },
+    ], sub => {
+      if (sub.en.includes('Back')) { showMainMenu(); return; }
+      if (sub.en.includes('long')) {
+        addMsg('bot', t(
+          'Standard requests are processed within 3–5 business days. Urgent processing is available in 1–2 days for an additional fee.',
+          'Стандартные заявки обрабатываются 3–5 рабочих дней. Срочная обработка — 1–2 дня за дополнительную плату.'
+        ));
+      } else if (sub.en.includes('document')) {
+        addMsg('bot', t(
+          'Required documents depend on the service type. Generally: a valid ID, proof of address, and relevant certificates. The form lists what\'s needed specifically.',
+          'Необходимые документы зависят от типа услуги. Как правило: удостоверение личности, подтверждение адреса и соответствующие сертификаты.'
+        ));
+      } else if (sub.en.includes('Payment')) {
+        addMsg('bot', t(
+          'We accept bank transfer, card, and cash at our office. Prices vary by service.',
+          'Принимаем банковский перевод, карту и наличные в офисе. Цены зависят от типа услуги.'
+        ));
+      }
+      setTimeout(showMainMenu, 1400);
+    });
   }
 
   /* ── Wire initial menu ── */
@@ -566,18 +730,34 @@
       document.querySelectorAll('#mainMenu .qr-btn').forEach(b => b.classList.add('used'));
       addMsg('user', btn.textContent);
       showTyping();
-      setTimeout(() => { removeTyping(); dispatch(btn.dataset.action, btn); }, 900 + Math.random() * 250);
+      setTimeout(() => { removeTyping(); handleMenuAction(btn.dataset.action); }, 700 + Math.random() * 250);
     });
   });
 
-  /* ── Free text ── */
+  /* ── Free text handler ── */
   function send() {
     const txt = msgInput.value.trim();
     if (!txt) return;
     addMsg('user', txt);
     msgInput.value = '';
     showTyping();
-    setTimeout(() => { removeTyping(); addMsg('bot', t('fallback')); }, 950 + Math.random() * 400);
+    setTimeout(() => {
+      removeTyping();
+      const step = state.step;
+      if (step === 'new_name' || step === 'new_phone' || step === 'new_email' || step === 'new_desc') {
+        handleNewRequest(txt);
+      } else if (step === 'track_query') {
+        handleTrack(txt);
+      } else if (step === 'cb_name' || step === 'cb_phone' || step === 'cb_msg') {
+        handleCallback(txt);
+      } else {
+        addMsg('bot', t(
+          'Thank you! A specialist will get back to you shortly.',
+          'Спасибо! Специалист ответит в ближайшее время.'
+        ));
+        setTimeout(showMainMenu, 1200);
+      }
+    }, 700 + Math.random() * 300);
   }
 
   sendBtn.addEventListener('click', send);

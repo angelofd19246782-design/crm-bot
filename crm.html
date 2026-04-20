@@ -158,6 +158,11 @@
       font-weight: 700;
     }
 
+    .nav-badge.red {
+      background: rgba(239,68,68,0.16);
+      color: #ef4444;
+    }
+
     .sb-footer {
       padding: 12px 10px 16px;
       border-top: 1px solid var(--sb-border);
@@ -296,7 +301,6 @@
     }
 
     .icon-btn:hover { background: #f5f5fc; border-color: #d8d8ec; }
-
     .icon-btn svg { width: 17px; height: 17px; }
 
     .notif-dot {
@@ -715,6 +719,391 @@
 
     .view-btn:hover { background: var(--primary-l); color: var(--primary); }
 
+    /* ─── Drawer ─── */
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.38);
+      z-index: 200;
+      backdrop-filter: blur(2px);
+    }
+    .drawer-overlay.visible { display: block; }
+
+    .drawer {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 440px;
+      max-width: 95vw;
+      background: #fff;
+      z-index: 201;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.16);
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .drawer.open { transform: translateX(0); }
+
+    .drawer-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      background: #fff;
+    }
+
+    .drawer-title { font-size: 14px; font-weight: 700; color: var(--text1); }
+
+    .drawer-close {
+      width: 30px; height: 30px;
+      border-radius: 8px; border: none;
+      background: #f4f4f8; cursor: pointer;
+      font-size: 16px; color: #888;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .drawer-close:hover { background: #eee; }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 22px 28px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.08) transparent;
+    }
+
+    .drawer-app-hdr {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .drawer-section {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f4f4fa;
+    }
+    .drawer-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+    .drawer-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text3);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .drawer-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid #f8f8fc;
+    }
+    .drawer-field:last-child { border-bottom: none; }
+
+    .drawer-field-label {
+      font-size: 12px;
+      color: var(--text3);
+      font-weight: 500;
+    }
+
+    .drawer-val {
+      font-size: 13px;
+      color: var(--text1);
+      font-weight: 500;
+      text-align: right;
+      max-width: 220px;
+      word-break: break-word;
+    }
+
+    .drawer-select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text1);
+      background: #f8f8fd;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .drawer-select:focus { border-color: var(--primary); }
+
+    .drawer-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text1);
+      background: #f8f8fd;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .drawer-input:focus { border-color: var(--primary); background: #fff; }
+    .drawer-input::placeholder { color: #b8b8cc; }
+
+    .note-item {
+      background: #f8f8fd;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    .note-meta {
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .note-text { font-size: 13px; color: var(--text1); line-height: 1.5; }
+
+    .att-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f4f4fa;
+    }
+    .att-item:last-child { border-bottom: none; }
+    .att-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--primary-l); display: flex;
+      align-items: center; justify-content: center;
+      flex-shrink: 0; color: var(--primary); font-size: 13px;
+    }
+    .att-name {
+      flex: 1; font-size: 13px; color: var(--text1);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .att-link {
+      font-size: 12px; color: var(--primary);
+      text-decoration: none; font-weight: 600;
+      padding: 4px 8px; border-radius: 6px;
+      background: var(--primary-l); white-space: nowrap;
+    }
+    .att-link:hover { background: rgba(99,102,241,0.18); }
+    .att-del {
+      background: none; border: none; cursor: pointer;
+      color: var(--text3); font-size: 16px; padding: 2px 4px;
+      border-radius: 5px; transition: color 0.15s;
+    }
+    .att-del:hover { color: var(--red); }
+
+    /* ─── Toast ─── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: #0f0f1e;
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.22s, transform 0.22s;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+    }
+    .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { background: #dc2626; }
+
+    /* ─── Modal ─── */
+    .modal-bd {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(3px);
+    }
+    .modal-bd.open { display: flex; }
+    .modal-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 28px 30px 30px;
+      width: 480px;
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+    }
+    .modal-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text1);
+    }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: none; background: #f4f4f8;
+      cursor: pointer; font-size: 16px; color: #888;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: #eee; }
+
+    .form-row { margin-bottom: 14px; }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #5a5a78;
+      letter-spacing: 0.3px;
+      margin-bottom: 5px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: #f4f4f9;
+      border: 1.5px solid transparent;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--text1);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+    .form-textarea { resize: vertical; min-height: 80px; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      background: #fff;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: #b8b8cc; }
+    .form-error {
+      display: none;
+      background: #fff1f1;
+      border: 1px solid #fecaca;
+      border-radius: 9px;
+      padding: 9px 13px;
+      font-size: 12.5px;
+      color: #b91c1c;
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+    .form-error.visible { display: block; }
+    .form-footer {
+      display: flex;
+      gap: 9px;
+      margin-top: 20px;
+    }
+    .btn-cancel {
+      flex: 1;
+      height: 40px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-cancel:hover { background: #f5f5fc; }
+    .btn-submit {
+      flex: 2;
+      height: 40px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, #6366f1, #5254d8);
+      color: #fff;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.32);
+      transition: transform 0.17s, box-shadow 0.17s;
+    }
+    .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(99,102,241,0.42); }
+
+    /* ─── View sections ─── */
+    .view-section { }
+
+    .view-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .search-input {
+      flex: 1;
+      max-width: 320px;
+      height: 36px;
+      padding: 0 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text1);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--primary); }
+    .search-input::placeholder { color: var(--text3); }
+
+    /* ─── Users view ─── */
+    .add-user-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 22px 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.038);
+      margin-top: 18px;
+    }
+    .add-user-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text1);
+      margin-bottom: 16px;
+      letter-spacing: -0.2px;
+    }
+    .add-user-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 140px 120px auto;
+      gap: 10px;
+      align-items: end;
+    }
+    .add-user-err {
+      font-size: 12px;
+      color: var(--red);
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    /* ─── Loading skeleton ─── */
+    @keyframes shimmer {
+      0% { background-position: -600px 0; }
+      100% { background-position: 600px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f5 25%, #e8e8f0 50%, #f0f0f5 75%);
+      background-size: 600px 100%;
+      animation: shimmer 1.5s infinite linear;
+      border-radius: 6px;
+    }
+
     /* ─── Responsive ─── */
     @media (max-width: 1100px) {
       .layout { grid-template-columns: 220px 1fr; }
@@ -750,72 +1139,49 @@
     </div>
 
     <nav class="sb-nav">
-      <a class="nav-item active" href="#">
+      <a class="nav-item active" data-view="dashboard" href="#">
         <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
           <rect x="1" y="1" width="7.5" height="7.5" rx="1.5"/>
           <rect x="11.5" y="1" width="7.5" height="7.5" rx="1.5"/>
           <rect x="1" y="11.5" width="7.5" height="7.5" rx="1.5"/>
           <rect x="11.5" y="11.5" width="7.5" height="7.5" rx="1.5"/>
         </svg>
-        Dashboard
+        <span data-en="Dashboard" data-ru="Дашборд">Dashboard</span>
       </a>
-      <a class="nav-item" href="#">
+      <a class="nav-item" data-view="requests" href="#">
         <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
           <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-.293.707L13 10.414V17a1 1 0 01-1.447.894l-4-2A1 1 0 017 15v-4.586L3.293 6.707A1 1 0 013 6V4z"/>
         </svg>
-        Requests
-        <span class="nav-badge">67</span>
+        <span data-en="Requests" data-ru="Заявки">Requests</span>
+        <span class="nav-badge" id="navBadgeNew">0</span>
       </a>
-      <a class="nav-item" href="#">
+      <a class="nav-item" data-view="trash" href="#" data-admin-only>
         <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+          <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
         </svg>
-        Clients
-      </a>
-      <a class="nav-item" href="#">
-        <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
-        </svg>
-        Analytics
-      </a>
-      <a class="nav-item" href="#">
-        <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5zM5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/>
-        </svg>
-        Integrations
+        <span data-en="Trash" data-ru="Корзина">Trash</span>
+        <span class="nav-badge red" id="trashBadge" style="display:none">0</span>
       </a>
 
-      <div class="nav-section">Admin</div>
+      <div class="nav-section" data-admin-only>Admin</div>
 
-      <a class="nav-item" href="#">
+      <a class="nav-item" data-view="users" href="#" data-admin-only>
         <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
         </svg>
-        Users
-      </a>
-      <a class="nav-item" href="#">
-        <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-        </svg>
-        Roles & Access
-      </a>
-      <a class="nav-item" href="#">
-        <svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
-        </svg>
-        Settings
+        <span data-en="Users" data-ru="Пользователи">Users</span>
       </a>
     </nav>
 
     <div class="sb-footer">
-      <div class="sb-user">
-        <div class="sb-avatar">AS</div>
+      <div class="sb-user" id="logoutBtn" title="Click to log out">
+        <div class="sb-avatar" id="sbAvatar">?</div>
         <div class="sb-user-info">
-          <div class="sb-user-name">Admin Sysop</div>
-          <div class="sb-user-role">Administrator</div>
+          <div class="sb-user-name" id="sbUserName">Loading…</div>
+          <div class="sb-user-role" id="sbUserRole">—</div>
         </div>
         <svg width="14" height="14" viewBox="0 0 20 20" fill="rgba(255,255,255,0.25)">
-          <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0z"/>
+          <path d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"/>
         </svg>
       </div>
     </div>
@@ -826,7 +1192,7 @@
 
     <!-- Topbar -->
     <header class="topbar">
-      <span class="topbar-title" data-en="Dashboard" data-ru="Дашборд">Dashboard</span>
+      <span class="topbar-title" id="topbarTitle" data-en="Dashboard" data-ru="Дашборд">Dashboard</span>
       <span class="topbar-sep"></span>
       <span class="topbar-date" id="topDate"></span>
 
@@ -836,19 +1202,6 @@
           <button class="ls-btn" id="lsRu">RU</button>
         </div>
 
-        <button class="icon-btn" title="Search">
-          <svg viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
-          </svg>
-        </button>
-
-        <button class="icon-btn" title="Notifications">
-          <svg viewBox="0 0 20 20" fill="currentColor">
-            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
-          </svg>
-          <span class="notif-dot"></span>
-        </button>
-
         <button class="btn-primary" id="newReqBtn">
           <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
@@ -856,408 +1209,979 @@
           <span data-en="New Request" data-ru="Новая заявка">New Request</span>
         </button>
 
-        <div class="topbar-user-avatar">AS</div>
+        <div class="topbar-user-avatar" id="topbarUserAvatar">?</div>
       </div>
     </header>
 
     <!-- Content -->
     <div class="content">
 
-      <!-- Page header -->
-      <div class="page-hdr">
-        <div>
-          <h1 data-en="Dashboard" data-ru="Дашборд">Dashboard</h1>
-          <div class="page-hdr-sub" data-en="Overview of all service requests and performance metrics" data-ru="Обзор всех заявок и показателей эффективности">Overview of all service requests and performance metrics</div>
-        </div>
-        <div class="period-switch">
-          <button class="pd-btn" data-en="7d" data-ru="7д">7d</button>
-          <button class="pd-btn active" data-en="30d" data-ru="30д">30d</button>
-          <button class="pd-btn" data-en="90d" data-ru="90д">90d</button>
-        </div>
-      </div>
+      <!-- ─── Dashboard view ─── -->
+      <div class="view-section" id="viewDashboard">
 
-      <!-- KPI cards -->
-      <div class="kpi-row">
-        <div class="kpi-card c-indigo">
-          <div class="kpi-top">
-            <span class="kpi-label" data-en="Total Requests" data-ru="Всего заявок">Total Requests</span>
-            <div class="kpi-icon">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
-              </svg>
-            </div>
-          </div>
-          <div class="kpi-val">259</div>
-          <div class="kpi-change up">
-            <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-            <span data-en="+12% from last period" data-ru="+12% за период">+12% from last period</span>
+        <div class="page-hdr">
+          <div>
+            <h1 data-en="Dashboard" data-ru="Дашборд">Dashboard</h1>
+            <div class="page-hdr-sub" data-en="Overview of all service requests" data-ru="Обзор всех заявок">Overview of all service requests</div>
           </div>
         </div>
 
-        <div class="kpi-card c-green">
-          <div class="kpi-top">
-            <span class="kpi-label" data-en="Completed" data-ru="Завершено">Completed</span>
-            <div class="kpi-icon">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-              </svg>
-            </div>
-          </div>
-          <div class="kpi-val">142</div>
-          <div class="kpi-change up">
-            <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-            <span data-en="55% completion rate" data-ru="55% завершённость">55% completion rate</span>
-          </div>
-        </div>
-
-        <div class="kpi-card c-amber">
-          <div class="kpi-top">
-            <span class="kpi-label" data-en="Pending" data-ru="Ожидают">Pending</span>
-            <div class="kpi-icon">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-              </svg>
-            </div>
-          </div>
-          <div class="kpi-val">67</div>
-          <div class="kpi-change down">
-            <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-            <span data-en="Needs attention" data-ru="Требуют внимания">Needs attention</span>
-          </div>
-        </div>
-
-        <div class="kpi-card c-blue">
-          <div class="kpi-top">
-            <span class="kpi-label" data-en="Avg. Response" data-ru="Ср. ответ">Avg. Response</span>
-            <div class="kpi-icon">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
-              </svg>
-            </div>
-          </div>
-          <div class="kpi-val">1.8<span style="font-size:16px;font-weight:600;letter-spacing:0;color:var(--text3)">h</span></div>
-          <div class="kpi-change up">
-            <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-            <span data-en="−15% faster than last month" data-ru="−15% быстрее прошлого месяца">−15% faster than last month</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Charts row -->
-      <div class="charts-row">
-
-        <!-- Line chart -->
-        <div class="chart-card">
-          <div class="chart-hdr">
-            <div>
-              <div class="chart-title" data-en="Requests Over Time" data-ru="Заявки по времени">Requests Over Time</div>
-              <div class="chart-subtitle" data-en="Last 30 days · daily volume" data-ru="Последние 30 дней · суточный объём">Last 30 days · daily volume</div>
-            </div>
-          </div>
-          <div class="chart-canvas-wrap" style="height:200px">
-            <canvas id="lineChart"></canvas>
-          </div>
-        </div>
-
-        <!-- Donut chart -->
-        <div class="chart-card">
-          <div class="chart-hdr">
-            <div>
-              <div class="chart-title" data-en="By Status" data-ru="По статусу">By Status</div>
-              <div class="chart-subtitle" data-en="Request distribution" data-ru="Распределение заявок">Request distribution</div>
-            </div>
-          </div>
-          <div class="chart-canvas-wrap" style="height:160px;display:flex;align-items:center;justify-content:center;position:relative">
-            <canvas id="donutChart"></canvas>
-            <div id="donutCenter" style="position:absolute;text-align:center;pointer-events:none">
-              <div style="font-size:24px;font-weight:800;color:var(--text1);letter-spacing:-0.5px;line-height:1">259</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:3px;font-weight:500" data-en="total" data-ru="всего">total</div>
-            </div>
-          </div>
-          <div class="chart-legend">
-            <div class="legend-item">
-              <div class="legend-left">
-                <span class="legend-dot" style="background:#22c55e"></span>
-                <span class="legend-label" data-en="Completed" data-ru="Завершено">Completed</span>
+        <!-- KPI cards -->
+        <div class="kpi-row">
+          <div class="kpi-card c-indigo">
+            <div class="kpi-top">
+              <span class="kpi-label" data-en="Total Active" data-ru="Всего активных">Total Active</span>
+              <div class="kpi-icon">
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                  <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+                </svg>
               </div>
-              <span class="legend-val">142</span>
             </div>
-            <div class="legend-item">
-              <div class="legend-left">
-                <span class="legend-dot" style="background:#8b5cf6"></span>
-                <span class="legend-label" data-en="Processing" data-ru="В обработке">Processing</span>
-              </div>
-              <span class="legend-val">38</span>
+            <div class="kpi-val" id="kpiTotal">—</div>
+            <div class="kpi-change flat">
+              <span data-en="All active requests" data-ru="Все активные заявки">All active requests</span>
             </div>
-            <div class="legend-item">
-              <div class="legend-left">
-                <span class="legend-dot" style="background:#f59e0b"></span>
-                <span class="legend-label" data-en="Pending" data-ru="Ожидают">Pending</span>
+          </div>
+
+          <div class="kpi-card c-green">
+            <div class="kpi-top">
+              <span class="kpi-label" data-en="Completed" data-ru="Завершено">Completed</span>
+              <div class="kpi-icon">
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
               </div>
-              <span class="legend-val">67</span>
             </div>
-            <div class="legend-item">
-              <div class="legend-left">
-                <span class="legend-dot" style="background:#ef4444"></span>
-                <span class="legend-label" data-en="Cancelled" data-ru="Отменено">Cancelled</span>
+            <div class="kpi-val" id="kpiCompleted">—</div>
+            <div class="kpi-change flat" id="kpiCompletedPct">
+              <span>—</span>
+            </div>
+          </div>
+
+          <div class="kpi-card c-amber">
+            <div class="kpi-top">
+              <span class="kpi-label" data-en="New" data-ru="Новые">New</span>
+              <div class="kpi-icon">
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                </svg>
               </div>
-              <span class="legend-val">12</span>
+            </div>
+            <div class="kpi-val" id="kpiNew">—</div>
+            <div class="kpi-change down">
+              <span data-en="Awaiting assignment" data-ru="Ожидают назначения">Awaiting assignment</span>
+            </div>
+          </div>
+
+          <div class="kpi-card c-blue">
+            <div class="kpi-top">
+              <span class="kpi-label" data-en="In Progress" data-ru="В работе">In Progress</span>
+              <div class="kpi-icon">
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-val" id="kpiInProgress">—</div>
+            <div class="kpi-change up">
+              <span data-en="Being processed" data-ru="В обработке">Being processed</span>
             </div>
           </div>
         </div>
 
-      </div>
-
-      <!-- Table -->
-      <div class="table-card">
-        <div class="table-hdr">
-          <div style="display:flex;align-items:center;gap:10px">
-            <span class="table-title" data-en="Recent Requests" data-ru="Последние заявки">Recent Requests</span>
-            <span class="table-count">259</span>
+        <!-- Charts -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-hdr">
+              <div>
+                <div class="chart-title" data-en="Requests Over Time" data-ru="Заявки по времени">Requests Over Time</div>
+                <div class="chart-subtitle" data-en="Last 30 days · daily volume" data-ru="Последние 30 дней · суточный объём">Last 30 days · daily volume</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap" style="height:200px">
+              <canvas id="lineChart"></canvas>
+            </div>
           </div>
-          <div class="table-actions">
-            <button class="btn-ghost">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/>
-              </svg>
-              <span data-en="Filter" data-ru="Фильтр">Filter</span>
-            </button>
-            <button class="btn-ghost">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
-              </svg>
-              <span data-en="Export" data-ru="Экспорт">Export</span>
-            </button>
+
+          <div class="chart-card">
+            <div class="chart-hdr">
+              <div>
+                <div class="chart-title" data-en="By Status" data-ru="По статусу">By Status</div>
+                <div class="chart-subtitle" data-en="Request distribution" data-ru="Распределение заявок">Request distribution</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap" style="height:160px;display:flex;align-items:center;justify-content:center;position:relative">
+              <canvas id="donutChart"></canvas>
+              <div id="donutCenter" style="position:absolute;text-align:center;pointer-events:none">
+                <div style="font-size:24px;font-weight:800;color:var(--text1);letter-spacing:-0.5px;line-height:1">—</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:3px;font-weight:500" data-en="total" data-ru="всего">total</div>
+              </div>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-left">
+                  <span class="legend-dot" style="background:#22c55e"></span>
+                  <span class="legend-label" data-en="Completed" data-ru="Завершено">Completed</span>
+                </div>
+                <span class="legend-val" id="legendCompleted">—</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-left">
+                  <span class="legend-dot" style="background:#8b5cf6"></span>
+                  <span class="legend-label" data-en="In Progress" data-ru="В обработке">In Progress</span>
+                </div>
+                <span class="legend-val" id="legendInProgress">—</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-left">
+                  <span class="legend-dot" style="background:#f59e0b"></span>
+                  <span class="legend-label" data-en="New" data-ru="Новые">New</span>
+                </div>
+                <span class="legend-val" id="legendNew">—</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-left">
+                  <span class="legend-dot" style="background:#ef4444"></span>
+                  <span class="legend-label" data-en="Incomplete" data-ru="Не завершено">Incomplete</span>
+                </div>
+                <span class="legend-val" id="legendIncomplete">—</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th data-en="ID" data-ru="ID">ID</th>
-              <th data-en="Client" data-ru="Клиент">Client</th>
-              <th data-en="Request Type" data-ru="Тип заявки">Request Type</th>
-              <th data-en="Date" data-ru="Дата">Date</th>
-              <th data-en="Status" data-ru="Статус">Status</th>
-              <th data-en="Source" data-ru="Источник">Source</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
+        <!-- Recent table -->
+        <div class="table-card">
+          <div class="table-hdr">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="table-title" data-en="Recent Requests" data-ru="Последние заявки">Recent Requests</span>
+              <span class="table-count" id="dashTableCount">—</span>
+            </div>
+            <div class="table-actions">
+              <button class="btn-ghost" onclick="navigateTo('requests')">
+                <span data-en="View all" data-ru="Все заявки">View all</span>
+              </button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th data-en="ID" data-ru="ID">ID</th>
+                <th data-en="Client" data-ru="Клиент">Client</th>
+                <th data-en="Description" data-ru="Описание">Description</th>
+                <th data-en="Date" data-ru="Дата">Date</th>
+                <th data-en="Status" data-ru="Статус">Status</th>
+                <th data-en="Source" data-ru="Источник">Source</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
 
-    </div>
+      </div><!-- /viewDashboard -->
+
+      <!-- ─── Requests view ─── -->
+      <div class="view-section" id="viewRequests" style="display:none">
+        <div class="page-hdr">
+          <div>
+            <h1 data-en="Requests" data-ru="Заявки">Requests</h1>
+            <div class="page-hdr-sub" data-en="All service requests" data-ru="Все заявки на услуги">All service requests</div>
+          </div>
+        </div>
+        <div class="view-toolbar">
+          <input class="search-input" id="reqSearch" placeholder="Search by name, phone…" data-en="Search by name, phone…" data-ru="Поиск по имени, телефону…">
+          <select class="form-select" id="reqStatusFilter" style="width:150px;height:36px;padding:0 12px;font-size:13px">
+            <option value="">All statuses</option>
+            <option value="new">New</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="incomplete">Incomplete</option>
+          </select>
+        </div>
+        <div class="table-card">
+          <div class="table-hdr">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="table-title" data-en="All Requests" data-ru="Все заявки">All Requests</span>
+              <span class="table-count" id="reqTableCount">—</span>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th data-en="ID" data-ru="ID">ID</th>
+                <th data-en="Client" data-ru="Клиент">Client</th>
+                <th data-en="Phone" data-ru="Телефон">Phone</th>
+                <th data-en="Date" data-ru="Дата">Date</th>
+                <th data-en="Status" data-ru="Статус">Status</th>
+                <th data-en="Source" data-ru="Источник">Source</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="reqTableBody"></tbody>
+          </table>
+        </div>
+      </div><!-- /viewRequests -->
+
+      <!-- ─── Trash view ─── -->
+      <div class="view-section" id="viewTrash" style="display:none">
+        <div class="page-hdr">
+          <div>
+            <h1 data-en="Trash" data-ru="Корзина">Trash</h1>
+            <div class="page-hdr-sub" data-en="Deleted requests — restore or permanently delete" data-ru="Удалённые заявки — восстановить или удалить навсегда">Deleted requests — restore or permanently delete</div>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-hdr">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="table-title" data-en="Deleted Requests" data-ru="Удалённые заявки">Deleted Requests</span>
+              <span class="table-count" id="trashTableCount">—</span>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th data-en="ID" data-ru="ID">ID</th>
+                <th data-en="Client" data-ru="Клиент">Client</th>
+                <th data-en="Phone" data-ru="Телефон">Phone</th>
+                <th data-en="Deleted" data-ru="Удалено">Deleted</th>
+                <th data-en="Status" data-ru="Статус">Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="trashTableBody"></tbody>
+          </table>
+        </div>
+      </div><!-- /viewTrash -->
+
+      <!-- ─── Users view ─── -->
+      <div class="view-section" id="viewUsers" style="display:none">
+        <div class="page-hdr">
+          <div>
+            <h1 data-en="Users" data-ru="Пользователи">Users</h1>
+            <div class="page-hdr-sub" data-en="Manage system users and roles" data-ru="Управление пользователями и ролями">Manage system users and roles</div>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-hdr">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="table-title" data-en="All Users" data-ru="Все пользователи">All Users</span>
+              <span class="table-count" id="usersTableCount">—</span>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th data-en="Username" data-ru="Имя пользователя">Username</th>
+                <th data-en="Role" data-ru="Роль">Role</th>
+                <th data-en="Created" data-ru="Создан">Created</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="add-user-card">
+          <h3 data-en="Add New User" data-ru="Добавить пользователя">Add New User</h3>
+          <form id="addUserForm">
+            <div class="add-user-row">
+              <div>
+                <label class="form-label" data-en="Username" data-ru="Имя пользователя">Username</label>
+                <input class="form-input" name="username" required placeholder="Username">
+              </div>
+              <div>
+                <label class="form-label" data-en="Password" data-ru="Пароль">Password</label>
+                <input class="form-input" name="password" type="password" required placeholder="Min. 6 characters">
+              </div>
+              <div>
+                <label class="form-label" data-en="Role" data-ru="Роль">Role</label>
+                <select class="form-select" name="role" required>
+                  <option value="employee">Employee</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <div style="display:flex;align-items:flex-end">
+                <button type="submit" class="btn-submit" style="flex:1;font-size:13px">
+                  <span data-en="Add User" data-ru="Добавить">Add User</span>
+                </button>
+              </div>
+            </div>
+            <div class="add-user-err" id="addUserError"></div>
+          </form>
+        </div>
+      </div><!-- /viewUsers -->
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ─── Drawer ─── -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <span class="drawer-title" data-en="Request Detail" data-ru="Детали заявки">Request Detail</span>
+    <button class="drawer-close" id="drawerClose">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerContent">
+    <div style="padding:40px;text-align:center;color:var(--text3)">Loading…</div>
   </div>
 </div>
 
-<!-- New request modal backdrop -->
-<div id="modalBackdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)">
-  <div style="background:#fff;border-radius:18px;padding:32px;width:420px;max-width:90vw;box-shadow:0 30px 80px rgba(0,0,0,0.3)">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
-      <h2 style="font-size:17px;font-weight:800;letter-spacing:-0.3px" data-en="New Request" data-ru="Новая заявка">New Request</h2>
-      <button id="closeModal" style="width:32px;height:32px;border-radius:8px;border:none;background:#f4f4f8;cursor:pointer;font-size:16px;color:#666">✕</button>
+<!-- ─── New Request Modal ─── -->
+<div class="modal-bd" id="newReqModal">
+  <div class="modal-card">
+    <div class="modal-hdr">
+      <span class="modal-title" data-en="New Request" data-ru="Новая заявка">New Request</span>
+      <button class="modal-close" id="closeNewModal">✕</button>
     </div>
-    <p style="font-size:13px;color:var(--text3);line-height:1.6" data-en="Request form would be embedded here. Integrate with your backend to create new service requests." data-ru="Здесь будет встроена форма заявки. Подключите к бэкенду для создания новых заявок.">Request form would be embedded here. Integrate with your backend to create new service requests.</p>
-    <div style="margin-top:20px;display:flex;gap:8px">
-      <button id="closeModal2" style="flex:1;height:38px;border-radius:9px;border:1.5px solid var(--border);background:transparent;font-family:inherit;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer" data-en="Cancel" data-ru="Отмена">Cancel</button>
-      <button style="flex:1;height:38px;border-radius:9px;border:none;background:linear-gradient(135deg,#6366f1,#5254d8);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" data-en="Open Bot" data-ru="Открыть бота" onclick="window.open('index.html','_blank')">Open Bot</button>
-    </div>
+    <div class="form-error" id="newReqError"></div>
+    <form id="newReqForm">
+      <div class="form-row">
+        <label class="form-label" data-en="Full Name *" data-ru="Полное имя *">Full Name *</label>
+        <input class="form-input" name="name" required placeholder="Client name" data-en="Client name" data-ru="Имя клиента">
+      </div>
+      <div class="form-row">
+        <label class="form-label" data-en="Phone" data-ru="Телефон">Phone</label>
+        <input class="form-input" name="phone" placeholder="+7 900 000-0000" data-en="+7 900 000-0000" data-ru="+7 900 000-0000">
+      </div>
+      <div class="form-row">
+        <label class="form-label" data-en="Email" data-ru="Email">Email</label>
+        <input class="form-input" name="email" type="email" placeholder="client@example.com" data-en="client@example.com" data-ru="client@example.com">
+      </div>
+      <div class="form-row">
+        <label class="form-label" data-en="Description" data-ru="Описание">Description</label>
+        <textarea class="form-textarea" name="comment" placeholder="Describe the request…" data-en="Describe the request…" data-ru="Опишите заявку…"></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label" data-en="Status" data-ru="Статус">Status</label>
+        <select class="form-select" name="status">
+          <option value="new">New</option>
+          <option value="in_progress">In Progress</option>
+          <option value="completed">Completed</option>
+          <option value="incomplete">Incomplete</option>
+        </select>
+      </div>
+      <div class="form-footer">
+        <button type="button" class="btn-cancel" id="cancelNewReq" data-en="Cancel" data-ru="Отмена">Cancel</button>
+        <button type="submit" class="btn-submit" data-en="Create Request" data-ru="Создать заявку">Create Request</button>
+      </div>
+    </form>
   </div>
 </div>
+
+<!-- ─── Toast ─── -->
+<div class="toast" id="toast"></div>
 
 <script>
-(function () {
+(async function () {
+  'use strict';
 
-  /* ── Date in topbar ── */
-  const dateEl = document.getElementById('topDate');
-  const now = new Date();
-  dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  Chart.defaults.font.family = "'Inter', -apple-system, sans-serif";
 
-  /* ── Language ── */
-  const state = { lang: 'en' };
-  const lsEn = document.getElementById('lsEn');
-  const lsRu = document.getElementById('lsRu');
-
-  function applyLang(l) {
-    state.lang = l;
-    lsEn.classList.toggle('active', l === 'en');
-    lsRu.classList.toggle('active', l === 'ru');
-    document.querySelectorAll('[data-en]').forEach(el => {
-      const v = el.dataset[l] || el.dataset.en;
-      if (el.tagName === 'INPUT') el.placeholder = v;
-      else el.textContent = v;
-    });
-    renderTable();
+  /* ── API helper ── */
+  async function api(method, url, body) {
+    const opts = { method };
+    if (body instanceof FormData) {
+      opts.body = body;
+    } else if (body) {
+      opts.headers = { 'Content-Type': 'application/json' };
+      opts.body = JSON.stringify(body);
+    }
+    try {
+      const r = await fetch(url, opts);
+      const data = await r.json().catch(() => ({}));
+      return { ok: r.ok, status: r.status, data };
+    } catch {
+      return { ok: false, status: 0, data: { error: 'Network error' } };
+    }
   }
 
-  lsEn.addEventListener('click', () => applyLang('en'));
-  lsRu.addEventListener('click', () => applyLang('ru'));
+  /* ── Auth check ── */
+  const authRes = await api('GET', '/auth/me');
+  if (!authRes.ok) { window.location.href = '/login'; return; }
+  const currentUser = authRes.data.user;
 
-  /* ── Period switch ── */
-  document.querySelectorAll('.pd-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-      document.querySelectorAll('.pd-btn').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
+  /* ── Update user UI ── */
+  const initials = currentUser.username.slice(0, 2).toUpperCase();
+  document.getElementById('sbAvatar').textContent = initials;
+  document.getElementById('sbUserName').textContent = currentUser.username;
+  document.getElementById('sbUserRole').textContent = currentUser.role === 'admin' ? 'Administrator' : 'Employee';
+  document.getElementById('topbarUserAvatar').textContent = initials;
+
+  if (currentUser.role !== 'admin') {
+    document.querySelectorAll('[data-admin-only]').forEach(el => el.style.display = 'none');
+  }
+
+  /* ── Date ── */
+  document.getElementById('topDate').textContent = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  /* ── Language ── */
+  const L = { lang: 'en' };
+  function applyLang(l) {
+    L.lang = l;
+    document.getElementById('lsEn').classList.toggle('active', l === 'en');
+    document.getElementById('lsRu').classList.toggle('active', l === 'ru');
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const v = el.dataset[l] || el.dataset.en;
+      if (!v) return;
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = v;
+      else el.textContent = v;
     });
-  });
+  }
+  document.getElementById('lsEn').addEventListener('click', () => applyLang('en'));
+  document.getElementById('lsRu').addEventListener('click', () => applyLang('ru'));
+  applyLang('en');
 
-  /* ── Modal ── */
-  const modal = document.getElementById('modalBackdrop');
-  document.getElementById('newReqBtn').addEventListener('click', () => {
-    modal.style.display = 'flex';
-  });
-  ['closeModal','closeModal2'].forEach(id => {
-    document.getElementById(id)?.addEventListener('click', () => { modal.style.display = 'none'; });
-  });
-  modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+  /* ── Toast ── */
+  function toast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast visible' + (type === 'error' ? ' error' : '');
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.classList.remove('visible'), 3000);
+  }
 
-  /* ── Table data ── */
-  const requests = [
-    { id: '#1089', name: 'Elena Morozova', nameRu: 'Елена Морозова',    type: 'Construction Permit',  typeRu: 'Разрешение на строительство', date: 'Apr 19, 2026', status: 'processing', source: 'Website' },
-    { id: '#1088', name: 'Dmitri Kozlov',   nameRu: 'Дмитрий Козлов',   type: 'Business License',     typeRu: 'Бизнес-лицензия',             date: 'Apr 19, 2026', status: 'pending',    source: 'Telegram' },
-    { id: '#1087', name: 'Sofia Petersen',  nameRu: 'София Петерсен',   type: 'Property Registration',typeRu: 'Регистрация недвижимости',     date: 'Apr 18, 2026', status: 'completed',  source: 'Phone' },
-    { id: '#1086', name: 'Artem Borisov',   nameRu: 'Артём Борисов',    type: 'Tax Consultation',     typeRu: 'Налоговая консультация',       date: 'Apr 17, 2026', status: 'completed',  source: 'Website' },
-    { id: '#1085', name: 'Oksana Vlasova',  nameRu: 'Оксана Власова',   type: 'Legal Advice',         typeRu: 'Юридическая помощь',           date: 'Apr 20, 2026', status: 'pending',    source: 'Email' },
-    { id: '#1084', name: 'Ivan Nikitin',    nameRu: 'Иван Никитин',     type: 'Permit Renewal',       typeRu: 'Продление разрешения',         date: 'Apr 18, 2026', status: 'processing', source: 'Website' },
-    { id: '#1083', name: 'Maria Sokolova',  nameRu: 'Мария Соколова',   type: 'Document Translation', typeRu: 'Перевод документов',           date: 'Apr 16, 2026', status: 'cancelled',  source: 'Telegram' },
-    { id: '#1082', name: 'Alexei Fedorov',  nameRu: 'Алексей Фёдоров',  type: 'License Extension',    typeRu: 'Продление лицензии',           date: 'Apr 15, 2026', status: 'completed',  source: 'Phone' },
-  ];
+  /* ── Helpers ── */
+  function esc(s) {
+    if (s == null) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
 
-  const statusLabels = {
-    en: { completed: 'Completed', processing: 'Processing', pending: 'Pending', cancelled: 'Cancelled' },
-    ru: { completed: 'Завершено', processing: 'В обработке', pending: 'Ожидает', cancelled: 'Отменено' }
+  function fmtDate(dt) {
+    if (!dt) return '—';
+    return new Date(dt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function statusBadge(status) {
+    const map = {
+      new:         { cls: 'pending',    en: 'New',         ru: 'Новая' },
+      in_progress: { cls: 'processing', en: 'In Progress', ru: 'В обработке' },
+      completed:   { cls: 'completed',  en: 'Completed',   ru: 'Завершено' },
+      incomplete:  { cls: 'cancelled',  en: 'Incomplete',  ru: 'Не завершено' },
+    };
+    const m = map[status] || { cls: 'pending', en: status, ru: status };
+    return `<span class="badge ${m.cls}">${m[L.lang] || m.en}</span>`;
+  }
+
+  function sourceLabel(src) {
+    return { crm: 'CRM', bot: 'Bot', web_form: 'Web Form' }[src] || src || '—';
+  }
+
+  /* ── Navigation ── */
+  let currentView = 'dashboard';
+
+  window.navigateTo = function(view) {
+    document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
+    document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+      item.classList.toggle('active', item.dataset.view === view);
+    });
+    currentView = view;
+
+    const titles = {
+      dashboard: ['Dashboard', 'Дашборд'],
+      requests:  ['Requests',  'Заявки'],
+      trash:     ['Trash',     'Корзина'],
+      users:     ['Users',     'Пользователи'],
+    };
+    const titleEl = document.getElementById('topbarTitle');
+    if (titles[view]) {
+      const [en, ru] = titles[view];
+      titleEl.dataset.en = en;
+      titleEl.dataset.ru = ru;
+      titleEl.textContent = L.lang === 'ru' ? ru : en;
+    }
+
+    if (view === 'dashboard') { document.getElementById('viewDashboard').style.display = ''; loadDashboard(); }
+    else if (view === 'requests') { document.getElementById('viewRequests').style.display = ''; loadRequests(); }
+    else if (view === 'trash') { document.getElementById('viewTrash').style.display = ''; loadTrash(); }
+    else if (view === 'users') { document.getElementById('viewUsers').style.display = ''; loadUsers(); }
   };
 
-  function renderTable() {
+  document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+    item.addEventListener('click', e => { e.preventDefault(); navigateTo(item.dataset.view); });
+  });
+
+  /* ── Logout ── */
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await api('POST', '/auth/logout');
+    window.location.href = '/login';
+  });
+
+  /* ── Charts state ── */
+  let lineChart = null, donutChart = null;
+
+  /* ── Dashboard ── */
+  async function loadDashboard() {
+    const r = await api('GET', '/api/stats');
+    if (!r.ok) return;
+    const { active, inTrash, daily } = r.data;
+
+    document.getElementById('kpiTotal').textContent = active.total ?? 0;
+    document.getElementById('kpiCompleted').textContent = active.completed ?? 0;
+    document.getElementById('kpiNew').textContent = active.new ?? 0;
+    document.getElementById('kpiInProgress').textContent = active.in_progress ?? 0;
+
+    const pct = active.total ? Math.round((active.completed / active.total) * 100) : 0;
+    const pctEl = document.getElementById('kpiCompletedPct');
+    pctEl.textContent = `${pct}% completion rate`;
+    pctEl.className = 'kpi-change ' + (pct >= 50 ? 'up' : 'flat');
+
+    document.getElementById('legendCompleted').textContent = active.completed ?? 0;
+    document.getElementById('legendInProgress').textContent = active.in_progress ?? 0;
+    document.getElementById('legendNew').textContent = active.new ?? 0;
+    document.getElementById('legendIncomplete').textContent = active.incomplete ?? 0;
+    document.getElementById('donutCenter').children[0].textContent = active.total ?? 0;
+
+    const trashBadge = document.getElementById('trashBadge');
+    if (inTrash > 0) { trashBadge.textContent = inTrash; trashBadge.style.display = ''; }
+    else trashBadge.style.display = 'none';
+
+    document.getElementById('navBadgeNew').textContent = active.new ?? 0;
+
+    buildCharts(active, daily);
+
+    const appsR = await api('GET', '/api/applications');
+    if (appsR.ok) {
+      const apps = appsR.data;
+      document.getElementById('dashTableCount').textContent = apps.length;
+      renderDashTable(apps.slice(0, 10));
+    }
+  }
+
+  function buildCharts(active, daily) {
+    const dayMap = {};
+    (daily || []).forEach(d => { dayMap[d.day] = d.count; });
+    const labels = [], values = [];
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      labels.push(i % 5 === 0 ? d.toLocaleDateString('en', { month: 'short', day: 'numeric' }) : '');
+      values.push(dayMap[key] || 0);
+    }
+
+    if (lineChart) {
+      lineChart.data.labels = labels;
+      lineChart.data.datasets[0].data = values;
+      lineChart.update();
+    } else {
+      const ctx = document.getElementById('lineChart').getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 200);
+      grad.addColorStop(0, 'rgba(99,102,241,0.25)');
+      grad.addColorStop(0.65, 'rgba(99,102,241,0.06)');
+      grad.addColorStop(1, 'rgba(99,102,241,0)');
+      lineChart = new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets: [{
+          data: values, fill: true, backgroundColor: grad,
+          borderColor: '#6366f1', borderWidth: 2,
+          pointRadius: 0, pointHoverRadius: 4,
+          pointHoverBackgroundColor: '#6366f1',
+          pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2, tension: 0.4,
+        }]},
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0f0f1e', titleColor: 'rgba(255,255,255,0.5)',
+              bodyColor: '#fff', bodyFont: { weight: '600', size: 13 },
+              padding: 10, cornerRadius: 8, displayColors: false,
+              callbacks: { title: items => items[0].label || '', label: item => `${item.raw} requests` }
+            }
+          },
+          scales: {
+            x: { grid: { display: false }, border: { display: false }, ticks: { color: '#9090b0', font: { size: 11 }, maxRotation: 0 } },
+            y: { grid: { color: '#f2f2f8' }, border: { display: false }, ticks: { color: '#9090b0', font: { size: 11 }, maxTicksLimit: 5 } }
+          }
+        }
+      });
+    }
+
+    const donutData = [active.completed || 0, active.in_progress || 0, active.new || 0, active.incomplete || 0];
+    if (donutChart) {
+      donutChart.data.datasets[0].data = donutData;
+      donutChart.update();
+    } else {
+      const ctx2 = document.getElementById('donutChart').getContext('2d');
+      donutChart = new Chart(ctx2, {
+        type: 'doughnut',
+        data: { labels: ['Completed','In Progress','New','Incomplete'],
+          datasets: [{ data: donutData, backgroundColor: ['#22c55e','#8b5cf6','#f59e0b','#ef4444'], borderWidth: 0, hoverOffset: 4, spacing: 3, borderRadius: 3 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: '74%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0f0f1e', titleColor: 'rgba(255,255,255,0.5)',
+              bodyColor: '#fff', bodyFont: { weight: '600', size: 13 },
+              padding: 10, cornerRadius: 8, displayColors: false,
+              callbacks: { label: item => {
+                const total = item.dataset.data.reduce((a, b) => a + b, 0) || 1;
+                return `${item.raw} (${Math.round(item.raw / total * 100)}%)`;
+              }}
+            }
+          }
+        }
+      });
+    }
+  }
+
+  function renderDashTable(apps) {
     const tbody = document.getElementById('tableBody');
-    const l = state.lang;
-    tbody.innerHTML = requests.map(r => `
+    if (!apps.length) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">No requests yet</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = apps.map(a => `
       <tr>
-        <td class="cell-id">${r.id}</td>
-        <td class="cell-name">${l === 'ru' ? r.nameRu : r.name}</td>
-        <td class="cell-type">${l === 'ru' ? r.typeRu : r.type}</td>
-        <td style="color:var(--text3);font-size:12.5px;white-space:nowrap">${r.date}</td>
-        <td><span class="badge ${r.status}">${statusLabels[l][r.status]}</span></td>
-        <td class="cell-source">${r.source}</td>
-        <td><button class="view-btn">${l === 'ru' ? 'Открыть' : 'View'}</button></td>
+        <td class="cell-id">#${a.id}</td>
+        <td class="cell-name">${esc(a.name)}</td>
+        <td class="cell-type" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.comment || '—').slice(0, 50)}</td>
+        <td style="color:var(--text3);font-size:12.5px;white-space:nowrap">${fmtDate(a.created_at)}</td>
+        <td>${statusBadge(a.status)}</td>
+        <td class="cell-source">${sourceLabel(a.source)}</td>
+        <td><button class="view-btn" onclick="openDrawer(${a.id})">View</button></td>
       </tr>
     `).join('');
   }
 
-  renderTable();
+  /* ── Requests view ── */
+  let allRequests = [];
 
-  /* ── Charts ── */
-  Chart.defaults.font.family = "'Inter', -apple-system, sans-serif";
-
-  // Line chart
-  const lineCtx = document.getElementById('lineChart').getContext('2d');
-  const lineGrad = lineCtx.createLinearGradient(0, 0, 0, 200);
-  lineGrad.addColorStop(0, 'rgba(99,102,241,0.25)');
-  lineGrad.addColorStop(0.6, 'rgba(99,102,241,0.06)');
-  lineGrad.addColorStop(1, 'rgba(99,102,241,0)');
-
-  const labels30 = [];
-  const data30 = [];
-  for (let i = 29; i >= 0; i--) {
-    const d = new Date(2026, 3, 20 - i);
-    labels30.push(i % 5 === 0 ? d.toLocaleDateString('en', { month: 'short', day: 'numeric' }) : '');
-    const base = 12;
-    const wave = Math.sin(i * 0.4) * 5;
-    const noise = (Math.random() * 6) | 0;
-    data30.push(Math.max(3, (base + wave + noise) | 0));
+  async function loadRequests() {
+    const url = '/api/applications' + (document.getElementById('reqStatusFilter').value ? `?status=${document.getElementById('reqStatusFilter').value}` : '');
+    const r = await api('GET', url);
+    if (!r.ok) return;
+    allRequests = r.data;
+    filterRequests();
   }
 
-  new Chart(lineCtx, {
-    type: 'line',
-    data: {
-      labels: labels30,
-      datasets: [{
-        data: data30,
-        fill: true,
-        backgroundColor: lineGrad,
-        borderColor: '#6366f1',
-        borderWidth: 2,
-        pointRadius: 0,
-        pointHoverRadius: 4,
-        pointHoverBackgroundColor: '#6366f1',
-        pointHoverBorderColor: '#fff',
-        pointHoverBorderWidth: 2,
-        tension: 0.4,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#0f0f1e',
-          titleColor: 'rgba(255,255,255,0.5)',
-          bodyColor: '#fff',
-          bodyFont: { weight: '600', size: 13 },
-          padding: 10,
-          cornerRadius: 8,
-          displayColors: false,
-          callbacks: {
-            title: (items) => items[0].label || '',
-            label: (item) => `${item.raw} requests`
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: { display: false },
-          border: { display: false },
-          ticks: { color: '#9090b0', font: { size: 11 }, maxRotation: 0 }
-        },
-        y: {
-          grid: { color: '#f2f2f8', drawBorder: false },
-          border: { display: false, dash: [4, 4] },
-          ticks: { color: '#9090b0', font: { size: 11 }, maxTicksLimit: 5 }
-        }
-      }
+  function filterRequests() {
+    const q = document.getElementById('reqSearch').value.trim().toLowerCase();
+    const filtered = q ? allRequests.filter(a =>
+      (a.name || '').toLowerCase().includes(q) ||
+      (a.phone || '').toLowerCase().includes(q) ||
+      (a.email || '').toLowerCase().includes(q)
+    ) : allRequests;
+    document.getElementById('reqTableCount').textContent = filtered.length;
+    const tbody = document.getElementById('reqTableBody');
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">No requests found</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = filtered.map(a => `
+      <tr>
+        <td class="cell-id">#${a.id}</td>
+        <td class="cell-name">${esc(a.name)}</td>
+        <td style="color:var(--text2);font-size:12.5px">${esc(a.phone || '—')}</td>
+        <td style="color:var(--text3);font-size:12.5px;white-space:nowrap">${fmtDate(a.created_at)}</td>
+        <td>${statusBadge(a.status)}</td>
+        <td class="cell-source">${sourceLabel(a.source)}</td>
+        <td><button class="view-btn" onclick="openDrawer(${a.id})">View</button></td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('reqSearch').addEventListener('input', filterRequests);
+  document.getElementById('reqStatusFilter').addEventListener('change', loadRequests);
+
+  /* ── Trash ── */
+  async function loadTrash() {
+    const r = await api('GET', '/api/applications?trash=1');
+    if (!r.ok) return;
+    const apps = r.data;
+    document.getElementById('trashTableCount').textContent = apps.length;
+    const tbody = document.getElementById('trashTableBody');
+    if (!apps.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text3)">Trash is empty</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = apps.map(a => `
+      <tr>
+        <td class="cell-id">#${a.id}</td>
+        <td class="cell-name">${esc(a.name)}</td>
+        <td style="color:var(--text2);font-size:12.5px">${esc(a.phone || '—')}</td>
+        <td style="color:var(--text3);font-size:12.5px;white-space:nowrap">${fmtDate(a.deleted_at)}</td>
+        <td>${statusBadge(a.status)}</td>
+        <td style="display:flex;gap:6px">
+          <button class="view-btn" onclick="restoreApp(${a.id})">Restore</button>
+          <button class="view-btn" style="color:var(--red)" onclick="permDeleteApp(${a.id})">Delete forever</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  window.restoreApp = async function(id) {
+    const r = await api('POST', `/api/applications/${id}/restore`);
+    if (r.ok) { toast('Request restored'); loadTrash(); loadDashboard(); }
+    else toast(r.data.error || 'Failed', 'error');
+  };
+
+  window.permDeleteApp = async function(id) {
+    if (!confirm('Permanently delete this request? This cannot be undone.')) return;
+    const r = await api('DELETE', `/api/applications/${id}/permanent`);
+    if (r.ok) { toast('Permanently deleted'); loadTrash(); }
+    else toast(r.data.error || 'Failed', 'error');
+  };
+
+  /* ── Users ── */
+  async function loadUsers() {
+    const r = await api('GET', '/api/users');
+    if (!r.ok) return;
+    const users = r.data;
+    document.getElementById('usersTableCount').textContent = users.length;
+    const tbody = document.getElementById('usersTableBody');
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td class="cell-id">${u.id}</td>
+        <td class="cell-name">${esc(u.username)}</td>
+        <td><span class="badge ${u.role === 'admin' ? 'processing' : 'pending'}">${u.role}</span></td>
+        <td style="color:var(--text3);font-size:12.5px">${fmtDate(u.created_at)}</td>
+        <td>${u.id !== currentUser.id
+          ? `<button class="view-btn" style="color:var(--red)" onclick="deleteUser(${u.id},'${esc(u.username)}')">Delete</button>`
+          : `<span style="font-size:12px;color:var(--text3)">You</span>`}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  window.deleteUser = async function(id, username) {
+    if (!confirm(`Delete user "${username}"?`)) return;
+    const r = await api('DELETE', `/api/users/${id}`);
+    if (r.ok) { toast('User deleted'); loadUsers(); }
+    else toast(r.data.error || 'Failed', 'error');
+  };
+
+  document.getElementById('addUserForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const errEl = document.getElementById('addUserError');
+    errEl.textContent = '';
+    const body = Object.fromEntries(new FormData(e.target));
+    const r = await api('POST', '/api/users', body);
+    if (!r.ok) { errEl.textContent = r.data.error || 'Failed'; return; }
+    e.target.reset();
+    toast('User created');
+    loadUsers();
+  });
+
+  /* ── Drawer ── */
+  let drawerAppId = null;
+
+  window.openDrawer = async function(appId) {
+    drawerAppId = appId;
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('drawerOverlay').classList.add('visible');
+    document.getElementById('drawerContent').innerHTML = '<div style="padding:40px;text-align:center;color:var(--text3)">Loading…</div>';
+
+    const [appR, notesR, attR] = await Promise.all([
+      api('GET', `/api/applications/${appId}`),
+      api('GET', `/api/applications/${appId}/notes`),
+      api('GET', `/api/applications/${appId}/attachments`),
+    ]);
+
+    if (!appR.ok) { toast('Failed to load', 'error'); return; }
+    renderDrawer(appR.data, notesR.ok ? notesR.data : [], attR.ok ? attR.data : []);
+  };
+
+  function closeDrawer() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawerOverlay').classList.remove('visible');
+    drawerAppId = null;
+  }
+
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
+
+  function renderDrawer(app, notes, atts) {
+    const isAdmin = currentUser.role === 'admin';
+    document.getElementById('drawerContent').innerHTML = `
+      <div class="drawer-app-hdr">
+        <div>
+          <div style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:0.5px;margin-bottom:5px">REQUEST #${app.id} · QUEUE #${app.queue_number}</div>
+          <div style="font-size:18px;font-weight:800;color:var(--text1);letter-spacing:-0.3px">${esc(app.name)}</div>
+        </div>
+        ${statusBadge(app.status)}
+      </div>
+
+      <div class="drawer-section">
+        <div class="drawer-label" style="margin-bottom:8px">Contact Info</div>
+        <div class="drawer-field">
+          <span class="drawer-field-label">Phone</span>
+          <span class="drawer-val">${esc(app.phone) || '—'}</span>
+        </div>
+        <div class="drawer-field">
+          <span class="drawer-field-label">Email</span>
+          <span class="drawer-val">${esc(app.email) || '—'}</span>
+        </div>
+        <div class="drawer-field">
+          <span class="drawer-field-label">Source</span>
+          <span class="drawer-val">${sourceLabel(app.source)}</span>
+        </div>
+        <div class="drawer-field">
+          <span class="drawer-field-label">Assigned to</span>
+          <span class="drawer-val">${esc(app.assigned_username) || '—'}</span>
+        </div>
+        <div class="drawer-field">
+          <span class="drawer-field-label">Created</span>
+          <span class="drawer-val">${fmtDate(app.created_at)}</span>
+        </div>
+      </div>
+
+      ${app.comment ? `
+      <div class="drawer-section">
+        <div class="drawer-label" style="margin-bottom:8px">Description</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;background:#f8f8fd;border-radius:10px;padding:12px 14px">${esc(app.comment)}</div>
+      </div>` : ''}
+
+      ${isAdmin ? `
+      <div class="drawer-section">
+        <div class="drawer-label" style="margin-bottom:8px">Change Status</div>
+        <select class="drawer-select" onchange="changeStatus(this.value)">
+          <option value="new" ${app.status==='new'?'selected':''}>New</option>
+          <option value="in_progress" ${app.status==='in_progress'?'selected':''}>In Progress</option>
+          <option value="completed" ${app.status==='completed'?'selected':''}>Completed</option>
+          <option value="incomplete" ${app.status==='incomplete'?'selected':''}>Incomplete</option>
+        </select>
+      </div>` : ''}
+
+      <div class="drawer-section">
+        <div class="drawer-label" style="margin-bottom:10px">Notes (${notes.length})</div>
+        <div id="notesList">
+          ${notes.length
+            ? notes.map(n => `<div class="note-item"><div class="note-meta">${esc(n.author || 'Unknown')} · ${fmtDate(n.created_at)}</div><div class="note-text">${esc(n.content)}</div></div>`).join('')
+            : '<div style="font-size:12.5px;color:var(--text3);margin-bottom:10px">No notes yet</div>'}
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <input type="text" id="noteInput" placeholder="Add a note…" class="drawer-input" style="flex:1">
+          <button class="btn-primary" style="height:36px;padding:0 14px;font-size:12.5px" onclick="addNote()">Add</button>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <div class="drawer-label" style="margin-bottom:10px">Attachments (${atts.length})</div>
+        <div id="attList">
+          ${atts.map(f => `
+            <div class="att-item">
+              <div class="att-icon">📎</div>
+              <span class="att-name">${esc(f.file_name)}</span>
+              <a href="/api/attachments/${f.id}/view" target="_blank" class="att-link">Open</a>
+              ${isAdmin ? `<button class="att-del" onclick="deleteAtt(${f.id})" title="Delete">✕</button>` : ''}
+            </div>
+          `).join('') || '<div style="font-size:12.5px;color:var(--text3);margin-bottom:8px">No attachments</div>'}
+        </div>
+        <input type="file" id="fileInput" style="display:none" onchange="uploadFile(this)">
+        <button class="btn-ghost" style="height:32px;font-size:12px;margin-top:8px" onclick="document.getElementById('fileInput').click()">
+          ＋ Attach file
+        </button>
+      </div>
+
+      ${isAdmin ? `
+      <div class="drawer-section" style="padding-top:16px">
+        <button onclick="softDeleteApp(${app.id})" style="font-size:13px;color:var(--red);background:none;border:1.5px solid rgba(239,68,68,0.25);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:inherit;font-weight:500;transition:background 0.15s" onmouseover="this.style.background='rgba(239,68,68,0.05)'" onmouseout="this.style.background='none'">
+          Move to trash
+        </button>
+      </div>` : ''}
+    `;
+  }
+
+  window.changeStatus = async function(status) {
+    if (!drawerAppId) return;
+    const r = await api('PUT', `/api/applications/${drawerAppId}`, { status });
+    if (r.ok) toast('Status updated');
+    else toast(r.data.error || 'Failed', 'error');
+  };
+
+  window.addNote = async function() {
+    const input = document.getElementById('noteInput');
+    const content = input.value.trim();
+    if (!content) return;
+    const r = await api('POST', `/api/applications/${drawerAppId}/notes`, { content });
+    if (!r.ok) { toast(r.data.error || 'Failed', 'error'); return; }
+    input.value = '';
+    const list = document.getElementById('notesList');
+    const n = r.data;
+    const item = document.createElement('div');
+    item.className = 'note-item';
+    item.innerHTML = `<div class="note-meta">${esc(n.author || currentUser.username)} · ${fmtDate(n.created_at)}</div><div class="note-text">${esc(n.content)}</div>`;
+    if (!list.querySelector('.note-item')) list.innerHTML = '';
+    list.prepend(item);
+    toast('Note added');
+  };
+
+  window.uploadFile = async function(input) {
+    if (!input.files[0]) return;
+    const fd = new FormData();
+    fd.append('file', input.files[0]);
+    const r = await api('POST', `/api/applications/${drawerAppId}/attachments`, fd);
+    if (!r.ok) { toast(r.data.error || 'Upload failed', 'error'); input.value = ''; return; }
+    const att = r.data;
+    const list = document.getElementById('attList');
+    if (list.querySelector('.att-item') === null) list.innerHTML = '';
+    const item = document.createElement('div');
+    item.className = 'att-item';
+    const isAdmin = currentUser.role === 'admin';
+    item.innerHTML = `<div class="att-icon">📎</div><span class="att-name">${esc(att.file_name)}</span><a href="/api/attachments/${att.id}/view" target="_blank" class="att-link">Open</a>${isAdmin ? `<button class="att-del" onclick="deleteAtt(${att.id})" title="Delete">✕</button>` : ''}`;
+    list.appendChild(item);
+    toast('File attached');
+    input.value = '';
+  };
+
+  window.deleteAtt = async function(attId) {
+    if (!confirm('Delete this attachment?')) return;
+    const r = await api('DELETE', `/api/attachments/${attId}`);
+    if (r.ok) { toast('Deleted'); openDrawer(drawerAppId); }
+    else toast(r.data.error || 'Failed', 'error');
+  };
+
+  window.softDeleteApp = async function(appId) {
+    if (!confirm('Move this request to trash?')) return;
+    const r = await api('DELETE', `/api/applications/${appId}`);
+    if (r.ok) {
+      toast('Moved to trash');
+      closeDrawer();
+      if (currentView === 'dashboard') loadDashboard();
+      else if (currentView === 'requests') loadRequests();
+    } else toast(r.data.error || 'Failed', 'error');
+  };
+
+  /* ── New request modal ── */
+  document.getElementById('newReqBtn').addEventListener('click', () => {
+    document.getElementById('newReqModal').classList.add('open');
+  });
+  ['closeNewModal','cancelNewReq'].forEach(id => {
+    document.getElementById(id).addEventListener('click', () => {
+      document.getElementById('newReqModal').classList.remove('open');
+    });
+  });
+  document.getElementById('newReqModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('newReqModal')) {
+      document.getElementById('newReqModal').classList.remove('open');
     }
   });
 
-  // Donut chart
-  const donutCtx = document.getElementById('donutChart').getContext('2d');
-  new Chart(donutCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Completed', 'Processing', 'Pending', 'Cancelled'],
-      datasets: [{
-        data: [142, 38, 67, 12],
-        backgroundColor: ['#22c55e', '#8b5cf6', '#f59e0b', '#ef4444'],
-        borderWidth: 0,
-        hoverOffset: 4,
-        spacing: 3,
-        borderRadius: 3,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '74%',
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#0f0f1e',
-          titleColor: 'rgba(255,255,255,0.5)',
-          bodyColor: '#fff',
-          bodyFont: { weight: '600', size: 13 },
-          padding: 10,
-          cornerRadius: 8,
-          displayColors: false,
-          callbacks: {
-            label: (item) => `${item.raw} (${Math.round(item.raw / 259 * 100)}%)`
-          }
-        }
-      }
-    }
+  document.getElementById('newReqForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const errEl = document.getElementById('newReqError');
+    errEl.classList.remove('visible');
+    const body = Object.fromEntries(new FormData(e.target));
+    const r = await api('POST', '/api/applications', body);
+    if (!r.ok) { errEl.textContent = r.data.error || 'Failed'; errEl.classList.add('visible'); return; }
+    document.getElementById('newReqModal').classList.remove('open');
+    e.target.reset();
+    toast('Request created');
+    if (currentView === 'dashboard') loadDashboard();
+    else if (currentView === 'requests') loadRequests();
   });
+
+  /* ── Initial load ── */
+  navigateTo('dashboard');
 
 })();
 </script>

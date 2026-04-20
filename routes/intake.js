@@ -76,4 +76,27 @@ router.post('/:id/attachment', upload.single('file'), (req, res) => {
   });
 });
 
+// ─── GET /api/intake/track ────────────────────────────────────────────────────
+// Public endpoint — track status by queue number or phone.
+router.get('/track', (req, res) => {
+  const { q } = req.query;
+  if (!q?.trim()) return res.status(400).json({ error: 'Query required' });
+  const term = q.trim();
+
+  let app = /^\d+$/.test(term)
+    ? db.prepare(
+        'SELECT id, name, status, queue_number, created_at FROM applications WHERE queue_number = ? AND deleted_at IS NULL'
+      ).get(Number(term))
+    : null;
+
+  if (!app) {
+    app = db.prepare(
+      'SELECT id, name, status, queue_number, created_at FROM applications WHERE phone = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1'
+    ).get(term);
+  }
+
+  if (!app) return res.status(404).json({ error: 'Not found' });
+  res.json(app);
+});
+
 module.exports = router;
