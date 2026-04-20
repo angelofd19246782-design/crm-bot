@@ -27,10 +27,10 @@
       --text1: #0c0c18;
       --text2: #4a4a68;
       --text3: #9292b2;
-      --green: #0c9e72;
-      --amber: #d4870e;
-      --red: #e04455;
-      --blue: #3d7ee8;
+      --green: #19b885;
+      --amber: #e89d1a;
+      --red: #e04d6a;
+      --blue: #4a7fde;
       --purple: #7c5af0;
       --shadow-sm:  0 1px 3px rgba(9,9,24,0.06), 0 0 0 1px rgba(0,0,0,0.03);
       --shadow-md:  0 4px 16px rgba(9,9,24,0.08), 0 1px 4px rgba(0,0,0,0.04);
@@ -340,7 +340,7 @@
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: #e04455;
+      background: #e04d6a;
       border: 1.5px solid #fff;
     }
 
@@ -593,9 +593,9 @@
     .kpi-spark { display: block; height: 50px !important; }
 
     .kpi-card.c-indigo { background: linear-gradient(145deg, #fff 60%, rgba(99,102,241,0.04) 100%); }
-    .kpi-card.c-green  { background: linear-gradient(145deg, #fff 60%, rgba(12,158,114,0.04)  100%); }
-    .kpi-card.c-amber  { background: linear-gradient(145deg, #fff 60%, rgba(212,135,14,0.04) 100%); }
-    .kpi-card.c-blue   { background: linear-gradient(145deg, #fff 60%, rgba(61,126,232,0.04)  100%); }
+    .kpi-card.c-green  { background: linear-gradient(145deg, #fff 60%, rgba(25,184,133,0.04)  100%); }
+    .kpi-card.c-amber  { background: linear-gradient(145deg, #fff 60%, rgba(232,157,26,0.04) 100%); }
+    .kpi-card.c-blue   { background: linear-gradient(145deg, #fff 60%, rgba(74,127,222,0.04)  100%); }
 
 
     .kpi-top {
@@ -626,9 +626,9 @@
     .kpi-icon svg { width: 16px; height: 16px; }
 
     .c-indigo .kpi-icon { background: linear-gradient(145deg, rgba(99,102,241,0.18), rgba(99,102,241,0.08)); color: #6366f1; box-shadow: 0 2px 8px rgba(99,102,241,0.18); }
-    .c-green  .kpi-icon { background: linear-gradient(145deg, rgba(12,158,114,0.16),  rgba(12,158,114,0.07));  color: #0c9e72; box-shadow: 0 2px 8px rgba(12,158,114,0.16); }
-    .c-amber  .kpi-icon { background: linear-gradient(145deg, rgba(212,135,14,0.16), rgba(212,135,14,0.07)); color: #d4870e; box-shadow: 0 2px 8px rgba(212,135,14,0.16); }
-    .c-blue   .kpi-icon { background: linear-gradient(145deg, rgba(61,126,232,0.16),  rgba(61,126,232,0.07));  color: #3d7ee8; box-shadow: 0 2px 8px rgba(61,126,232,0.16); }
+    .c-green  .kpi-icon { background: linear-gradient(145deg, rgba(25,184,133,0.15),  rgba(25,184,133,0.06));  color: #19b885; box-shadow: 0 2px 8px rgba(25,184,133,0.15); }
+    .c-amber  .kpi-icon { background: linear-gradient(145deg, rgba(232,157,26,0.15), rgba(232,157,26,0.06)); color: #e89d1a; box-shadow: 0 2px 8px rgba(232,157,26,0.15); }
+    .c-blue   .kpi-icon { background: linear-gradient(145deg, rgba(74,127,222,0.15),  rgba(74,127,222,0.06));  color: #4a7fde; box-shadow: 0 2px 8px rgba(74,127,222,0.15); }
 
     .kpi-val {
       font-size: 28px;
@@ -855,14 +855,14 @@
       flex-shrink: 0;
     }
 
-    .badge.completed  { background: rgba(12,158,114,0.1); color: #0a8860; }
-    .badge.completed::before  { background: #0c9e72; }
-    .badge.processing { background: rgba(61,126,232,0.1); color: #2563b8; }
-    .badge.processing::before { background: #3d7ee8; }
-    .badge.pending    { background: rgba(212,135,14,0.1); color: #b56b06; }
-    .badge.pending::before    { background: #d4870e; }
-    .badge.cancelled  { background: rgba(224,68,85,0.1); color: #c02440; }
-    .badge.cancelled::before  { background: #e04455; }
+    .badge.completed  { background: rgba(25,184,133,0.1); color: #0e9268; }
+    .badge.completed::before  { background: #19b885; }
+    .badge.processing { background: rgba(74,127,222,0.1); color: #2f64c0; }
+    .badge.processing::before { background: #4a7fde; }
+    .badge.pending    { background: rgba(232,157,26,0.1); color: #b87910; }
+    .badge.pending::before    { background: #e89d1a; }
+    .badge.cancelled  { background: rgba(224,77,106,0.1); color: #bf2f50; }
+    .badge.cancelled::before  { background: #e04d6a; }
 
     .cell-source {
       font-size: 12px;
@@ -2005,7 +2005,7 @@
             <div class="chart-legend">
               <div class="legend-item">
                 <div class="legend-left">
-                  <span class="legend-dot" style="background:#0c9e72"></span>
+                  <span class="legend-dot" style="background:#19b885"></span>
                   <span class="legend-label" data-en="Completed" data-ru="Завершена" data-ko="완료">Completed</span>
                 </div>
                 <div class="legend-right">
@@ -2016,7 +2016,7 @@
               </div>
               <div class="legend-item">
                 <div class="legend-left">
-                  <span class="legend-dot" style="background:#3d7ee8"></span>
+                  <span class="legend-dot" style="background:#4a7fde"></span>
                   <span class="legend-label" data-en="In Progress" data-ru="В работе" data-ko="처리 중">In Progress</span>
                 </div>
                 <div class="legend-right">
@@ -2027,7 +2027,7 @@
               </div>
               <div class="legend-item">
                 <div class="legend-left">
-                  <span class="legend-dot" style="background:#d4870e"></span>
+                  <span class="legend-dot" style="background:#e89d1a"></span>
                   <span class="legend-label" data-en="New" data-ru="Новые" data-ko="신규">New</span>
                 </div>
                 <div class="legend-right">
@@ -2038,7 +2038,7 @@
               </div>
               <div class="legend-item">
                 <div class="legend-left">
-                  <span class="legend-dot" style="background:#e04455"></span>
+                  <span class="legend-dot" style="background:#e04d6a"></span>
                   <span class="legend-label" data-en="Incomplete" data-ru="Не завершена" data-ko="미완료">Incomplete</span>
                 </div>
                 <div class="legend-right">
@@ -2405,17 +2405,17 @@
 
   /* ─── Item definitions ─── */
   const STATUS_ITEMS = [
-    { value: 'new',         label: 'New',         label_ru: 'Новая',        label_ko: '신규',    dot: '#d4870e' },
-    { value: 'in_progress', label: 'In Progress', label_ru: 'В работе',     label_ko: '처리 중', dot: '#3d7ee8' },
-    { value: 'completed',   label: 'Completed',   label_ru: 'Завершена',    label_ko: '완료',    dot: '#0c9e72' },
-    { value: 'incomplete',  label: 'Incomplete',  label_ru: 'Не завершена', label_ko: '미완료',  dot: '#e04455' },
+    { value: 'new',         label: 'New',         label_ru: 'Новая',        label_ko: '신규',    dot: '#e89d1a' },
+    { value: 'in_progress', label: 'In Progress', label_ru: 'В работе',     label_ko: '처리 중', dot: '#4a7fde' },
+    { value: 'completed',   label: 'Completed',   label_ru: 'Завершена',    label_ko: '완료',    dot: '#19b885' },
+    { value: 'incomplete',  label: 'Incomplete',  label_ru: 'Не завершена', label_ko: '미완료',  dot: '#e04d6a' },
   ];
   const STATUS_FILTER_ITEMS = [
     { value: '', label: 'All statuses', label_ru: 'Все статусы', label_ko: '전체 상태' },
     ...STATUS_ITEMS,
   ];
   const ROLE_ITEMS = [
-    { value: 'employee', label: 'Employee', label_ru: 'Сотрудник',     label_ko: '직원',  dot: '#d4870e' },
+    { value: 'employee', label: 'Employee', label_ru: 'Сотрудник',     label_ko: '직원',  dot: '#e89d1a' },
     { value: 'admin',    label: 'Admin',    label_ru: 'Администратор', label_ko: '관리자', dot: '#7c5af0' },
   ];
 
@@ -2829,10 +2829,10 @@
       const bar = document.getElementById(barId);
       if (bar) { bar.style.width = p + '%'; bar.style.background = color; }
     };
-    setBar('legendCompletedPct',  'barCompleted',  active.completed,  '#0c9e72');
-    setBar('legendInProgressPct', 'barInProgress', active.in_progress,'#3d7ee8');
-    setBar('legendNewPct',        'barNew',        active.new,        '#d4870e');
-    setBar('legendIncompletePct', 'barIncomplete', active.incomplete, '#e04455');
+    setBar('legendCompletedPct',  'barCompleted',  active.completed,  '#19b885');
+    setBar('legendInProgressPct', 'barInProgress', active.in_progress,'#4a7fde');
+    setBar('legendNewPct',        'barNew',        active.new,        '#e89d1a');
+    setBar('legendIncompletePct', 'barIncomplete', active.incomplete, '#e04d6a');
 
     const trashBadge = document.getElementById('trashBadge');
     if (inTrash > 0) { trashBadge.textContent = inTrash; trashBadge.style.display = ''; }
@@ -2878,9 +2878,9 @@
     const DAYS = 14;
     const configs = [
       { id: 'sparkTotal',      color: '#6366f1', rgb: '99,102,241',  data: sparkSeries(null,          DAYS) },
-      { id: 'sparkCompleted',  color: '#0c9e72', rgb: '12,158,114',  data: sparkSeries('completed',   DAYS) },
-      { id: 'sparkNew',        color: '#d4870e', rgb: '212,135,14',  data: sparkSeries('new',         DAYS) },
-      { id: 'sparkInProgress', color: '#3d7ee8', rgb: '61,126,232',  data: sparkSeries('in_progress', DAYS) },
+      { id: 'sparkCompleted',  color: '#19b885', rgb: '25,184,133',  data: sparkSeries('completed',   DAYS) },
+      { id: 'sparkNew',        color: '#e89d1a', rgb: '232,157,26',  data: sparkSeries('new',         DAYS) },
+      { id: 'sparkInProgress', color: '#4a7fde', rgb: '74,127,222',  data: sparkSeries('in_progress', DAYS) },
     ];
 
     configs.forEach(({ id, color, rgb, data }) => {
@@ -2894,21 +2894,30 @@
       }
 
       const ctx  = canvas.getContext('2d');
-      const h    = 50;
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0,    `rgba(${rgb},0.18)`);
-      grad.addColorStop(0.6,  `rgba(${rgb},0.05)`);
-      grad.addColorStop(1,    `rgba(${rgb},0)`);
+
+      const sparkGradPlugin = {
+        id: 'sparkGrad',
+        beforeDatasetsDraw(chart) {
+          const { ctx: c, chartArea: ca } = chart;
+          if (!ca) return;
+          const g = c.createLinearGradient(0, ca.top, 0, ca.bottom);
+          g.addColorStop(0,    `rgba(${rgb},0.16)`);
+          g.addColorStop(0.55, `rgba(${rgb},0.04)`);
+          g.addColorStop(1,    `rgba(${rgb},0)`);
+          chart.data.datasets[0].backgroundColor = g;
+        }
+      };
 
       _sparkCharts[id] = new Chart(ctx, {
         type: 'line',
+        plugins: [sparkGradPlugin],
         data: {
           labels: data.map((_, i) => i),
           datasets: [{
             data,
             borderColor: color,
             borderWidth: 1.5,
-            backgroundColor: grad,
+            backgroundColor: 'transparent',
             fill: true,
             tension: 0.45,
             pointRadius: 0,
@@ -3001,11 +3010,19 @@
     }
 
     const ctx = document.getElementById('lineChart').getContext('2d');
-    const h   = ctx.canvas.parentElement.offsetHeight || 185;
-    const grad = ctx.createLinearGradient(0, 0, 0, h);
-    grad.addColorStop(0,    'rgba(99,102,241,0.14)');
-    grad.addColorStop(0.55, 'rgba(99,102,241,0.04)');
-    grad.addColorStop(1,    'rgba(99,102,241,0)');
+
+    const areaGradPlugin = {
+      id: 'areaGrad',
+      beforeDatasetsDraw(chart) {
+        const { ctx: c, chartArea: ca } = chart;
+        if (!ca) return;
+        const g = c.createLinearGradient(0, ca.top, 0, ca.bottom);
+        g.addColorStop(0,    'rgba(99,102,241,0.15)');
+        g.addColorStop(0.45, 'rgba(99,102,241,0.05)');
+        g.addColorStop(1,    'rgba(99,102,241,0)');
+        chart.data.datasets[0].backgroundColor = g;
+      }
+    };
 
     const crosshairPlugin = {
       id: 'crosshairPlugin',
@@ -3044,9 +3061,9 @@
 
     lineChart = new Chart(ctx, {
       type: 'line',
-      plugins: [crosshairPlugin],
+      plugins: [crosshairPlugin, areaGradPlugin],
       data: { labels: tickLabels, datasets: [{
-        data: values, fill: true, backgroundColor: grad,
+        data: values, fill: true, backgroundColor: 'transparent',
         borderColor: '#6366f1', borderWidth: 2,
         pointRadius: 0,
         pointHoverRadius: 0,
@@ -3080,7 +3097,7 @@
   /* ── Donut chart builder ── */
   function buildDonutChart(active) {
     const donutData = [active.completed || 0, active.in_progress || 0, active.new || 0, active.incomplete || 0];
-    const colors    = ['#0c9e72','#3d7ee8','#d4870e','#e04455'];
+    const colors    = ['#19b885','#4a7fde','#e89d1a','#e04d6a'];
 
     function syncDonutCenter(idx) {
       const valEl   = document.getElementById('donutCenterVal');
@@ -3192,7 +3209,7 @@
           syncDonutCenter(idx);
           showDonutTooltip(chart, idx);
           ctx2.canvas.style.cursor = idx !== null ? 'pointer' : 'default';
-          const dimmed = ['rgba(12,158,114,0.22)','rgba(61,126,232,0.22)','rgba(212,135,14,0.22)','rgba(224,68,85,0.22)'];
+          const dimmed = ['rgba(25,184,133,0.2)','rgba(74,127,222,0.2)','rgba(232,157,26,0.2)','rgba(224,77,106,0.2)'];
           donutChart.data.datasets[0].backgroundColor = idx !== null
             ? colors.map((c, i) => i === idx ? c : dimmed[i])
             : colors.slice();
@@ -3493,7 +3510,7 @@
     if (assignWrap) {
       const assignItems = [
         { value: '', label: T('unassigned') },
-        ...users.map(u => ({ value: String(u.id), label: u.username, dot: u.role === 'admin' ? '#7c5af0' : '#d4870e' })),
+        ...users.map(u => ({ value: String(u.id), label: u.username, dot: u.role === 'admin' ? '#7c5af0' : '#e89d1a' })),
       ];
       createDropdown({
         el: assignWrap,
