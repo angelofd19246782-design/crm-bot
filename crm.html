@@ -1208,6 +1208,25 @@
       border-radius: 6px;
     }
 
+    /* ─── Mobile nav toggle button ─── */
+    .mobile-nav-toggle {
+      display: none;
+      width: 36px; height: 36px;
+      align-items: center; justify-content: center; flex-shrink: 0;
+      background: transparent; border: none; border-radius: 8px;
+      cursor: pointer; color: var(--text2);
+      transition: background 0.15s;
+    }
+    .mobile-nav-toggle:hover { background: #f5f5fc; }
+
+    /* ─── Mobile sidebar overlay ─── */
+    .mobile-sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45); z-index: 149;
+      backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+    }
+    .mobile-sidebar-overlay.visible { display: block; }
+
     /* ─── Responsive ─── */
     @media (max-width: 1100px) {
       .layout { grid-template-columns: 220px 1fr; }
@@ -1216,8 +1235,86 @@
     }
 
     @media (max-width: 800px) {
+      /* Layout */
       .layout { grid-template-columns: 1fr; }
-      .sidebar { display: none; }
+
+      /* Sidebar — hidden by default, slides in as a drawer */
+      .sidebar {
+        display: flex;
+        position: fixed;
+        top: 0; left: 0; bottom: 0;
+        width: 260px;
+        z-index: 150;
+        transform: translateX(-100%);
+        transition: transform 0.27s cubic-bezier(0.4,0,0.2,1);
+        box-shadow: 4px 0 30px rgba(0,0,0,0.25);
+      }
+      .sidebar.mobile-open { transform: translateX(0); }
+
+      /* Topbar */
+      .mobile-nav-toggle { display: flex; }
+      .topbar { padding: 0 12px; gap: 8px; }
+      .topbar-sep, .topbar-date { display: none; }
+      .topbar-right { gap: 6px; }
+      .lang-switch { padding: 2px; gap: 1px; }
+      .ls-btn { padding: 4px 7px; font-size: 10.5px; }
+      /* New Request button: icon-only on mobile */
+      #newReqBtn span { display: none; }
+      #newReqBtn { width: 36px; height: 36px; padding: 0; justify-content: center; border-radius: 9px; }
+
+      /* Content */
+      .content { padding: 14px 12px 28px; }
+
+      /* Page header */
+      .page-hdr { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .page-hdr h1 { font-size: 18px; }
+
+      /* KPI */
+      .kpi-row { gap: 10px; }
+      .kpi-card { padding: 14px 14px 12px; }
+      .kpi-val { font-size: 24px; }
+
+      /* Charts */
+      .charts-row { gap: 10px; }
+      .chart-card { padding: 16px 16px; }
+
+      /* Tables — horizontal scroll on mobile */
+      .table-card { overflow-x: auto; border-radius: 14px; }
+      .table-card table { min-width: 520px; }
+      .table-hdr { padding: 14px 16px; }
+      thead th { padding: 8px 14px; white-space: nowrap; }
+      tbody td { padding: 11px 14px; }
+
+      /* View toolbar */
+      .view-toolbar { flex-wrap: wrap; gap: 8px; }
+      .search-input { max-width: 100%; width: 100%; flex: 1 1 100%; }
+      #reqStatusFilterWrap { width: 100% !important; }
+
+      /* Add user form — 2 columns on mobile */
+      .add-user-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+
+      /* Drawer — full width on mobile */
+      .drawer { width: 100vw; max-width: 100vw; }
+      .drawer-body { padding: 16px 14px 24px; }
+
+      /* Toast — constrain width */
+      .toast { max-width: calc(100vw - 32px); white-space: normal; text-align: center; }
+
+      /* Table-hdr actions wrap */
+      .table-hdr { flex-wrap: wrap; gap: 8px; }
+    }
+
+    @media (max-width: 480px) {
+      .kpi-val { font-size: 20px; }
+      .kpi-card { padding: 12px 12px 10px; }
+      .kpi-icon { width: 30px; height: 30px; border-radius: 8px; }
+      .kpi-icon svg { width: 15px; height: 15px; }
+      .topbar-right { gap: 4px; }
+      .ls-btn { padding: 3px 6px; font-size: 10px; }
+      /* Add user form — single column on very small screens */
+      .add-user-row { grid-template-columns: 1fr; }
+      /* Reduce chart height slightly */
+      .chart-canvas-wrap { min-height: 0; }
     }
   </style>
 </head>
@@ -1296,6 +1393,13 @@
 
     <!-- Topbar -->
     <header class="topbar">
+      <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Menu">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+          <rect x="2" y="4" width="16" height="2" rx="1"/>
+          <rect x="2" y="9" width="16" height="2" rx="1"/>
+          <rect x="2" y="14" width="16" height="2" rx="1"/>
+        </svg>
+      </button>
       <span class="topbar-title" id="topbarTitle" data-en="Dashboard" data-ru="Дашборд" data-ko="대시보드">Dashboard</span>
       <span class="topbar-sep"></span>
       <span class="topbar-date" id="topDate"></span>
@@ -1614,6 +1718,9 @@
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /layout -->
+
+<!-- ─── Mobile sidebar overlay ─── -->
+<div class="mobile-sidebar-overlay" id="mobileSidebarOverlay"></div>
 
 <!-- ─── Drawer ─── -->
 <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -2703,6 +2810,27 @@
     toast(T('req_created'));
     if (currentView === 'dashboard') loadDashboard();
     else if (currentView === 'requests') loadRequests();
+  });
+
+  /* ── Mobile sidebar ── */
+  const _sidebar             = document.querySelector('.sidebar');
+  const _mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
+
+  function openMobileSidebar() {
+    _sidebar.classList.add('mobile-open');
+    _mobileSidebarOverlay.classList.add('visible');
+  }
+  function closeMobileSidebar() {
+    _sidebar.classList.remove('mobile-open');
+    _mobileSidebarOverlay.classList.remove('visible');
+  }
+
+  document.getElementById('mobileNavToggle').addEventListener('click', openMobileSidebar);
+  _mobileSidebarOverlay.addEventListener('click', closeMobileSidebar);
+
+  // Close sidebar when a nav item is tapped on mobile
+  document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+    item.addEventListener('click', closeMobileSidebar);
   });
 
   /* ── Initial load ── */
