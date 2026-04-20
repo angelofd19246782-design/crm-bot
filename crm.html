@@ -1515,16 +1515,16 @@
     .line-tooltip {
       position: fixed;
       z-index: 800;
-      background: rgba(11,12,24,0.97);
-      border-radius: 10px;
-      padding: 10px 13px 11px;
+      background: rgba(10,11,22,0.96);
+      border-radius: 11px;
+      padding: 0;
       pointer-events: none;
       opacity: 0;
-      transform: translateY(5px);
-      transition: opacity 0.12s ease, transform 0.12s ease;
-      min-width: 120px;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.18);
-      border: 1px solid rgba(129,140,248,0.14);
+      transform: translateY(6px);
+      transition: opacity 0.14s ease, transform 0.14s ease;
+      min-width: 126px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.32), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 1px rgba(99,102,241,0.18);
+      overflow: hidden;
     }
 
     .line-tooltip.visible {
@@ -1532,42 +1532,51 @@
       transform: translateY(0);
     }
 
+    .lt-accent {
+      height: 2px;
+      background: linear-gradient(90deg, rgba(99,102,241,0.9) 0%, rgba(99,102,241,0.1) 100%);
+    }
+
+    .lt-body {
+      padding: 9px 13px 11px;
+    }
+
     .lt-date {
-      font-size: 10px;
-      color: rgba(255,255,255,0.38);
+      font-size: 9.5px;
+      color: rgba(255,255,255,0.35);
       font-weight: 600;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
       margin-bottom: 5px;
     }
 
     .lt-count {
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 800;
       color: #fff;
-      letter-spacing: -0.8px;
+      letter-spacing: -0.9px;
       line-height: 1;
     }
 
     .lt-unit {
       font-size: 10.5px;
       font-weight: 500;
-      color: rgba(255,255,255,0.38);
+      color: rgba(255,255,255,0.35);
       letter-spacing: 0;
     }
 
     .lt-delta {
       font-size: 10.5px;
       font-weight: 600;
-      margin-top: 5px;
+      margin-top: 6px;
       display: flex;
       align-items: center;
       gap: 3px;
     }
 
-    .lt-delta.up   { color: #4ade80; }
-    .lt-delta.down { color: #f87171; }
-    .lt-delta.flat { color: rgba(255,255,255,0.28); }
+    .lt-delta.up   { color: #19b885; }
+    .lt-delta.down { color: #e04d6a; }
+    .lt-delta.flat { color: rgba(255,255,255,0.26); }
 
     /* ─── Donut external tooltip ─── */
     .donut-tooltip {
@@ -2952,7 +2961,7 @@
       else if (delta < 0) deltaHtml = `<div class="lt-delta down">▼ ${delta} vs prev</div>`;
       else                deltaHtml = `<div class="lt-delta flat">= same as prev</div>`;
     }
-    el.innerHTML = `<div class="lt-date">${esc(dateStr)}</div><div class="lt-count">${val} <span class="lt-unit">${T('chart_tooltip')}</span></div>${deltaHtml}`;
+    el.innerHTML = `<div class="lt-accent"></div><div class="lt-body"><div class="lt-date">${esc(dateStr)}</div><div class="lt-count">${val} <span class="lt-unit">${T('chart_tooltip')}</span></div>${deltaHtml}</div>`;
     const rect = chart.canvas.getBoundingClientRect();
     let left = rect.left + tooltip.caretX + 14;
     let top  = rect.top  + tooltip.caretY - 56;
@@ -3006,32 +3015,50 @@
 
     const ctx = document.getElementById('lineChart').getContext('2d');
 
+    function makeLineGrad(chart) {
+      const { ctx: c, chartArea: ca } = chart;
+      if (!ca) return 'transparent';
+      const g = c.createLinearGradient(0, ca.top, 0, ca.bottom);
+      g.addColorStop(0,    'rgba(99,102,241,0.26)');
+      g.addColorStop(0.38, 'rgba(99,102,241,0.10)');
+      g.addColorStop(1,    'rgba(99,102,241,0)');
+      return g;
+    }
+
     const crosshairPlugin = {
       id: 'crosshairPlugin',
       afterDraw(chart) {
         const active = chart.tooltip._active;
         if (!active || !active.length) return;
         const pt = active[0].element;
-        const x  = pt.x;
-        const y  = pt.y;
+        const x  = pt.x, y = pt.y;
         const { top, bottom } = chart.scales.y;
         const c = chart.ctx;
         c.save();
 
-        // Vertical guide line
-        c.strokeStyle = 'rgba(99,102,241,0.16)';
+        // Dashed vertical guide
+        c.strokeStyle = 'rgba(99,102,241,0.18)';
         c.lineWidth = 1;
+        c.setLineDash([3, 4]);
         c.beginPath(); c.moveTo(x, top); c.lineTo(x, bottom); c.stroke();
+        c.setLineDash([]);
 
-        // Active dot — white halo + indigo fill
+        // Outer glow ring
+        c.beginPath();
+        c.arc(x, y, 9, 0, Math.PI * 2);
+        c.fillStyle = 'rgba(99,102,241,0.10)';
+        c.fill();
+
+        // White halo
         c.beginPath();
         c.arc(x, y, 5.5, 0, Math.PI * 2);
-        c.fillStyle = '#fff';
-        c.shadowColor = 'rgba(99,102,241,0.35)';
-        c.shadowBlur  = 6;
+        c.fillStyle = '#ffffff';
+        c.shadowColor = 'rgba(99,102,241,0.45)';
+        c.shadowBlur  = 8;
         c.fill();
         c.shadowBlur = 0;
 
+        // Indigo center
         c.beginPath();
         c.arc(x, y, 3.5, 0, Math.PI * 2);
         c.fillStyle = '#6366f1';
@@ -3045,21 +3072,14 @@
       type: 'line',
       plugins: [crosshairPlugin],
       data: { labels: tickLabels, datasets: [{
-        data: values, fill: true,
-        backgroundColor: (context) => {
-          const { chart } = context;
-          const { ctx: c, chartArea: ca } = chart;
-          if (!ca) return 'transparent';
-          const g = c.createLinearGradient(0, ca.top, 0, ca.bottom);
-          g.addColorStop(0,    'rgba(99,102,241,0.22)');
-          g.addColorStop(0.45, 'rgba(99,102,241,0.08)');
-          g.addColorStop(1,    'rgba(99,102,241,0)');
-          return g;
-        },
-        borderColor: '#6366f1', borderWidth: 2,
+        data: values,
+        fill: 'origin',
+        backgroundColor: (context) => makeLineGrad(context.chart),
+        borderColor: '#6366f1',
+        borderWidth: 2,
         pointRadius: 0,
         pointHoverRadius: 0,
-        tension: 0.44,
+        cubicInterpolationMode: 'monotone',
       }]},
       options: {
         responsive: true, maintainAspectRatio: false,
@@ -3068,7 +3088,7 @@
           legend: { display: false },
           tooltip: { enabled: false, external: externalLineTooltip }
         },
-        layout: { padding: { top: 6, right: 4, bottom: 0, left: 0 } },
+        layout: { padding: { top: 8, right: 4, bottom: 8, left: 0 } },
         scales: {
           x: {
             grid: { display: false },
@@ -3076,7 +3096,7 @@
             ticks: { color: '#a0a0c0', font: { size: 10, family: 'inherit' }, maxRotation: 0, padding: 6 }
           },
           y: {
-            grid: { color: 'rgba(0,0,0,0.032)', tickLength: 0 },
+            grid: { color: 'rgba(0,0,0,0.028)', tickLength: 0 },
             border: { display: false },
             ticks: { color: '#a0a0c0', font: { size: 10, family: 'inherit' }, maxTicksLimit: 4, padding: 10 },
             beginAtZero: true
@@ -3084,6 +3104,9 @@
         }
       }
     });
+
+    // Guarantee gradient renders — first update() may run before layout computes chartArea
+    requestAnimationFrame(() => { if (lineChart) lineChart.update('none'); });
   }
 
   /* ── Donut chart builder ── */
