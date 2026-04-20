@@ -12,12 +12,12 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --sb: #07070e;
-      --sb-border: rgba(255,255,255,0.06);
-      --sb-text: #4e4e6c;
-      --sb-hover: rgba(255,255,255,0.06);
-      --sb-active-bg: rgba(99,102,241,0.18);
-      --sb-active: #a5b4fc;
+      --sb: #0d0d1a;
+      --sb-border: rgba(255,255,255,0.09);
+      --sb-text: #9da0c0;
+      --sb-hover: rgba(255,255,255,0.08);
+      --sb-active-bg: rgba(99,102,241,0.22);
+      --sb-active: #c7d2fe;
       --page: #eceef7;
       --card: #ffffff;
       --border: #e5e7ef;
@@ -102,7 +102,7 @@
     .logo-sub {
       font-size: 10px;
       font-weight: 500;
-      color: rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.45);
       letter-spacing: 0.5px;
     }
 
@@ -120,7 +120,7 @@
       font-weight: 700;
       letter-spacing: 1.4px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.22);
+      color: rgba(255,255,255,0.38);
     }
 
     .nav-item {
@@ -139,8 +139,8 @@
       position: relative;
     }
 
-    .nav-item:hover { background: var(--sb-hover); color: rgba(255,255,255,0.78); }
-    .nav-item:hover .nav-ic { color: rgba(255,255,255,0.65); }
+    .nav-item:hover { background: var(--sb-hover); color: rgba(255,255,255,0.9); }
+    .nav-item:hover .nav-ic { color: rgba(255,255,255,0.75); }
 
     .nav-item.active {
       background: var(--sb-active-bg);
@@ -157,7 +157,7 @@
       height: 56%;
       background: var(--sb-active);
       border-radius: 0 3px 3px 0;
-      box-shadow: 0 0 8px rgba(165,180,252,0.5);
+      box-shadow: 0 0 10px rgba(199,210,254,0.6);
     }
 
     .nav-item.active .nav-ic { color: var(--sb-active); }
@@ -166,14 +166,14 @@
       width: 17px;
       height: 17px;
       flex-shrink: 0;
-      color: #3e3e60;
+      color: #6b6e9a;
       transition: color 0.15s;
     }
 
     .nav-badge {
       margin-left: auto;
-      background: rgba(245,158,11,0.16);
-      color: #f59e0b;
+      background: rgba(245,158,11,0.22);
+      color: #fbbf24;
       border-radius: 100px;
       padding: 1px 7px;
       font-size: 10.5px;
@@ -181,8 +181,8 @@
     }
 
     .nav-badge.red {
-      background: rgba(239,68,68,0.16);
-      color: #ef4444;
+      background: rgba(239,68,68,0.22);
+      color: #f87171;
     }
 
     .sb-footer {
@@ -223,7 +223,7 @@
     .sb-user-name {
       font-size: 12.5px;
       font-weight: 600;
-      color: rgba(255,255,255,0.8);
+      color: rgba(255,255,255,0.92);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -231,7 +231,7 @@
 
     .sb-user-role {
       font-size: 11px;
-      color: rgba(255,255,255,0.28);
+      color: rgba(255,255,255,0.48);
     }
 
     /* ─── Main area ─── */
