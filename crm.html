@@ -1883,7 +1883,7 @@
       align-self: flex-start;
     }
     .sl-item { display: flex; align-items: center; gap: 5px; }
-    .sl-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .sl-dot  { width: 18px; height: 3px; border-radius: 2px; flex-shrink: 0; }
     .sl-label { font-size: 11.5px; color: var(--text2); font-weight: 500; }
 
     @media (max-width: 800px) {
@@ -2371,7 +2371,7 @@
               <div class="sl-item"><span class="sl-dot" style="background:#e04d6a"></span><span class="sl-label" data-en="Incomplete" data-ru="Не завершена" data-ko="미완료">Incomplete</span></div>
             </div>
           </div>
-          <div class="chart-canvas-wrap" style="height:175px;position:relative">
+          <div class="chart-canvas-wrap" style="height:200px;position:relative">
             <canvas id="stackedChart"></canvas>
           </div>
         </div>
@@ -3394,9 +3394,10 @@
   /* ── Stacked status distribution chart ── */
   function buildStackedChart() {
     const DAYS = 30;
-    const statusKeys  = ['new', 'in_progress', 'completed', 'incomplete'];
-    const statusColors = { new: '#e89d1a', in_progress: '#4a7fde', completed: '#19b885', incomplete: '#e04d6a' };
-    const labelKeys    = { new: 's_new', in_progress: 's_in_progress', completed: 's_completed', incomplete: 's_incomplete' };
+    // Bottom-to-top stack order: completed → in_progress → new → incomplete
+    const statusKeys   = ['completed', 'in_progress', 'new', 'incomplete'];
+    const statusColors = { completed: '#19b885', in_progress: '#4a7fde', new: '#e89d1a', incomplete: '#e04d6a' };
+    const labelKeys    = { completed: 's_completed', in_progress: 's_in_progress', new: 's_new', incomplete: 's_incomplete' };
 
     const dayMap = {};
     _dailyByStatus.forEach(r => {
@@ -3404,29 +3405,47 @@
       dayMap[r.day][r.status] = r.count;
     });
 
-    const locale = L.lang === 'ru' ? 'ru-RU' : L.lang === 'ko' ? 'ko-KR' : 'en-US';
-    const step = 5;
-    const tickLabels = [];
+    // Build full date array (oldest → newest)
+    const dateKeys = [];
     for (let i = DAYS - 1; i >= 0; i--) {
       const d = new Date(); d.setDate(d.getDate() - i);
-      tickLabels.push((DAYS - 1 - i) % step === 0
-        ? d.toLocaleDateString(locale, { month: 'short', day: 'numeric' })
-        : '');
+      dateKeys.push(d.toISOString().slice(0, 10));
     }
 
+    const locale = L.lang === 'ru' ? 'ru-RU' : L.lang === 'ko' ? 'ko-KR' : 'en-US';
+    const step = 5;
+    const tickLabels = dateKeys.map((dk, idx) => {
+      if (idx % step !== 0) return '';
+      const d = new Date(dk + 'T12:00:00Z');
+      return d.toLocaleDateString(locale, { month: 'short', day: 'numeric' });
+    });
+
     const datasets = statusKeys.map(sk => {
-      const data = [];
-      for (let i = DAYS - 1; i >= 0; i--) {
-        const d = new Date(); d.setDate(d.getDate() - i);
-        data.push((dayMap[d.toISOString().slice(0, 10)] || {})[sk] || 0);
-      }
+      const color = statusColors[sk];
+      const data  = dateKeys.map(dk => (dayMap[dk] || {})[sk] || 0);
       return {
         label: T(labelKeys[sk]),
         data,
-        backgroundColor: statusColors[sk] + 'c0',
-        borderColor: statusColors[sk],
-        borderWidth: 0,
-        borderRadius: 1,
+        fill: true,
+        tension: 0,
+        cubicInterpolationMode: 'monotone',
+        borderColor: color,
+        borderWidth: 1.5,
+        backgroundColor: (ctx) => {
+          const chart  = ctx.chart;
+          const { chartArea } = chart;
+          if (!chartArea) return color + '7a';
+          const gradient = chart.ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          gradient.addColorStop(0,   color + 'a0');
+          gradient.addColorStop(0.6, color + '55');
+          gradient.addColorStop(1,   color + '18');
+          return gradient;
+        },
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointHoverBackgroundColor: color,
+        pointHoverBorderColor: '#fff',
+        pointHoverBorderWidth: 2,
       };
     });
 
@@ -3443,24 +3462,35 @@
     const ctx = document.getElementById('stackedChart');
     if (!ctx) return;
     stackedChart = new Chart(ctx.getContext('2d'), {
-      type: 'bar',
+      type: 'line',
       data: { labels: tickLabels, datasets },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
+        animation: { duration: 600, easing: 'easeInOutQuart' },
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: 'rgba(10,11,22,0.94)',
-            titleColor: 'rgba(255,255,255,0.45)',
-            bodyColor: '#ffffff',
-            borderColor: 'rgba(99,102,241,0.12)',
+            backgroundColor: 'rgba(12,12,28,0.96)',
+            titleColor: 'rgba(255,255,255,0.55)',
+            bodyColor: '#e8e8f4',
+            borderColor: 'rgba(99,102,241,0.18)',
             borderWidth: 1,
-            padding: { x: 12, y: 10 },
+            padding: { x: 14, y: 11 },
+            cornerRadius: 10,
             callbacks: {
-              title: items => items[0]?.label || '',
+              title: items => {
+                const dk = dateKeys[items[0]?.dataIndex ?? 0];
+                if (!dk) return '';
+                const d = new Date(dk + 'T12:00:00Z');
+                return d.toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
+              },
               label: item => `  ${item.dataset.label}: ${item.raw}`,
+              afterBody: items => {
+                const total = items.reduce((s, it) => s + (it.raw || 0), 0);
+                return total > 0 ? [`  ─────────────`, `  Total: ${total}`] : [];
+              },
             }
           }
         },
@@ -3469,13 +3499,27 @@
             stacked: true,
             grid: { display: false },
             border: { display: false },
-            ticks: { color: '#a0a0c0', font: { size: 10, family: 'inherit' }, maxRotation: 0, padding: 5 },
+            ticks: {
+              color: '#a0a0c0',
+              font: { size: 10, family: 'inherit' },
+              maxRotation: 0,
+              padding: 6,
+            },
           },
           y: {
             stacked: true,
-            grid: { color: 'rgba(0,0,0,0.032)', tickLength: 0 },
-            border: { display: false },
-            ticks: { color: '#a0a0c0', font: { size: 10, family: 'inherit' }, maxTicksLimit: 4, padding: 10 },
+            grid: {
+              color: 'rgba(0,0,0,0.036)',
+              tickLength: 0,
+              drawBorder: false,
+            },
+            border: { display: false, dash: [3, 3] },
+            ticks: {
+              color: '#a0a0c0',
+              font: { size: 10, family: 'inherit' },
+              maxTicksLimit: 5,
+              padding: 10,
+            },
             beginAtZero: true,
           }
         }
