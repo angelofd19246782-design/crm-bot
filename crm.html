@@ -1420,6 +1420,166 @@
     .confirm-ok.danger { background: var(--red); box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
     .confirm-ok.primary { background: var(--primary); box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
 
+    /* ─── Chart period switcher ─── */
+    .chart-period-sw {
+      display: flex;
+      background: #f4f4f9;
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+      flex-shrink: 0;
+      align-self: flex-start;
+    }
+
+    .cpd-btn {
+      padding: 4px 11px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text3);
+      cursor: pointer;
+      transition: all 0.17s;
+      letter-spacing: 0.3px;
+    }
+
+    .cpd-btn.active {
+      background: #fff;
+      color: var(--primary);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .cpd-btn:not(.active):hover { color: var(--text2); background: rgba(255,255,255,0.5); }
+
+    /* ─── Chart stats strip ─── */
+    .chart-stats-strip {
+      display: flex;
+      align-items: center;
+      margin: 14px 0 16px;
+      padding: 11px 0;
+      background: #f8f8fd;
+      border-radius: 10px;
+      border: 1px solid #eeeef6;
+    }
+
+    .cstat { flex: 1; text-align: center; }
+
+    .cstat-val {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text1);
+      letter-spacing: -0.8px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cstat-label {
+      font-size: 10px;
+      color: var(--text3);
+      font-weight: 600;
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .cstat-div {
+      width: 1px;
+      height: 28px;
+      background: #e4e4f0;
+      flex-shrink: 0;
+    }
+
+    /* ─── Legend upgrade ─── */
+    .legend-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-pct {
+      font-size: 11px;
+      color: var(--text3);
+      font-weight: 700;
+      min-width: 34px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .legend-bar-wrap {
+      width: 36px;
+      height: 3px;
+      background: #eeeef5;
+      border-radius: 2px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .legend-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ─── Line chart custom tooltip ─── */
+    .line-tooltip {
+      position: fixed;
+      z-index: 800;
+      background: #0f0f1e;
+      border-radius: 12px;
+      padding: 11px 14px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.14s, transform 0.14s;
+      min-width: 130px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .line-tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .lt-date {
+      font-size: 10.5px;
+      color: rgba(255,255,255,0.45);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .lt-count {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .lt-unit {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0;
+    }
+
+    .lt-delta {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .lt-delta.up   { color: #4ade80; }
+    .lt-delta.down { color: #f87171; }
+    .lt-delta.flat { color: rgba(255,255,255,0.3); }
+
     /* ─── Loading skeleton ─── */
     @keyframes shimmer {
       0% { background-position: -600px 0; }
@@ -1750,10 +1910,30 @@
             <div class="chart-hdr">
               <div>
                 <div class="chart-title" data-en="Requests Over Time" data-ru="Заявки по времени" data-ko="기간별 신청 현황">Requests Over Time</div>
-                <div class="chart-subtitle" data-en="Last 30 days · daily volume" data-ru="Последние 30 дней · ежедневный объём" data-ko="최근 30일 · 일별 건수">Last 30 days · daily volume</div>
+                <div class="chart-subtitle" id="lineChartSubtitle" data-en="Last 30 days · daily volume" data-ru="Последние 30 дней · ежедневный объём" data-ko="최근 30일 · 일별 건수">Last 30 days · daily volume</div>
+              </div>
+              <div class="chart-period-sw" id="chartPeriodSw">
+                <button class="cpd-btn" data-days="7">7D</button>
+                <button class="cpd-btn active" data-days="30">30D</button>
               </div>
             </div>
-            <div class="chart-canvas-wrap" style="height:220px">
+            <div class="chart-stats-strip">
+              <div class="cstat">
+                <div class="cstat-val" id="cstatTotal">—</div>
+                <div class="cstat-label" data-en="Total" data-ru="Итого" data-ko="합계">Total</div>
+              </div>
+              <div class="cstat-div"></div>
+              <div class="cstat">
+                <div class="cstat-val" id="cstatAvg">—</div>
+                <div class="cstat-label" data-en="Avg / day" data-ru="Ср. в день" data-ko="일 평균">Avg / day</div>
+              </div>
+              <div class="cstat-div"></div>
+              <div class="cstat">
+                <div class="cstat-val" id="cstatPeak">—</div>
+                <div class="cstat-label" data-en="Peak day" data-ru="Пиковый день" data-ko="최대치">Peak day</div>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap" style="height:185px;position:relative">
               <canvas id="lineChart"></canvas>
             </div>
           </div>
@@ -1767,9 +1947,9 @@
             </div>
             <div class="chart-canvas-wrap" style="height:160px;display:flex;align-items:center;justify-content:center;position:relative">
               <canvas id="donutChart"></canvas>
-              <div id="donutCenter" style="position:absolute;text-align:center;pointer-events:none">
-                <div style="font-size:24px;font-weight:800;color:var(--text1);letter-spacing:-0.5px;line-height:1">—</div>
-                <div style="font-size:11px;color:var(--text3);margin-top:3px;font-weight:500" data-en="total" data-ru="всего" data-ko="전체">total</div>
+              <div id="donutCenter" style="position:absolute;text-align:center;pointer-events:none;transition:all 0.18s">
+                <div id="donutCenterVal" style="font-size:26px;font-weight:900;color:var(--text1);letter-spacing:-1px;line-height:1;transition:all 0.18s">—</div>
+                <div id="donutCenterLabel" style="font-size:10.5px;color:var(--text3);margin-top:4px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;transition:all 0.18s" data-en="total" data-ru="всего" data-ko="전체">total</div>
               </div>
             </div>
             <div class="chart-legend">
@@ -1778,28 +1958,44 @@
                   <span class="legend-dot" style="background:#22c55e"></span>
                   <span class="legend-label" data-en="Completed" data-ru="Завершена" data-ko="완료">Completed</span>
                 </div>
-                <span class="legend-val" id="legendCompleted">—</span>
+                <div class="legend-right">
+                  <div class="legend-bar-wrap"><div class="legend-bar-fill" id="barCompleted" style="width:0%"></div></div>
+                  <span class="legend-pct" id="legendCompletedPct">—</span>
+                  <span class="legend-val" id="legendCompleted">—</span>
+                </div>
               </div>
               <div class="legend-item">
                 <div class="legend-left">
                   <span class="legend-dot" style="background:#8b5cf6"></span>
                   <span class="legend-label" data-en="In Progress" data-ru="В работе" data-ko="처리 중">In Progress</span>
                 </div>
-                <span class="legend-val" id="legendInProgress">—</span>
+                <div class="legend-right">
+                  <div class="legend-bar-wrap"><div class="legend-bar-fill" id="barInProgress" style="width:0%"></div></div>
+                  <span class="legend-pct" id="legendInProgressPct">—</span>
+                  <span class="legend-val" id="legendInProgress">—</span>
+                </div>
               </div>
               <div class="legend-item">
                 <div class="legend-left">
                   <span class="legend-dot" style="background:#f59e0b"></span>
                   <span class="legend-label" data-en="New" data-ru="Новые" data-ko="신규">New</span>
                 </div>
-                <span class="legend-val" id="legendNew">—</span>
+                <div class="legend-right">
+                  <div class="legend-bar-wrap"><div class="legend-bar-fill" id="barNew" style="width:0%"></div></div>
+                  <span class="legend-pct" id="legendNewPct">—</span>
+                  <span class="legend-val" id="legendNew">—</span>
+                </div>
               </div>
               <div class="legend-item">
                 <div class="legend-left">
                   <span class="legend-dot" style="background:#ef4444"></span>
                   <span class="legend-label" data-en="Incomplete" data-ru="Не завершена" data-ko="미완료">Incomplete</span>
                 </div>
-                <span class="legend-val" id="legendIncomplete">—</span>
+                <div class="legend-right">
+                  <div class="legend-bar-wrap"><div class="legend-bar-fill" id="barIncomplete" style="width:0%"></div></div>
+                  <span class="legend-pct" id="legendIncompletePct">—</span>
+                  <span class="legend-val" id="legendIncomplete">—</span>
+                </div>
               </div>
             </div>
           </div>
@@ -2033,6 +2229,9 @@
     </div>
   </div>
 </div>
+
+<!-- ─── Chart tooltip ─── -->
+<div id="lineTooltipEl" class="line-tooltip"></div>
 
 <!-- ─── Toast ─── -->
 <div class="toast" id="toast"></div>
@@ -2380,9 +2579,14 @@
     return typeof val === 'function' ? val(...args) : val;
   }
 
-  let _appReady = false;
-  let lineChart  = null;
-  let donutChart = null;
+  let _appReady    = false;
+  let lineChart    = null;
+  let donutChart   = null;
+  let _lastActive  = null;
+  let _lastDaily   = [];
+  let chartPeriod  = 30;
+  let _lineAllDates = [];
+  let _lineValues   = [];
 
   function applyLang(l) {
     L.lang = l;
@@ -2561,7 +2765,21 @@
     document.getElementById('legendInProgress').textContent = active.in_progress ?? 0;
     document.getElementById('legendNew').textContent = active.new ?? 0;
     document.getElementById('legendIncomplete').textContent = active.incomplete ?? 0;
-    document.getElementById('donutCenter').children[0].textContent = active.total ?? 0;
+    document.getElementById('donutCenterVal').textContent = active.total ?? 0;
+
+    // Legend percentages + progress bars
+    const tot = active.total || 1;
+    const pctOf = n => Math.round((n || 0) / tot * 100);
+    const setBar = (pctId, barId, n, color) => {
+      const p = pctOf(n);
+      document.getElementById(pctId).textContent = p + '%';
+      const bar = document.getElementById(barId);
+      if (bar) { bar.style.width = p + '%'; bar.style.background = color; }
+    };
+    setBar('legendCompletedPct',  'barCompleted',  active.completed,  '#22c55e');
+    setBar('legendInProgressPct', 'barInProgress', active.in_progress,'#8b5cf6');
+    setBar('legendNewPct',        'barNew',        active.new,        '#f59e0b');
+    setBar('legendIncompletePct', 'barIncomplete', active.incomplete, '#ef4444');
 
     const trashBadge = document.getElementById('trashBadge');
     if (inTrash > 0) { trashBadge.textContent = inTrash; trashBadge.style.display = ''; }
@@ -2580,83 +2798,204 @@
   }
 
   function buildCharts(active, daily) {
+    _lastActive = active;
+    _lastDaily  = daily || [];
+    buildLineChart(chartPeriod);
+    buildDonutChart(active);
+  }
+
+  /* ── Custom external tooltip for line chart ── */
+  function externalLineTooltip({ chart, tooltip }) {
+    const el = document.getElementById('lineTooltipEl');
+    if (!el) return;
+    if (tooltip.opacity === 0) { el.classList.remove('visible'); return; }
+    const dp = tooltip.dataPoints?.[0];
+    if (!dp) { el.classList.remove('visible'); return; }
+    const idx = dp.dataIndex;
+    const dateStr = _lineAllDates[idx] || '';
+    const val = dp.raw;
+    const prev = idx > 0 ? _lineValues[idx - 1] : null;
+    const delta = prev !== null ? val - prev : null;
+    let deltaHtml = '';
+    if (delta !== null) {
+      if (delta > 0)      deltaHtml = `<div class="lt-delta up">▲ +${delta} vs prev</div>`;
+      else if (delta < 0) deltaHtml = `<div class="lt-delta down">▼ ${delta} vs prev</div>`;
+      else                deltaHtml = `<div class="lt-delta flat">= same as prev</div>`;
+    }
+    el.innerHTML = `<div class="lt-date">${esc(dateStr)}</div><div class="lt-count">${val} <span class="lt-unit">${T('chart_tooltip')}</span></div>${deltaHtml}`;
+    const rect = chart.canvas.getBoundingClientRect();
+    let left = rect.left + tooltip.caretX + 14;
+    let top  = rect.top  + tooltip.caretY - 56;
+    if (left + 150 > window.innerWidth - 10) left = rect.left + tooltip.caretX - 160;
+    if (top < 8) top = rect.top + tooltip.caretY + 14;
+    el.style.left = left + 'px';
+    el.style.top  = top  + 'px';
+    el.classList.add('visible');
+  }
+
+  /* ── Line chart builder ── */
+  function buildLineChart(period) {
     const dayMap = {};
-    (daily || []).forEach(d => { dayMap[d.day] = d.count; });
-    const labels = [], values = [];
-    for (let i = 29; i >= 0; i--) {
+    _lastDaily.forEach(d => { dayMap[d.day] = d.count; });
+    const allDates = [], tickLabels = [], values = [];
+    const locale = L.lang === 'ru' ? 'ru-RU' : L.lang === 'ko' ? 'ko-KR' : 'en-US';
+    const step = period <= 7 ? 1 : 5;
+    for (let i = period - 1; i >= 0; i--) {
       const d = new Date(); d.setDate(d.getDate() - i);
       const key = d.toISOString().slice(0, 10);
-      labels.push(i % 5 === 0 ? d.toLocaleDateString('en', { month: 'short', day: 'numeric' }) : '');
+      allDates.push(d.toLocaleDateString(locale, { month: 'short', day: 'numeric' }));
+      tickLabels.push(i % step === 0 ? d.toLocaleDateString('en', { month: 'short', day: 'numeric' }) : '');
       values.push(dayMap[key] || 0);
+    }
+    _lineAllDates = allDates;
+    _lineValues   = values;
+
+    // Stats strip
+    const total = values.reduce((a, b) => a + b, 0);
+    const avg   = period > 0 ? (total / period) : 0;
+    const peak  = Math.max(...values, 0);
+    document.getElementById('cstatTotal').textContent = total;
+    document.getElementById('cstatAvg').textContent   = avg % 1 === 0 ? avg : avg.toFixed(1);
+    document.getElementById('cstatPeak').textContent  = peak;
+
+    // Subtitle
+    const subEl = document.getElementById('lineChartSubtitle');
+    if (subEl) {
+      subEl.dataset.en = `Last ${period} days · daily volume`;
+      subEl.dataset.ru = `Последние ${period} дней · ежедневный объём`;
+      subEl.dataset.ko = `최근 ${period}일 · 일별 건수`;
+      subEl.textContent = subEl.dataset[L.lang] || subEl.dataset.en;
     }
 
     if (lineChart) {
-      lineChart.data.labels = labels;
+      lineChart.data.labels = tickLabels;
       lineChart.data.datasets[0].data = values;
-      lineChart.update();
-    } else {
-      const ctx = document.getElementById('lineChart').getContext('2d');
-      const grad = ctx.createLinearGradient(0, 0, 0, 200);
-      grad.addColorStop(0, 'rgba(99,102,241,0.25)');
-      grad.addColorStop(0.65, 'rgba(99,102,241,0.06)');
-      grad.addColorStop(1, 'rgba(99,102,241,0)');
-      lineChart = new Chart(ctx, {
-        type: 'line',
-        data: { labels, datasets: [{
-          data: values, fill: true, backgroundColor: grad,
-          borderColor: '#6366f1', borderWidth: 2,
-          pointRadius: 0, pointHoverRadius: 4,
-          pointHoverBackgroundColor: '#6366f1',
-          pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2, tension: 0.4,
-        }]},
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          interaction: { mode: 'index', intersect: false },
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: '#0f0f1e', titleColor: 'rgba(255,255,255,0.5)',
-              bodyColor: '#fff', bodyFont: { weight: '600', size: 13 },
-              padding: 10, cornerRadius: 8, displayColors: false,
-              callbacks: { title: items => items[0].label || '', label: item => `${item.raw} ${T('chart_tooltip')}` }
-            }
-          },
-          scales: {
-            x: { grid: { display: false }, border: { display: false }, ticks: { color: '#9090b0', font: { size: 11 }, maxRotation: 0 } },
-            y: { grid: { color: '#f2f2f8' }, border: { display: false }, ticks: { color: '#9090b0', font: { size: 11 }, maxTicksLimit: 5 } }
-          }
-        }
-      });
+      lineChart.update('active');
+      return;
     }
 
+    const ctx = document.getElementById('lineChart').getContext('2d');
+    const h   = ctx.canvas.parentElement.offsetHeight || 185;
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0,    'rgba(99,102,241,0.32)');
+    grad.addColorStop(0.55, 'rgba(99,102,241,0.07)');
+    grad.addColorStop(1,    'rgba(99,102,241,0)');
+
+    const crosshairPlugin = {
+      id: 'crosshairPlugin',
+      afterDraw(chart) {
+        const active = chart.tooltip._active;
+        if (!active || !active.length) return;
+        const x = active[0].element.x;
+        const { top, bottom } = chart.scales.y;
+        const c = chart.ctx;
+        c.save();
+        c.setLineDash([4, 4]);
+        c.strokeStyle = 'rgba(99,102,241,0.22)';
+        c.lineWidth = 1;
+        c.beginPath(); c.moveTo(x, top); c.lineTo(x, bottom); c.stroke();
+        c.setLineDash([]);
+        c.restore();
+      }
+    };
+
+    lineChart = new Chart(ctx, {
+      type: 'line',
+      plugins: [crosshairPlugin],
+      data: { labels: tickLabels, datasets: [{
+        data: values, fill: true, backgroundColor: grad,
+        borderColor: '#6366f1', borderWidth: 2.5,
+        pointRadius: 0, pointHoverRadius: 5,
+        pointHoverBackgroundColor: '#6366f1',
+        pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2.5,
+        tension: 0.42,
+      }]},
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false, external: externalLineTooltip }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { color: '#9292b2', font: { size: 10.5 }, maxRotation: 0 }
+          },
+          y: {
+            grid: { color: 'rgba(0,0,0,0.04)', tickLength: 0 },
+            border: { display: false },
+            ticks: { color: '#9292b2', font: { size: 10.5 }, maxTicksLimit: 4, padding: 8 },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  /* ── Donut chart builder ── */
+  function buildDonutChart(active) {
     const donutData = [active.completed || 0, active.in_progress || 0, active.new || 0, active.incomplete || 0];
+    const colors    = ['#22c55e','#8b5cf6','#f59e0b','#ef4444'];
+
+    function syncDonutCenter(idx) {
+      const valEl   = document.getElementById('donutCenterVal');
+      const labelEl = document.getElementById('donutCenterLabel');
+      if (!valEl || !labelEl) return;
+      if (idx === null) {
+        valEl.textContent   = active.total ?? 0;
+        const lbl = L.lang === 'ru' ? 'всего' : L.lang === 'ko' ? '전체' : 'total';
+        labelEl.textContent = lbl;
+        valEl.style.color   = 'var(--text1)';
+      } else {
+        const tot = donutData.reduce((a,b) => a+b, 0) || 1;
+        valEl.textContent   = donutData[idx];
+        labelEl.textContent = Math.round(donutData[idx] / tot * 100) + '%';
+        valEl.style.color   = colors[idx];
+      }
+    }
+
     if (donutChart) {
+      donutChart.data.labels = [T('chart_completed'), T('chart_in_progress'), T('chart_new'), T('chart_incomplete')];
       donutChart.data.datasets[0].data = donutData;
       donutChart.update();
-    } else {
-      const ctx2 = document.getElementById('donutChart').getContext('2d');
-      donutChart = new Chart(ctx2, {
-        type: 'doughnut',
-        data: { labels: [T('chart_completed'), T('chart_in_progress'), T('chart_new'), T('chart_incomplete')],
-          datasets: [{ data: donutData, backgroundColor: ['#22c55e','#8b5cf6','#f59e0b','#ef4444'], borderWidth: 0, hoverOffset: 4, spacing: 3, borderRadius: 3 }]
+      syncDonutCenter(null);
+      return;
+    }
+
+    const ctx2 = document.getElementById('donutChart').getContext('2d');
+    donutChart = new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: [T('chart_completed'), T('chart_in_progress'), T('chart_new'), T('chart_incomplete')],
+        datasets: [{ data: donutData, backgroundColor: colors, borderWidth: 0, hoverOffset: 10, spacing: 3, borderRadius: 4 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '73%',
+        onHover: (event, elements) => {
+          syncDonutCenter(elements.length > 0 ? elements[0].index : null);
+          ctx2.canvas.style.cursor = elements.length > 0 ? 'pointer' : 'default';
         },
-        options: {
-          responsive: true, maintainAspectRatio: false, cutout: '74%',
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: '#0f0f1e', titleColor: 'rgba(255,255,255,0.5)',
-              bodyColor: '#fff', bodyFont: { weight: '600', size: 13 },
-              padding: 10, cornerRadius: 8, displayColors: false,
-              callbacks: { label: item => {
-                const total = item.dataset.data.reduce((a, b) => a + b, 0) || 1;
-                return `${item.raw} (${Math.round(item.raw / total * 100)}%)`;
-              }}
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0f0f1e',
+            titleColor: 'rgba(255,255,255,0.5)',
+            bodyColor: '#fff',
+            bodyFont: { weight: '700', size: 13 },
+            padding: 12, cornerRadius: 10, displayColors: false,
+            callbacks: {
+              title: items => items[0].label || '',
+              label: item => {
+                const tot = item.dataset.data.reduce((a,b) => a+b, 0) || 1;
+                return `${item.raw} (${Math.round(item.raw / tot * 100)}%)`;
+              }
             }
           }
         }
-      });
-    }
+      }
+    });
   }
 
   function renderDashTable(apps) {
@@ -3090,6 +3429,15 @@
   // Close sidebar when a nav item is tapped on mobile
   document.querySelectorAll('.nav-item[data-view]').forEach(item => {
     item.addEventListener('click', closeMobileSidebar);
+  });
+
+  /* ── Chart period switcher ── */
+  document.getElementById('chartPeriodSw').addEventListener('click', e => {
+    const btn = e.target.closest('.cpd-btn');
+    if (!btn || !_lastActive) return;
+    chartPeriod = Number(btn.dataset.days);
+    document.querySelectorAll('.cpd-btn').forEach(b => b.classList.toggle('active', b === btn));
+    buildLineChart(chartPeriod);
   });
 
   /* ── Initial load ── */
