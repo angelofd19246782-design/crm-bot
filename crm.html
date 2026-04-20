@@ -2029,6 +2029,8 @@
   }
 
   let _appReady = false;
+  let lineChart  = null;
+  let donutChart = null;
 
   function applyLang(l) {
     L.lang = l;
@@ -2172,9 +2174,6 @@
     await api('POST', '/auth/logout');
     window.location.href = '/login';
   });
-
-  /* ── Charts state ── */
-  let lineChart = null, donutChart = null;
 
   /* ── Dashboard ── */
   async function loadDashboard() {
