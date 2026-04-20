@@ -1569,6 +1569,59 @@
     .lt-delta.down { color: #f87171; }
     .lt-delta.flat { color: rgba(255,255,255,0.28); }
 
+    /* ─── Donut external tooltip ─── */
+    .donut-tooltip {
+      position: fixed;
+      z-index: 820;
+      background: rgba(11,12,24,0.97);
+      border-radius: 10px;
+      padding: 9px 13px 10px;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.93) translateY(3px);
+      transition: opacity 0.13s ease, transform 0.13s ease;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.16);
+      border: 1px solid rgba(129,140,248,0.13);
+      min-width: 108px;
+      white-space: nowrap;
+    }
+    .donut-tooltip.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    .dt-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+    .dt-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dt-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.42);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .dt-val {
+      font-size: 19px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.7px;
+      line-height: 1;
+    }
+    .dt-pct {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.38);
+      letter-spacing: 0;
+      margin-left: 3px;
+    }
+
     /* ─── Loading skeleton ─── */
     @keyframes shimmer {
       0% { background-position: -600px 0; }
@@ -2227,8 +2280,9 @@
   </div>
 </div>
 
-<!-- ─── Chart tooltip ─── -->
-<div id="lineTooltipEl" class="line-tooltip"></div>
+<!-- ─── Chart tooltips ─── -->
+<div id="lineTooltipEl"  class="line-tooltip"></div>
+<div id="donutTooltipEl" class="donut-tooltip"></div>
 
 <!-- ─── Toast ─── -->
 <div class="toast" id="toast"></div>
@@ -2582,9 +2636,10 @@
   let _lastActive  = null;
   let _lastDaily   = [];
   let chartPeriod  = 30;
-  let _lineAllDates = [];
-  let _lineValues   = [];
-  let _sparkCharts  = {};
+  let _lineAllDates     = [];
+  let _lineValues       = [];
+  let _sparkCharts      = {};
+  let _dailyByStatus    = [];
 
   function applyLang(l) {
     L.lang = l;
@@ -2735,7 +2790,7 @@
   async function loadDashboard() {
     const r = await api('GET', '/api/stats');
     if (!r.ok) return;
-    const { active, inTrash, daily } = r.data;
+    const { active, inTrash, daily, dailyByStatus } = r.data;
 
     // Hero
     const hour = new Date().getHours();
@@ -2785,7 +2840,7 @@
 
     document.getElementById('navBadgeNew').textContent = active.new ?? 0;
 
-    buildCharts(active, daily);
+    buildCharts(active, daily, dailyByStatus);
 
     const appsR = await api('GET', '/api/applications');
     if (appsR.ok) {
@@ -2795,26 +2850,37 @@
     }
   }
 
-  function buildCharts(active, daily) {
-    _lastActive = active;
-    _lastDaily  = daily || [];
+  function buildCharts(active, daily, dailyByStatus) {
+    _lastActive       = active;
+    _lastDaily        = daily || [];
+    _dailyByStatus    = dailyByStatus || [];
     buildLineChart(chartPeriod);
     buildDonutChart(active);
-    buildSparklines(active);
+    buildSparklines();
   }
 
-  function buildSparklines(active) {
-    const tot  = active.total || 1;
-    const raw  = _lineValues.length >= 8 ? _lineValues.slice(-14) : Array(14).fill(0);
-    const rC   = (active.completed   || 0) / tot;
-    const rN   = (active.new         || 0) / tot;
-    const rP   = (active.in_progress || 0) / tot;
+  function sparkSeries(statusFilter, days) {
+    const dayMap = {};
+    _dailyByStatus.forEach(r => {
+      if (statusFilter === null || r.status === statusFilter) {
+        dayMap[r.day] = (dayMap[r.day] || 0) + r.count;
+      }
+    });
+    const out = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      out.push(dayMap[d.toISOString().slice(0, 10)] || 0);
+    }
+    return out;
+  }
 
+  function buildSparklines() {
+    const DAYS = 14;
     const configs = [
-      { id: 'sparkTotal',      color: '#6366f1', rgb: '99,102,241',   data: raw.slice() },
-      { id: 'sparkCompleted',  color: '#22c55e', rgb: '34,197,94',    data: raw.map(v => Math.round(v * rC)) },
-      { id: 'sparkNew',        color: '#f59e0b', rgb: '245,158,11',   data: raw.map(v => Math.round(v * rN)) },
-      { id: 'sparkInProgress', color: '#3b82f6', rgb: '59,130,246',   data: raw.map(v => Math.round(v * rP)) },
+      { id: 'sparkTotal',      color: '#6366f1', rgb: '99,102,241',  data: sparkSeries(null,          DAYS) },
+      { id: 'sparkCompleted',  color: '#22c55e', rgb: '34,197,94',   data: sparkSeries('completed',   DAYS) },
+      { id: 'sparkNew',        color: '#f59e0b', rgb: '245,158,11',  data: sparkSeries('new',         DAYS) },
+      { id: 'sparkInProgress', color: '#3b82f6', rgb: '59,130,246',  data: sparkSeries('in_progress', DAYS) },
     ];
 
     configs.forEach(({ id, color, rgb, data }) => {
@@ -2946,13 +3012,32 @@
       afterDraw(chart) {
         const active = chart.tooltip._active;
         if (!active || !active.length) return;
-        const x = active[0].element.x;
+        const pt = active[0].element;
+        const x  = pt.x;
+        const y  = pt.y;
         const { top, bottom } = chart.scales.y;
         const c = chart.ctx;
         c.save();
-        c.strokeStyle = 'rgba(99,102,241,0.18)';
+
+        // Vertical guide line
+        c.strokeStyle = 'rgba(99,102,241,0.16)';
         c.lineWidth = 1;
         c.beginPath(); c.moveTo(x, top); c.lineTo(x, bottom); c.stroke();
+
+        // Active dot — white halo + indigo fill
+        c.beginPath();
+        c.arc(x, y, 5.5, 0, Math.PI * 2);
+        c.fillStyle = '#fff';
+        c.shadowColor = 'rgba(99,102,241,0.35)';
+        c.shadowBlur  = 6;
+        c.fill();
+        c.shadowBlur = 0;
+
+        c.beginPath();
+        c.arc(x, y, 3.5, 0, Math.PI * 2);
+        c.fillStyle = '#6366f1';
+        c.fill();
+
         c.restore();
       }
     };
@@ -2964,14 +3049,12 @@
         data: values, fill: true, backgroundColor: grad,
         borderColor: '#6366f1', borderWidth: 2,
         pointRadius: 0,
-        pointHoverRadius: 4,
-        pointHoverBackgroundColor: '#6366f1',
-        pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2,
+        pointHoverRadius: 0,
         tension: 0.44,
       }]},
       options: {
         responsive: true, maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
+        interaction: { mode: 'nearest', intersect: false, axis: 'x' },
         plugins: {
           legend: { display: false },
           tooltip: { enabled: false, external: externalLineTooltip }
@@ -3025,6 +3108,75 @@
       return;
     }
 
+    /* ── Custom external donut tooltip ── */
+    function showDonutTooltip(chart, idx) {
+      const el = document.getElementById('donutTooltipEl');
+      if (!el) return;
+
+      if (idx === null) {
+        el.classList.remove('visible');
+        return;
+      }
+
+      const meta = chart.getDatasetMeta(0);
+      const arc  = meta.data[idx];
+      if (!arc) return;
+
+      // Segment mid-angle and outer radius
+      const midAngle = (arc.startAngle + arc.endAngle) / 2;
+      const outerR   = arc.outerRadius;
+      const padding  = (chart.options.layout && chart.options.layout.padding) || 18;
+      const gap      = outerR + padding + 12;   // anchor point outside ring
+
+      // Arc center in canvas px
+      const cx = arc.x;
+      const cy = arc.y;
+
+      // Anchor in canvas px
+      const ax = cx + Math.cos(midAngle) * gap;
+      const ay = cy + Math.sin(midAngle) * gap;
+
+      // Convert to viewport px
+      const rect   = chart.canvas.getBoundingClientRect();
+      const scaleX = rect.width  / (chart.canvas.width  || 1);
+      const scaleY = rect.height / (chart.canvas.height || 1);
+      const screenX = rect.left + ax * scaleX;
+      const screenY = rect.top  + ay * scaleY;
+
+      // Build content
+      const tot  = donutData.reduce((a, b) => a + b, 0) || 1;
+      const pct  = Math.round(donutData[idx] / tot * 100);
+      el.innerHTML = `
+        <div class="dt-header">
+          <span class="dt-dot" style="background:${colors[idx]}"></span>
+          <span class="dt-label">${esc(chart.data.labels[idx] || '')}</span>
+        </div>
+        <div class="dt-val">${donutData[idx]}<span class="dt-pct">${pct}%</span></div>
+      `;
+      el.classList.add('visible');
+
+      // Position: offset in direction of segment from center, left/right-aware
+      const elW = el.offsetWidth  || 120;
+      const elH = el.offsetHeight || 52;
+      const cosA = Math.cos(midAngle);
+      const sinA = Math.sin(midAngle);
+
+      let finalX = cosA >= 0 ? screenX + 10 : screenX - elW - 10;
+      let finalY = screenY - elH / 2;
+
+      // Fine-tune for top/bottom segments
+      if (sinA < -0.6 && Math.abs(cosA) < 0.6) { finalY = screenY - elH - 10; finalX = screenX - elW / 2; }
+      if (sinA >  0.6 && Math.abs(cosA) < 0.6) { finalY = screenY + 10;       finalX = screenX - elW / 2; }
+
+      // Clamp inside viewport
+      const vw = window.innerWidth; const vh = window.innerHeight;
+      finalX = Math.max(8, Math.min(vw - elW - 8, finalX));
+      finalY = Math.max(8, Math.min(vh - elH - 8, finalY));
+
+      el.style.left = finalX + 'px';
+      el.style.top  = finalY + 'px';
+    }
+
     const ctx2 = document.getElementById('donutChart').getContext('2d');
     donutChart = new Chart(ctx2, {
       type: 'doughnut',
@@ -3035,9 +3187,10 @@
       options: {
         responsive: true, maintainAspectRatio: false, cutout: '72%',
         layout: { padding: 18 },
-        onHover: (event, elements) => {
+        onHover: (event, elements, chart) => {
           const idx = elements.length > 0 ? elements[0].index : null;
           syncDonutCenter(idx);
+          showDonutTooltip(chart, idx);
           ctx2.canvas.style.cursor = idx !== null ? 'pointer' : 'default';
           const dimmed = ['rgba(34,197,94,0.25)','rgba(139,92,246,0.25)','rgba(245,158,11,0.25)','rgba(239,68,68,0.25)'];
           donutChart.data.datasets[0].backgroundColor = idx !== null
@@ -3047,20 +3200,7 @@
         },
         plugins: {
           legend: { display: false },
-          tooltip: {
-            backgroundColor: '#0f0f1e',
-            titleColor: 'rgba(255,255,255,0.5)',
-            bodyColor: '#fff',
-            bodyFont: { weight: '700', size: 13 },
-            padding: 12, cornerRadius: 10, displayColors: false,
-            callbacks: {
-              title: items => items[0].label || '',
-              label: item => {
-                const tot = item.dataset.data.reduce((a,b) => a+b, 0) || 1;
-                return `${item.raw} (${Math.round(item.raw / tot * 100)}%)`;
-              }
-            }
-          }
+          tooltip: { enabled: false }
         }
       }
     });
@@ -3497,6 +3637,18 @@
   // Close sidebar when a nav item is tapped on mobile
   document.querySelectorAll('.nav-item[data-view]').forEach(item => {
     item.addEventListener('click', closeMobileSidebar);
+  });
+
+  /* ── Hide donut tooltip when canvas loses focus ── */
+  document.addEventListener('mousemove', e => {
+    const el = document.getElementById('donutTooltipEl');
+    if (!el || !el.classList.contains('visible')) return;
+    const canvas = document.getElementById('donutChart');
+    if (!canvas) return;
+    const r = canvas.getBoundingClientRect();
+    const outside = e.clientX < r.left - 24 || e.clientX > r.right  + 24
+                 || e.clientY < r.top  - 24 || e.clientY > r.bottom + 24;
+    if (outside) el.classList.remove('visible');
   });
 
   /* ── Chart period switcher ── */

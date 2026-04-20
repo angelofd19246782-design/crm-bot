@@ -24,7 +24,7 @@ router.get('/stats', requireLogin, (req, res) => {
     `SELECT COUNT(*) AS c FROM applications WHERE deleted_at IS NOT NULL`
   ).get().c;
 
-  // Daily counts for last 30 days
+  // Daily counts for last 30 days — total
   const daily = db.prepare(`
     SELECT
       DATE(created_at) AS day,
@@ -36,7 +36,20 @@ router.get('/stats', requireLogin, (req, res) => {
     ORDER BY day ASC
   `).all();
 
-  res.json({ active, inTrash, daily });
+  // Daily counts broken down by status (for per-card sparklines)
+  const dailyByStatus = db.prepare(`
+    SELECT
+      DATE(created_at) AS day,
+      status,
+      COUNT(*)         AS count
+    FROM applications
+    WHERE deleted_at IS NULL
+      AND created_at >= DATE('now', '-30 days')
+    GROUP BY day, status
+    ORDER BY day, status ASC
+  `).all();
+
+  res.json({ active, inTrash, daily, dailyByStatus });
 });
 
 // ─── GET /api/employee-stats ─────────────────────────────────────────────────
